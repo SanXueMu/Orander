@@ -28,7 +28,7 @@ interface CloudEnvelope<T> {
   message?: string
 }
 
-export const CLOUD_SYNC_ENABLED = false
+export const CLOUD_SYNC_ENABLED = true
 
 let cloudReady = false
 
