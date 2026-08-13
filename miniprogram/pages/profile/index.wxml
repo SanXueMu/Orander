@@ -1,0 +1,30 @@
+<view class="orander-page {{themeClass}} {{fontClass}}">
+  <navigation-bar back="{{false}}" color="{{navColor}}" background="{{navBackground}}">
+    <view slot="center" class="nav-black-pill">我的</view>
+  </navigation-bar>
+
+  <scroll-view class="page-scroll" scroll-y>
+    <view class="page-body with-tabbar profile-body">
+      <view class="surface profile-card">
+        <button class="profile-avatar-button" open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar">
+          <block wx:if="{{showAvatarImage}}">
+            <image class="profile-avatar-image" src="{{avatarUrl}}" mode="aspectFill"></image>
+          </block>
+          <block wx:else>
+            <view class="profile-avatar-fallback" style="{{avatarStyle}}">{{avatarLabel}}</view>
+          </block>
+        </button>
+
+        <view class="field-block profile-field">
+          <view class="field-label">名称</view>
+          <input class="field-input" type="nickname" placeholder="输入名称" value="{{nickname}}" bindinput="onNicknameInput" />
+        </view>
+
+        <view class="button-primary profile-button" bindtap="saveProfile">保存</view>
+        <view class="button-ghost profile-button" bindtap="logout">退出登录</view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <visitor-tab-bar active="mine"></visitor-tab-bar>
+</view>

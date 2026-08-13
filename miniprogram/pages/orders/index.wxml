@@ -1,0 +1,44 @@
+<view class="orander-page {{themeClass}} {{fontClass}}">
+  <navigation-bar title="我的订单" color="{{navColor}}" background="{{navBackground}}"></navigation-bar>
+
+  <scroll-view class="page-scroll" scroll-y>
+    <view class="page-body orders-page-body">
+      <view wx:if="{{profile}}" class="surface orders-hero">
+        <view class="section-kicker">ORDER ARCHIVE</view>
+        <view class="section-title">{{profile.nickname}} 的过往点单</view>
+        <view class="section-copy">看历史订单、打开回执风格详情，也可以回头补评价。</view>
+      </view>
+
+      <view wx:if="{{!profile}}" class="surface empty-state">
+        <view class="empty-emoji">NO PROFILE</view>
+        <view class="section-title">还没有登记客人身份</view>
+        <view class="section-copy">回首页先选头像、昵称和关系，之后订单才会归档到你名下。</view>
+        <view class="button-primary empty-orders-button" bindtap="goMenu">回到菜单页</view>
+      </view>
+
+      <view wx:elif="{{orders.length}}" class="list-gap orders-list">
+        <view wx:for="{{orders}}" wx:key="id" class="surface order-card" data-id="{{item.id}}" bindtap="openOrder">
+          <view class="order-card-top">
+            <view>
+              <view class="order-card-number">{{item.orderNumber}}</view>
+              <view class="order-card-date">{{item.createdText}}</view>
+            </view>
+            <view class="order-card-status">{{item.statusText}}</view>
+          </view>
+          <view class="order-card-preview">{{item.previewText}}</view>
+          <view class="order-card-bottom">
+            <view class="order-card-review">{{item.reviewText}}</view>
+            <view class="order-card-total">{{item.totalText}}</view>
+          </view>
+        </view>
+      </view>
+
+      <view wx:else class="surface empty-state">
+        <view class="empty-emoji">NO ORDERS</view>
+        <view class="section-title">还没有下过单</view>
+        <view class="section-copy">现在去菜单页点一桌，第一张回执就会在这里出现。</view>
+        <view class="button-primary empty-orders-button" bindtap="goMenu">去点菜</view>
+      </view>
+    </view>
+  </scroll-view>
+</view>

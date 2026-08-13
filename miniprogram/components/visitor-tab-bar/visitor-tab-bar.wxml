@@ -1,0 +1,10 @@
+<view class="visitor-tabbar surface">
+  <view class="visitor-tab {{active === 'menu' ? 'visitor-tab-active' : ''}}" bindtap="goMenu">
+    <view class="visitor-tab-dot"></view>
+    <view class="visitor-tab-label">菜单</view>
+  </view>
+  <view class="visitor-tab {{active === 'mine' ? 'visitor-tab-active' : ''}}" bindtap="goProfile">
+    <view class="visitor-tab-dot"></view>
+    <view class="visitor-tab-label">我的</view>
+  </view>
+</view>

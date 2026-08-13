@@ -1,0 +1,46 @@
+<view class="orander-page {{themeClass}} {{fontClass}}">
+  <navigation-bar color="{{navColor}}" background="{{navBackground}}">
+    <view slot="center" class="nav-black-pill">订单历史</view>
+  </navigation-bar>
+
+  <scroll-view class="page-scroll" scroll-y>
+    <view class="page-body admin-user-body list-gap">
+      <view class="surface admin-user-head">
+        <view class="admin-user-avatar-row">
+          <block wx:if="{{showAvatarImage}}">
+            <image class="admin-user-avatar-image" src="{{avatarUrl}}" mode="aspectFill"></image>
+          </block>
+          <block wx:else>
+            <view class="admin-user-avatar-fallback" style="{{avatarStyle}}">{{avatarLabel}}</view>
+          </block>
+          <view>
+            <view class="admin-user-name">{{nickname}}</view>
+            <view class="admin-user-meta">{{relationLabel}}</view>
+          </view>
+        </view>
+      </view>
+
+      <view wx:if="{{orders.length}}" class="list-gap">
+        <view wx:for="{{orders}}" wx:key="id" class="surface admin-user-order-card">
+          <view class="admin-user-order-top">
+            <view>
+              <view class="admin-user-order-number">{{item.orderNumber}}</view>
+              <view class="admin-user-order-date">{{item.createdText}}</view>
+            </view>
+            <view class="admin-user-order-status">{{item.statusText}}</view>
+          </view>
+          <view class="admin-user-order-items">{{item.itemsText}}</view>
+          <view class="admin-user-order-total">{{item.totalText}}</view>
+          <view wx:if="{{item.canComplete}}" class="admin-user-order-actions">
+            <view class="button-ghost mini-action" data-id="{{item.id}}" bindtap="completeOrder">标记完成</view>
+          </view>
+        </view>
+      </view>
+
+      <view wx:else class="surface empty-state">
+        <view class="empty-emoji">NO ORDERS</view>
+        <view class="section-title">暂无订单</view>
+      </view>
+    </view>
+  </scroll-view>
+</view>

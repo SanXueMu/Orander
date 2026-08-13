@@ -1,0 +1,18 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/dish/index",
+    "pages/profile/index",
+    "pages/cart/index",
+    "pages/receipt/index",
+    "pages/admin/index",
+    "pages/admin-dish/index",
+    "pages/admin-user/index"
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationStyle": "custom"
+  },
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

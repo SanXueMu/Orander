@@ -1,0 +1,37 @@
+<view class="orander-page {{themeClass}} {{fontClass}} login-page">
+  <navigation-bar back="{{false}}" color="{{navColor}}" background="{{navBackground}}">
+    <view slot="center" class="nav-black-pill">Orander</view>
+  </navigation-bar>
+
+  <view class="login-shell">
+    <view class="login-mark"></view>
+    <view class="surface login-card">
+      <view class="login-brand">OR</view>
+      <view class="login-title">Orander</view>
+
+      <view class="role-row">
+        <view
+          wx:for="{{roleTabs}}"
+          wx:key="id"
+          class="role-pill {{item.id === activeRole ? 'role-pill-active' : ''}}"
+          data-role="{{item.id}}"
+          bindtap="chooseRole"
+        >
+          {{item.label}}
+        </view>
+      </view>
+
+      <view wx:if="{{activeRole === 'admin'}}" class="field-block login-field">
+        <input class="field-input" password placeholder="管理员密码" value="{{adminPassword}}" bindinput="onPasswordInput" />
+      </view>
+
+      <view class="button-primary login-button" bindtap="login">微信登录</view>
+      <view wx:if="{{showDebugLogin}}" class="button-ghost debug-button" bindtap="debugLogin">调试进入</view>
+
+      <view wx:if="{{sessionHint}}" class="session-actions">
+        <view class="button-ghost session-button" bindtap="continueSession">继续 {{sessionHint}}</view>
+        <view class="session-link" bindtap="resetSession">退出</view>
+      </view>
+    </view>
+  </view>
+</view>

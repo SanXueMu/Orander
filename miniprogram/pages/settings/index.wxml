@@ -1,0 +1,76 @@
+<view class="orander-page {{themeClass}} {{fontClass}}">
+  <navigation-bar title="通用设置" color="{{navColor}}" background="{{navBackground}}"></navigation-bar>
+
+  <scroll-view class="page-scroll" scroll-y>
+    <view class="page-body settings-page-body list-gap">
+      <view class="surface settings-hero">
+        <view class="section-kicker">GENERAL PAGE</view>
+        <view class="section-title">主题、字体与来访人资料</view>
+        <view class="section-copy">这里是 Orander 的通用页，你可以调整手机上看到的整体风格，也能修改自己的客人信息。</view>
+      </view>
+
+      <view class="surface settings-card">
+        <view class="section-title settings-card-title">个人资料</view>
+        <view class="settings-profile-row">
+          <button class="settings-avatar-button" open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar">
+            <view class="settings-avatar" style="{{avatarStyle}}">{{avatarLabel}}</view>
+          </button>
+          <view class="settings-profile-copy muted-copy">点击头像可替换当前展示图。</view>
+        </view>
+
+        <view class="field-block">
+          <view class="field-label">昵称</view>
+          <input type="nickname" class="field-input" placeholder="怎么称呼你" value="{{nickname}}" bindinput="onNicknameInput" />
+        </view>
+
+        <view class="field-block">
+          <view class="field-label">关系</view>
+          <picker mode="selector" range="{{relationOptions}}" value="{{relationIndex}}" bindchange="onRelationChange">
+            <view class="field-picker">
+              <text class="field-picker-text">{{relationOptions[relationIndex]}}</text>
+            </view>
+          </picker>
+        </view>
+
+        <view wx:if="{{relationOptions[relationIndex] === '自定义'}}" class="field-block">
+          <view class="field-label">自定义关系</view>
+          <input class="field-input" placeholder="例如：饭搭子 / 老朋友" value="{{customRelation}}" bindinput="onCustomRelationInput" />
+        </view>
+      </view>
+
+      <view class="surface settings-card">
+        <view class="section-title settings-card-title">主题风格</view>
+        <view class="settings-option-list">
+          <view
+            wx:for="{{themeOptions}}"
+            wx:key="id"
+            class="settings-option {{item.id === selectedThemeId ? 'settings-option-active' : ''}}"
+            data-id="{{item.id}}"
+            bindtap="pickTheme"
+          >
+            <view class="settings-option-name">{{item.name}}</view>
+            <view class="settings-option-copy">{{item.description}}</view>
+          </view>
+        </view>
+      </view>
+
+      <view class="surface settings-card">
+        <view class="section-title settings-card-title">字体风格</view>
+        <view class="settings-option-list">
+          <view
+            wx:for="{{fontOptions}}"
+            wx:key="id"
+            class="settings-option {{item.id === selectedFontId ? 'settings-option-active' : ''}}"
+            data-id="{{item.id}}"
+            bindtap="pickFont"
+          >
+            <view class="settings-option-name">{{item.name}}</view>
+            <view class="settings-option-copy">{{item.description}}</view>
+          </view>
+        </view>
+      </view>
+
+      <view class="button-primary save-settings-button" bindtap="saveProfile">保存当前设置</view>
+    </view>
+  </scroll-view>
+</view>

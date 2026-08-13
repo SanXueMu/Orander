@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 800 800">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6f5847"/>
+      <stop offset="100%" stop-color="#d6b37d"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="800" rx="80" fill="url(#bg)"/>
+  <ellipse cx="400" cy="410" rx="230" ry="170" fill="#fbf2e6" opacity="0.92"/>
+  <ellipse cx="350" cy="420" rx="84" ry="60" fill="#d5954f"/>
+  <ellipse cx="420" cy="360" rx="84" ry="60" fill="#c78140"/>
+  <ellipse cx="470" cy="450" rx="84" ry="60" fill="#df9d5b"/>
+  <ellipse cx="520" cy="375" rx="84" ry="60" fill="#b86e36"/>
+  <text x="70" y="110" fill="#fff7ee" font-family="Arial, sans-serif" font-size="36" letter-spacing="7">ORANDER HOUSE</text>
+  <text x="70" y="670" fill="#fff7ee" font-family="Arial, sans-serif" font-size="64" font-weight="700">POTATO STACK</text>
+  <text x="70" y="724" fill="#fff7ee" font-family="Arial, sans-serif" font-size="28" opacity="0.86">Crisp edges, good for sharing.</text>
+</svg>

@@ -1,0 +1,60 @@
+<view class="orander-page {{themeClass}} {{fontClass}}">
+  <navigation-bar color="{{navColor}}" background="{{navBackground}}">
+    <view slot="center" class="nav-black-pill">{{editing ? '编辑菜品' : '新增菜品'}}</view>
+  </navigation-bar>
+
+  <scroll-view class="page-scroll" scroll-y>
+    <view class="page-body admin-dish-body">
+      <view class="surface admin-dish-card">
+        <view class="field-block admin-dish-field-first">
+          <view class="field-label">图片</view>
+          <view class="admin-dish-image-row">
+            <block wx:if="{{showDishImage}}">
+              <image class="admin-dish-image" src="{{dishImage}}" mode="aspectFill"></image>
+            </block>
+            <block wx:else>
+              <view class="admin-dish-image-fallback" style="{{dishImageStyle}}">{{dishImageLabel}}</view>
+            </block>
+            <view class="admin-dish-image-actions">
+              <view class="button-ghost admin-dish-image-button" bindtap="chooseDishImage">选择图片</view>
+              <view class="button-ghost admin-dish-image-button" bindtap="clearDishImage">清除图片</view>
+            </view>
+          </view>
+        </view>
+
+        <view class="field-block admin-dish-field-first">
+          <view class="field-label">菜名</view>
+          <input class="field-input" placeholder="输入菜名" value="{{dishName}}" bindinput="onDishNameInput" />
+        </view>
+
+        <view class="field-block">
+          <view class="field-label">分类</view>
+          <input class="field-input" placeholder="输入分类" value="{{dishCategory}}" bindinput="onDishCategoryInput" />
+        </view>
+
+        <view class="field-block">
+          <view class="field-label">价格</view>
+          <input class="field-input" type="digit" placeholder="输入价格" value="{{dishPrice}}" bindinput="onDishPriceInput" />
+        </view>
+
+        <view class="field-block">
+          <view class="field-label">描述</view>
+          <textarea class="field-textarea admin-dish-textarea" maxlength="160" placeholder="输入菜品描述" value="{{dishDescription}}" bindinput="onDishDescriptionInput"></textarea>
+        </view>
+
+        <view class="field-block">
+          <view class="field-label">状态</view>
+          <view class="admin-dish-status-row">
+            <view class="chip {{dishAvailable ? 'chip-active' : ''}}" data-status="available" bindtap="chooseStatus">供应中</view>
+            <view class="chip {{!dishAvailable ? 'chip-active' : ''}}" data-status="soldout" bindtap="chooseStatus">售罄</view>
+          </view>
+        </view>
+
+        <view class="button-row admin-dish-buttons">
+          <view class="button-ghost admin-dish-button" bindtap="removeDishDraft">{{editing ? '删除' : '返回'}}</view>
+          <view class="button-primary admin-dish-button" bindtap="saveDishDraft">保存</view>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+</view>

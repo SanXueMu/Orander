@@ -1,0 +1,40 @@
+.visitor-tabbar {
+  position: fixed;
+  left: 24rpx;
+  right: 24rpx;
+  bottom: 24rpx;
+  height: 104rpx;
+  padding: 0 18rpx;
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  z-index: 30;
+}
+
+.visitor-tab {
+  flex: 1;
+  height: 72rpx;
+  border-radius: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  color: var(--muted);
+}
+
+.visitor-tab-active {
+  background: #111;
+  color: #fff;
+}
+
+.visitor-tab-dot {
+  width: 14rpx;
+  height: 14rpx;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.visitor-tab-label {
+  font-size: 24rpx;
+  font-weight: 600;
+}

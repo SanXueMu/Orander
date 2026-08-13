@@ -1,0 +1,65 @@
+<view class="orander-page {{themeClass}} {{fontClass}} menu-page">
+  <navigation-bar back="{{false}}" color="{{navColor}}" background="{{navBackground}}">
+    <view slot="center" class="nav-black-pill">菜单</view>
+  </navigation-bar>
+
+  <scroll-view class="page-scroll" scroll-y>
+    <view class="page-body with-tabbar menu-body">
+      <view class="menu-top-row">
+        <view class="surface menu-summary-card">
+          <view class="menu-name">{{nickname}}</view>
+          <view class="menu-count">{{cartCount}} 件</view>
+        </view>
+        <view class="menu-mini-action menu-bill-action" bindtap="goBill">账单 {{cartTotalText}}</view>
+      </view>
+
+      <scroll-view class="menu-category-strip" scroll-x enable-flex>
+        <view class="menu-category-row">
+          <view
+            wx:for="{{categories}}"
+            wx:key="*this"
+            class="chip {{item === activeCategory ? 'chip-active' : ''}}"
+            data-category="{{item}}"
+            bindtap="switchCategory"
+          >
+            {{item}}
+          </view>
+        </view>
+      </scroll-view>
+
+      <view class="menu-grid">
+        <view wx:for="{{dishes}}" wx:key="id" class="surface menu-card">
+          <block wx:if="{{item.image}}">
+            <image class="menu-cover-image" src="{{item.image}}" mode="aspectFill"></image>
+          </block>
+          <block wx:else>
+            <view class="menu-cover" style="{{item.coverStyle}}">
+              <view class="menu-cover-kicker">MENU</view>
+              <view class="menu-cover-name">{{item.name}}</view>
+            </view>
+          </block>
+
+          <view class="menu-content">
+            <view class="menu-line-top">
+              <view class="menu-dish-name">{{item.name}}</view>
+              <view class="menu-dish-price">¥{{item.price}}</view>
+            </view>
+            <view class="menu-dish-category">{{item.category}}</view>
+            <view class="menu-dish-description">{{item.description}}</view>
+
+            <view class="menu-line-bottom">
+              <view wx:if="{{item.soldOut}}" class="menu-soldout">已售罄</view>
+              <view wx:else class="menu-stepper">
+                <view class="menu-stepper-button" data-id="{{item.id}}" bindtap="decreaseDish">-</view>
+                <view class="menu-stepper-value">{{item.quantity}}</view>
+                <view class="menu-stepper-button" data-id="{{item.id}}" bindtap="increaseDish">+</view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <visitor-tab-bar active="menu"></visitor-tab-bar>
+</view>

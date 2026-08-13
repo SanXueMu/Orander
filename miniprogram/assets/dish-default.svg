@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 800 800">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#c68851"/>
+      <stop offset="100%" stop-color="#f3e2cc"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="800" rx="80" fill="url(#bg)"/>
+  <circle cx="400" cy="390" r="210" fill="#fff6ec" opacity="0.92"/>
+  <path d="M260 430h280" stroke="#cf7b43" stroke-width="22" stroke-linecap="round"/>
+  <path d="M330 310h140" stroke="#cf7b43" stroke-width="22" stroke-linecap="round"/>
+  <text x="70" y="110" fill="#fff8f0" font-family="Arial, sans-serif" font-size="36" letter-spacing="7">ORANDER HOUSE</text>
+  <text x="70" y="670" fill="#fff8f0" font-family="Arial, sans-serif" font-size="64" font-weight="700">MENU ITEM</text>
+  <text x="70" y="724" fill="#fff8f0" font-family="Arial, sans-serif" font-size="28" opacity="0.86">Local placeholder artwork.</text>
+</svg>

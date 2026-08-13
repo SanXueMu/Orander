@@ -1,0 +1,59 @@
+<view class="orander-page {{themeClass}} {{fontClass}} bill-page">
+  <navigation-bar color="{{navColor}}" background="{{navBackground}}">
+    <view slot="center" class="nav-black-pill">账单</view>
+  </navigation-bar>
+
+  <scroll-view class="page-scroll" scroll-y>
+    <view class="page-body cart-page-body">
+      <view class="surface bill-head">
+        <view>
+          <view class="section-kicker">BILL</view>
+          <view class="bill-name">{{nickname}}</view>
+        </view>
+        <view class="bill-head-actions">
+          <view class="menu-mini-action" bindtap="backMenu">菜单</view>
+        </view>
+      </view>
+
+      <view wx:if="{{lines.length}}" class="list-gap bill-list">
+        <view wx:for="{{lines}}" wx:key="dishId" class="surface cart-line">
+          <view class="cart-line-image" style="{{item.coverStyle}}">
+            <view class="cart-line-art">{{item.dish.name}}</view>
+          </view>
+          <view class="cart-line-copy">
+            <view class="cart-line-header">
+              <view class="cart-line-name">{{item.dish.name}}</view>
+              <view class="cart-line-price">{{item.subtotalText}}</view>
+            </view>
+            <view class="cart-line-desc">{{item.dish.category}}</view>
+            <view class="cart-line-actions">
+              <view class="line-stepper">
+                <view class="line-stepper-button" data-id="{{item.dishId}}" bindtap="decreaseQuantity">-</view>
+                <view class="line-stepper-value">{{item.quantity}}</view>
+                <view class="line-stepper-button" data-id="{{item.dishId}}" bindtap="increaseQuantity">+</view>
+              </view>
+              <view class="line-remove" data-id="{{item.dishId}}" bindtap="removeLine">删除</view>
+            </view>
+          </view>
+        </view>
+
+        <view class="surface summary-card">
+          <view class="summary-row">
+            <view class="summary-title">合计</view>
+            <view class="summary-amount">{{totalText}}</view>
+          </view>
+          <view class="button-row summary-buttons">
+            <view class="button-ghost summary-button" bindtap="backMenu">继续选菜</view>
+            <view class="button-primary summary-button" bindtap="submitOrder">下单</view>
+          </view>
+        </view>
+      </view>
+
+      <view wx:else class="surface empty-state empty-cart">
+        <view class="empty-emoji">EMPTY BILL</view>
+        <view class="section-title">账单为空</view>
+        <view class="button-primary empty-cart-button" bindtap="backMenu">去选菜</view>
+      </view>
+    </view>
+  </scroll-view>
+</view>

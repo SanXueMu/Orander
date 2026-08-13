@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 800 800">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6d8b57"/>
+      <stop offset="100%" stop-color="#e3c389"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="800" rx="80" fill="url(#bg)"/>
+  <circle cx="400" cy="390" r="210" fill="#f9f4eb" opacity="0.94"/>
+  <path d="M290 385c72-56 148-54 220 4" stroke="#f2cd70" stroke-width="26" stroke-linecap="round" fill="none"/>
+  <path d="M285 430c78-54 156-52 230 8" stroke="#f2cd70" stroke-width="26" stroke-linecap="round" fill="none"/>
+  <path d="M300 340c64-44 136-44 200 4" stroke="#f2cd70" stroke-width="26" stroke-linecap="round" fill="none"/>
+  <circle cx="330" cy="300" r="12" fill="#6c8e51"/>
+  <circle cx="470" cy="310" r="12" fill="#6c8e51"/>
+  <circle cx="440" cy="470" r="12" fill="#6c8e51"/>
+  <text x="70" y="110" fill="#fff8ef" font-family="Arial, sans-serif" font-size="36" letter-spacing="7">ORANDER HOUSE</text>
+  <text x="70" y="670" fill="#fff8ef" font-family="Arial, sans-serif" font-size="64" font-weight="700">BUTTER PASTA</text>
+  <text x="70" y="724" fill="#fff8ef" font-family="Arial, sans-serif" font-size="28" opacity="0.86">Easy comfort with a green lift.</text>
+</svg>

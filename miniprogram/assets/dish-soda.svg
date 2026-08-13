@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 800 800">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7e6ea7"/>
+      <stop offset="100%" stop-color="#df8b66"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="800" rx="80" fill="url(#bg)"/>
+  <path d="M350 180h100l40 420H310z" fill="#fff3f0" opacity="0.92"/>
+  <path d="M390 180h28v-52h-60" stroke="#fff3f0" stroke-width="18" stroke-linecap="round" fill="none"/>
+  <circle cx="385" cy="328" r="16" fill="#d56e83" opacity="0.88"/>
+  <circle cx="445" cy="382" r="18" fill="#d56e83" opacity="0.88"/>
+  <circle cx="362" cy="454" r="14" fill="#d56e83" opacity="0.88"/>
+  <circle cx="505" cy="270" r="10" fill="#fff3f0" opacity="0.6"/>
+  <circle cx="540" cy="320" r="14" fill="#fff3f0" opacity="0.55"/>
+  <circle cx="285" cy="300" r="12" fill="#fff3f0" opacity="0.42"/>
+  <text x="70" y="110" fill="#fff6f1" font-family="Arial, sans-serif" font-size="36" letter-spacing="7">ORANDER HOUSE</text>
+  <text x="70" y="670" fill="#fff6f1" font-family="Arial, sans-serif" font-size="64" font-weight="700">PLUM SODA</text>
+  <text x="70" y="724" fill="#fff6f1" font-family="Arial, sans-serif" font-size="28" opacity="0.86">Bright bubbles and a playful finish.</text>
+</svg>

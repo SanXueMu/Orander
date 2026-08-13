@@ -1,0 +1,56 @@
+<view class="orander-page {{themeClass}} {{fontClass}}">
+  <navigation-bar title="订单详情" color="{{navColor}}" background="{{navBackground}}"></navigation-bar>
+
+  <scroll-view class="page-scroll" scroll-y>
+    <view wx:if="{{order}}" class="page-body detail-page-body list-gap">
+      <view class="surface detail-summary-card">
+        <view class="detail-summary-top">
+          <view>
+            <view class="detail-order-number">{{order.orderNumber}}</view>
+            <view class="detail-order-date">{{order.receiptDate}}</view>
+          </view>
+          <view class="detail-order-status">{{order.statusText}}</view>
+        </view>
+
+        <view class="detail-guest-row">
+          <text>Guest</text>
+          <text>{{order.nickname}} / {{order.relationLabel}}</text>
+        </view>
+        <view class="detail-guest-row">
+          <text>Total</text>
+          <text>{{order.totalText}}</text>
+        </view>
+        <view wx:if="{{order.note}}" class="detail-note">备注：{{order.note}}</view>
+      </view>
+
+      <view class="surface detail-items-card">
+        <view class="section-kicker">ORDER ITEMS</view>
+        <view wx:for="{{order.lines}}" wx:key="dishId" class="detail-item-row">
+          <view>
+            <view class="detail-item-name">{{item.name}}</view>
+            <view class="detail-item-meta">{{item.quantity}} x ¥{{item.price}}</view>
+          </view>
+          <view class="detail-item-subtotal">{{item.subtotalText}}</view>
+        </view>
+      </view>
+
+      <view class="surface review-card">
+        <view class="section-kicker">REVIEW</view>
+        <view class="section-title review-title">给这单留个评价</view>
+        <view class="review-rating-row">
+          <view
+            wx:for="{{ratingOptions}}"
+            wx:key="*this"
+            class="review-rating-chip {{item === rating ? 'review-rating-chip-active' : ''}}"
+            data-rating="{{item}}"
+            bindtap="chooseRating"
+          >
+            {{item}} 星
+          </view>
+        </view>
+        <textarea class="field-textarea review-input" maxlength="160" placeholder="例如：回锅还想点哪道菜，或者今天这桌气氛如何。" value="{{comment}}" bindinput="onCommentInput"></textarea>
+        <view class="button-primary review-button" bindtap="submitReview">保存评价</view>
+      </view>
+    </view>
+  </scroll-view>
+</view>
