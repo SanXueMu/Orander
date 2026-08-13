@@ -21,8 +21,12 @@ type OranderAction =
   | 'listMembers'
   | 'deleteMember'
   | 'listMemberOrders'
+  | 'listAllOrders'
   | 'updateOrderStatus'
   | 'createOrder'
+  | 'getBusinessStatus'
+  | 'setBusinessStatus'
+  | 'getOrderStats'
 
 interface CloudEnvelope<T> {
   ok: boolean
@@ -235,4 +239,44 @@ export const createCloudOrder = async (payload: {
   }
 
   return order
+}
+
+export interface PaginatedOrders {
+  items: Order[]
+  total: number
+  page: number
+  pageSize: number
+}
+
+export interface BusinessStatus {
+  open: boolean
+}
+
+export interface OrderStats {
+  totalOrders: number
+  completedCount: number
+  submittedCount: number
+  revenue: number
+  topDishes: Array<{
+    dishId: string
+    name: string
+    quantity: number
+    revenue: number
+  }>
+}
+
+export const listAllOrdersCloud = async (page = 1, pageSize = 20) => {
+  return callOrander<PaginatedOrders>('listAllOrders', { page, pageSize })
+}
+
+export const getBusinessStatusCloud = async () => {
+  return callOrander<BusinessStatus>('getBusinessStatus')
+}
+
+export const setBusinessStatusCloud = async (open: boolean, adminToken: string) => {
+  return callOrander<BusinessStatus>('setBusinessStatus', { open, adminToken })
+}
+
+export const getOrderStatsCloud = async () => {
+  return callOrander<OrderStats>('getOrderStats')
 }

@@ -14,12 +14,50 @@ const collections = {
   config: db.collection('config'),
 }
 
+// ============================
+// 常量
+// ============================
+
 const ADMIN_PASSWORD_KEY = 'adminPassword'
+const BUSINESS_STATUS_KEY = 'businessStatus'
 const DEFAULT_ADMIN_PASSWORD = 'orander2026'
+const PAGE_SIZE_DEFAULT = 20
+const PAGE_SIZE_MAX = 100
+
+// ============================
+// 工具函数
+// ============================
 
 const hashPassword = (password) => {
   return crypto.createHash('sha256').update(`orander-salt::${password}`).digest('hex')
 }
+
+const generateId = (prefix) => {
+  const random = Math.random().toString(36).slice(2, 8)
+  return `${prefix}-${Date.now()}-${random}`
+}
+
+const generateOrderNumber = () => {
+  const ts = Date.now().toString().slice(-8)
+  const rand = Math.floor(Math.random() * 100).toString().padStart(2, '0')
+  return `OR-${ts}${rand}`
+}
+
+const parsePagination = (event) => {
+  const page = Math.max(1, Number(event.page) || 1)
+  const pageSize = Math.min(PAGE_SIZE_MAX, Math.max(1, Number(event.pageSize) || PAGE_SIZE_DEFAULT))
+  return { page, pageSize, skip: (page - 1) * pageSize }
+}
+
+const ok = (data) => ({ ok: true, data })
+const fail = (message) => ({ ok: false, data: null, message })
+const log = (action, message) => {
+  console.log(`[orander:${action}] ${message}`)
+}
+
+// ============================
+// 鉴权
+// ============================
 
 const ensureAdminConfig = async () => {
   const existing = await collections.config.where({ key: ADMIN_PASSWORD_KEY }).limit(1).get()
@@ -37,38 +75,9 @@ const ensureAdminConfig = async () => {
   return result.data[0].value
 }
 
-const verifyAdmin = async ({ password = '' }) => {
-  const storedHash = await ensureAdminConfig()
-  if (hashPassword(password) !== storedHash) {
-    throw new Error('密码错误')
-  }
-
-  return { adminToken: storedHash }
-}
-
-const changeAdminPassword = async ({ adminToken = '', newPassword = '' }) => {
-  const storedHash = await ensureAdminConfig()
-  if (adminToken !== storedHash) {
-    throw new Error('未授权')
-  }
-
-  if (!newPassword.trim()) {
-    throw new Error('密码不能为空')
-  }
-
-  const newHash = hashPassword(newPassword)
-  await collections.config.where({ key: ADMIN_PASSWORD_KEY }).update({
-    data: { value: newHash, updatedAt: new Date().toISOString() },
-  })
-
-  return { adminToken: newHash }
-}
-
-const requireAdmin = (event) => {
-  if (!event.adminToken || event.adminToken !== event._expectedAdminToken) {
-    throw new Error('未授权的管理操作')
-  }
-}
+// ============================
+// Mapper
+// ============================
 
 const mapDish = (doc = {}) => ({
   id: doc.id,
@@ -107,16 +116,18 @@ const mapOrder = (doc = {}) => ({
   review: doc.review,
 })
 
+// ============================
+// Sorter
+// ============================
+
 const sortDishes = (dishes) => {
   return [...dishes].sort((left, right) => {
     if (left.featured !== right.featured) {
       return left.featured ? -1 : 1
     }
-
     if (left.category !== right.category) {
       return String(left.category).localeCompare(String(right.category), 'zh-Hans-CN')
     }
-
     return String(left.name).localeCompare(right.name)
   })
 }
@@ -127,235 +138,310 @@ const sortMembers = (members) => {
   })
 }
 
-const ok = (data) => ({ ok: true, data })
-const fail = (message) => ({ ok: false, data: null, message })
-
-const log = (action, message) => {
-  console.log(`[orander:${action}] ${message}`)
-}
-
-const fetchDishes = async () => {
-  const result = await collections.dishes.limit(100).get()
-  return sortDishes(result.data.map(mapDish))
-}
-
-const ensureSeedDishes = async (dishes = []) => {
-  const existing = await collections.dishes.limit(1).get()
-  if (existing.data.length === 0 && dishes.length) {
-    await Promise.all(
-      dishes.map((dish) => collections.dishes.add({
-        data: {
-          ...mapDish(dish),
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        },
-      })),
-    )
-  }
-
-  return fetchDishes()
-}
-
-const syncVisitor = async ({ nickname = '', avatarUrl = '' }) => {
-  const { OPENID } = cloud.getWXContext()
-  const memberId = `member-${OPENID}`
-  const current = await collections.members.where({ id: memberId }).limit(1).get()
-  const nextMember = {
-    id: memberId,
-    openId: OPENID,
-    nickname: nickname || '访客',
-    avatarUrl: avatarUrl || '',
-    relation: '访客',
-    customRelation: '',
-    themeId: 'amber',
-    fontId: 'modern',
-    joinedAt: current.data.length ? current.data[0].joinedAt : new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  }
-
-  if (current.data.length) {
-    await collections.members.where({ id: memberId }).update({ data: nextMember })
-  } else {
-    await collections.members.add({ data: nextMember })
-  }
-
-  return mapMember(nextMember)
-}
-
-const saveDish = async (dish) => {
-  const nextDish = {
-    ...mapDish(dish),
-    updatedAt: new Date().toISOString(),
-  }
-
-  const current = await collections.dishes.where({ id: nextDish.id }).limit(1).get()
-  if (current.data.length) {
-    await collections.dishes.where({ id: nextDish.id }).update({ data: nextDish })
-  } else {
-    await collections.dishes.add({
-      data: {
-        ...nextDish,
-        createdAt: new Date().toISOString(),
-      },
-    })
-  }
-
-  return mapDish(nextDish)
-}
-
-const deleteDish = async (dishId) => {
-  await collections.dishes.where({ id: dishId }).remove()
-  return { id: dishId }
-}
-
-const deleteMember = async (memberId) => {
-  await Promise.all([
-    collections.members.where({ id: memberId }).remove(),
-    collections.orders.where({ memberId }).remove(),
-  ])
-
-  return { id: memberId }
-}
-
-const listMembers = async () => {
-  const [memberResult, orderResult] = await Promise.all([
-    collections.members.limit(100).get(),
-    collections.orders.limit(200).get(),
-  ])
-
-  const orders = orderResult.data.map(mapOrder)
-
-  return sortMembers(memberResult.data.map(mapMember)).map((member) => {
-    const relatedOrders = orders.filter((order) => order.memberId === member.id)
-    const latestOrder = relatedOrders.sort((left, right) => {
-      return new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime()
-    })[0]
-
-    return {
-      ...member,
-      ordersCount: relatedOrders.length,
-      lastOrderAt: latestOrder ? latestOrder.createdAt : member.joinedAt,
-    }
-  })
-}
-
-const createOrder = async (payload) => {
-  const createdAt = new Date().toISOString()
-  const order = {
-    id: `order-${Date.now()}`,
-    orderNumber: `OR-${Date.now().toString().slice(-8)}`,
-    memberId: payload.memberId,
-    nickname: payload.nickname,
-    relationLabel: payload.relationLabel,
-    total: Number(payload.total || 0),
-    note: payload.note || '',
-    status: 'submitted',
-    createdAt,
-    items: Array.isArray(payload.items) ? payload.items : [],
-  }
-
-  await collections.orders.add({ data: order })
-  return mapOrder(order)
-}
-
-const listMemberOrders = async (memberId) => {
-  const result = await collections.orders.where({ memberId }).limit(200).get()
-  return result.data.map(mapOrder).sort((left, right) => {
+const sortOrdersDesc = (orders) => {
+  return [...orders].sort((left, right) => {
     return new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime()
   })
 }
 
-const updateOrderStatus = async (orderId, status) => {
-  const nextStatus = status === 'completed' ? 'completed' : 'submitted'
-  await collections.orders.where({ id: orderId }).update({
-    data: { status: nextStatus },
-  })
+// ============================
+// Action Handlers
+// ============================
 
-  const result = await collections.orders.where({ id: orderId }).limit(1).get()
-  return mapOrder(result.data[0])
+const actions = {
+  // --- 鉴权 ---
+
+  async verifyAdmin(event) {
+    const storedHash = await ensureAdminConfig()
+    if (hashPassword(event.password || '') !== storedHash) {
+      throw new Error('密码错误')
+    }
+    return { adminToken: storedHash }
+  },
+
+  async changeAdminPassword(event) {
+    const storedHash = await ensureAdminConfig()
+    if ((event.adminToken || '') !== storedHash) {
+      throw new Error('未授权')
+    }
+    if (!(event.newPassword || '').trim()) {
+      throw new Error('密码不能为空')
+    }
+
+    const newHash = hashPassword(event.newPassword)
+    await collections.config.where({ key: ADMIN_PASSWORD_KEY }).update({
+      data: { value: newHash, updatedAt: new Date().toISOString() },
+    })
+    return { adminToken: newHash }
+  },
+
+  // --- 菜品 ---
+
+  async bootstrap(event) {
+    const dishes = event.dishes || []
+    const existing = await collections.dishes.limit(1).get()
+    if (existing.data.length === 0 && dishes.length) {
+      await Promise.all(
+        dishes.map((dish) => collections.dishes.add({
+          data: {
+            ...mapDish(dish),
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          },
+        })),
+      )
+    }
+    const result = await collections.dishes.limit(100).get()
+    return sortDishes(result.data.map(mapDish))
+  },
+
+  async listDishes() {
+    const result = await collections.dishes.limit(100).get()
+    return sortDishes(result.data.map(mapDish))
+  },
+
+  async saveDish(event) {
+    const nextDish = {
+      ...mapDish(event.dish || {}),
+      updatedAt: new Date().toISOString(),
+    }
+
+    const current = await collections.dishes.where({ id: nextDish.id }).limit(1).get()
+    if (current.data.length) {
+      await collections.dishes.where({ id: nextDish.id }).update({ data: nextDish })
+    } else {
+      await collections.dishes.add({
+        data: { ...nextDish, createdAt: new Date().toISOString() },
+      })
+    }
+    return mapDish(nextDish)
+  },
+
+  async deleteDish(event) {
+    await collections.dishes.where({ id: event.dishId }).remove()
+    return { id: event.dishId }
+  },
+
+  // --- 访客 ---
+
+  async syncVisitor(event) {
+    const wxContext = cloud.getWXContext()
+    const openId = wxContext.OPENID
+    if (!openId) {
+      throw new Error('无法获取用户身份')
+    }
+
+    const memberId = `member-${openId}`
+    const current = await collections.members.where({ id: memberId }).limit(1).get()
+    const nextMember = {
+      id: memberId,
+      openId,
+      nickname: event.nickname || '访客',
+      avatarUrl: event.avatarUrl || '',
+      relation: '访客',
+      customRelation: '',
+      themeId: 'amber',
+      fontId: 'modern',
+      joinedAt: current.data.length ? current.data[0].joinedAt : new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    }
+
+    if (current.data.length) {
+      await collections.members.where({ id: memberId }).update({ data: nextMember })
+    } else {
+      await collections.members.add({ data: nextMember })
+    }
+    return mapMember(nextMember)
+  },
+
+  // --- 会员 ---
+
+  async listMembers() {
+    const [memberResult, orderResult] = await Promise.all([
+      collections.members.limit(100).get(),
+      collections.orders.limit(200).get(),
+    ])
+
+    const orders = orderResult.data.map(mapOrder)
+
+    return sortMembers(memberResult.data.map(mapMember)).map((member) => {
+      const relatedOrders = orders.filter((order) => order.memberId === member.id)
+      const latestOrder = sortOrdersDesc(relatedOrders)[0]
+
+      return {
+        ...member,
+        ordersCount: relatedOrders.length,
+        lastOrderAt: latestOrder ? latestOrder.createdAt : member.joinedAt,
+      }
+    })
+  },
+
+  async deleteMember(event) {
+    await Promise.all([
+      collections.members.where({ id: event.memberId }).remove(),
+      collections.orders.where({ memberId: event.memberId }).remove(),
+    ])
+    return { id: event.memberId }
+  },
+
+  // --- 订单 ---
+
+  async createOrder(event) {
+    const createdAt = new Date().toISOString()
+    const order = {
+      id: generateId('order'),
+      orderNumber: generateOrderNumber(),
+      memberId: event.memberId,
+      nickname: event.nickname,
+      relationLabel: event.relationLabel,
+      total: Number(event.total || 0),
+      note: event.note || '',
+      status: 'submitted',
+      createdAt,
+      items: Array.isArray(event.items) ? event.items : [],
+    }
+
+    await collections.orders.add({ data: order })
+    return mapOrder(order)
+  },
+
+  async listMemberOrders(event) {
+    const result = await collections.orders.where({ memberId: event.memberId }).limit(200).get()
+    return sortOrdersDesc(result.data.map(mapOrder))
+  },
+
+  async listAllOrders(event) {
+    const { page, pageSize, skip } = parsePagination(event)
+
+    const countResult = await collections.orders.count()
+    const total = countResult.total
+
+    const result = await collections.orders
+      .orderBy('createdAt', 'desc')
+      .skip(skip)
+      .limit(pageSize)
+      .get()
+
+    return {
+      items: result.data.map(mapOrder),
+      total,
+      page,
+      pageSize,
+    }
+  },
+
+  async updateOrderStatus(event) {
+    const nextStatus = event.status === 'completed' ? 'completed' : 'submitted'
+    await collections.orders.where({ id: event.orderId }).update({
+      data: { status: nextStatus },
+    })
+
+    const result = await collections.orders.where({ id: event.orderId }).limit(1).get()
+    return mapOrder(result.data[0])
+  },
+
+  // --- 营业状态 ---
+
+  async getBusinessStatus() {
+    const result = await collections.config.where({ key: BUSINESS_STATUS_KEY }).limit(1).get()
+    if (result.data.length === 0) {
+      return { open: true }
+    }
+    return { open: !!result.data[0].open }
+  },
+
+  async setBusinessStatus(event) {
+    const open = !!event.open
+    const existing = await collections.config.where({ key: BUSINESS_STATUS_KEY }).limit(1).get()
+    if (existing.data.length === 0) {
+      await collections.config.add({
+        data: { key: BUSINESS_STATUS_KEY, open, updatedAt: new Date().toISOString() },
+      })
+    } else {
+      await collections.config.where({ key: BUSINESS_STATUS_KEY }).update({
+        data: { open, updatedAt: new Date().toISOString() },
+      })
+    }
+    return { open }
+  },
+
+  // --- 统计 ---
+
+  async getOrderStats() {
+    const result = await collections.orders.limit(100).orderBy('createdAt', 'desc').get()
+    const orders = result.data.map(mapOrder)
+
+    const revenue = orders.reduce((sum, order) => sum + order.total, 0)
+    const completedCount = orders.filter((order) => order.status === 'completed').length
+    const submittedCount = orders.filter((order) => order.status === 'submitted').length
+
+    const dishSales = {}
+    orders.forEach((order) => {
+      order.items.forEach((item) => {
+        if (!dishSales[item.dishId]) {
+          dishSales[item.dishId] = { dishId: item.dishId, name: item.name, quantity: 0, revenue: 0 }
+        }
+        dishSales[item.dishId].quantity += item.quantity
+        dishSales[item.dishId].revenue += item.subtotal
+      })
+    })
+
+    const topDishes = Object.values(dishSales)
+      .map((dish) => ({
+        ...dish,
+        revenue: Number(dish.revenue.toFixed(2)),
+      }))
+      .sort((left, right) => right.quantity - left.quantity)
+      .slice(0, 10)
+
+    return {
+      totalOrders: orders.length,
+      completedCount,
+      submittedCount,
+      revenue: Number(revenue.toFixed(2)),
+      topDishes,
+    }
+  },
 }
+
+// ============================
+// 需要管理员鉴权的 action
+// ============================
+
+const ADMIN_ONLY = new Set([
+  'changeAdminPassword',
+  'saveDish',
+  'deleteDish',
+  'deleteMember',
+  'updateOrderStatus',
+  'setBusinessStatus',
+])
+
+// ============================
+// 主入口
+// ============================
 
 exports.main = async (event = {}) => {
   const { action } = event
+  const handler = actions[action]
+
+  if (!handler) {
+    return fail('unknown action')
+  }
 
   try {
-    switch (action) {
-      case 'verifyAdmin': {
-        log(action, 'password check')
-        return ok(await verifyAdmin(event))
+    if (ADMIN_ONLY.has(action)) {
+      const expectedToken = await ensureAdminConfig()
+      if ((event.adminToken || '') !== expectedToken) {
+        log(action, 'unauthorized')
+        return fail('未授权的管理操作')
       }
-
-      case 'changeAdminPassword': {
-        log(action, 'password change')
-        return ok(await changeAdminPassword(event))
-      }
-
-      case 'bootstrap': {
-        log(action, 'seed dishes')
-        return ok(await ensureSeedDishes(event.dishes || []))
-      }
-
-      case 'syncVisitor': {
-        log(action, `visitor ${event.nickname || ''}`)
-        return ok(await syncVisitor(event))
-      }
-
-      case 'listDishes': {
-        return ok(await fetchDishes())
-      }
-
-      case 'saveDish': {
-        const config = await ensureAdminConfig()
-        if (event.adminToken !== config) {
-          return fail('未授权的管理操作')
-        }
-        log(action, `dish ${event.dish ? event.dish.id : ''}`)
-        return ok(await saveDish(event.dish || {}))
-      }
-
-      case 'deleteDish': {
-        const config = await ensureAdminConfig()
-        if (event.adminToken !== config) {
-          return fail('未授权的管理操作')
-        }
-        log(action, `dish ${event.dishId}`)
-        return ok(await deleteDish(event.dishId))
-      }
-
-      case 'listMembers': {
-        return ok(await listMembers())
-      }
-
-      case 'deleteMember': {
-        const config = await ensureAdminConfig()
-        if (event.adminToken !== config) {
-          return fail('未授权的管理操作')
-        }
-        log(action, `member ${event.memberId}`)
-        return ok(await deleteMember(event.memberId))
-      }
-
-      case 'listMemberOrders': {
-        return ok(await listMemberOrders(event.memberId))
-      }
-
-      case 'updateOrderStatus': {
-        const config = await ensureAdminConfig()
-        if (event.adminToken !== config) {
-          return fail('未授权的管理操作')
-        }
-        log(action, `order ${event.orderId} -> ${event.status}`)
-        return ok(await updateOrderStatus(event.orderId, event.status))
-      }
-
-      case 'createOrder': {
-        log(action, `member ${event.memberId}`)
-        return ok(await createOrder(event))
-      }
-
-      default:
-        return fail('unknown action')
     }
+
+    log(action, 'start')
+    const result = await handler(event)
+    log(action, 'done')
+    return ok(result)
   } catch (error) {
     log(action, `error: ${error.message}`)
     return fail(error.message || 'cloud error')
