@@ -1,4 +1,5 @@
 const cloud = require('wx-server-sdk')
+const crypto = require('crypto')
 
 cloud.init({
   env: cloud.DYNAMIC_CURRENT_ENV,
@@ -10,6 +11,63 @@ const collections = {
   dishes: db.collection('dishes'),
   members: db.collection('members'),
   orders: db.collection('orders'),
+  config: db.collection('config'),
+}
+
+const ADMIN_PASSWORD_KEY = 'adminPassword'
+const DEFAULT_ADMIN_PASSWORD = 'orander2026'
+
+const hashPassword = (password) => {
+  return crypto.createHash('sha256').update(`orander-salt::${password}`).digest('hex')
+}
+
+const ensureAdminConfig = async () => {
+  const existing = await collections.config.where({ key: ADMIN_PASSWORD_KEY }).limit(1).get()
+  if (existing.data.length === 0) {
+    await collections.config.add({
+      data: {
+        key: ADMIN_PASSWORD_KEY,
+        value: hashPassword(DEFAULT_ADMIN_PASSWORD),
+        updatedAt: new Date().toISOString(),
+      },
+    })
+  }
+
+  const result = await collections.config.where({ key: ADMIN_PASSWORD_KEY }).limit(1).get()
+  return result.data[0].value
+}
+
+const verifyAdmin = async ({ password = '' }) => {
+  const storedHash = await ensureAdminConfig()
+  if (hashPassword(password) !== storedHash) {
+    throw new Error('密码错误')
+  }
+
+  return { adminToken: storedHash }
+}
+
+const changeAdminPassword = async ({ adminToken = '', newPassword = '' }) => {
+  const storedHash = await ensureAdminConfig()
+  if (adminToken !== storedHash) {
+    throw new Error('未授权')
+  }
+
+  if (!newPassword.trim()) {
+    throw new Error('密码不能为空')
+  }
+
+  const newHash = hashPassword(newPassword)
+  await collections.config.where({ key: ADMIN_PASSWORD_KEY }).update({
+    data: { value: newHash, updatedAt: new Date().toISOString() },
+  })
+
+  return { adminToken: newHash }
+}
+
+const requireAdmin = (event) => {
+  if (!event.adminToken || event.adminToken !== event._expectedAdminToken) {
+    throw new Error('未授权的管理操作')
+  }
 }
 
 const mapDish = (doc = {}) => ({
@@ -59,7 +117,7 @@ const sortDishes = (dishes) => {
       return String(left.category).localeCompare(String(right.category), 'zh-Hans-CN')
     }
 
-    return String(left.name).localeCompare(String(right.name))
+    return String(left.name).localeCompare(right.name)
   })
 }
 
@@ -71,6 +129,10 @@ const sortMembers = (members) => {
 
 const ok = (data) => ({ ok: true, data })
 const fail = (message) => ({ ok: false, data: null, message })
+
+const log = (action, message) => {
+  console.log(`[orander:${action}] ${message}`)
+}
 
 const fetchDishes = async () => {
   const result = await collections.dishes.limit(100).get()
@@ -205,23 +267,12 @@ const listMemberOrders = async (memberId) => {
 
 const updateOrderStatus = async (orderId, status) => {
   const nextStatus = status === 'completed' ? 'completed' : 'submitted'
-  const result = await collections.orders.where({ id: orderId }).limit(1).get()
-  if (!result.data.length) {
-    throw new Error('order not found')
-  }
-
-  const nextOrder = {
-    ...result.data[0],
-    status: nextStatus,
-  }
-
   await collections.orders.where({ id: orderId }).update({
-    data: {
-      status: nextStatus,
-    },
+    data: { status: nextStatus },
   })
 
-  return mapOrder(nextOrder)
+  const result = await collections.orders.where({ id: orderId }).limit(1).get()
+  return mapOrder(result.data[0])
 }
 
 exports.main = async (event = {}) => {
@@ -229,30 +280,84 @@ exports.main = async (event = {}) => {
 
   try {
     switch (action) {
-      case 'bootstrap':
+      case 'verifyAdmin': {
+        log(action, 'password check')
+        return ok(await verifyAdmin(event))
+      }
+
+      case 'changeAdminPassword': {
+        log(action, 'password change')
+        return ok(await changeAdminPassword(event))
+      }
+
+      case 'bootstrap': {
+        log(action, 'seed dishes')
         return ok(await ensureSeedDishes(event.dishes || []))
-      case 'syncVisitor':
+      }
+
+      case 'syncVisitor': {
+        log(action, `visitor ${event.nickname || ''}`)
         return ok(await syncVisitor(event))
-      case 'listDishes':
+      }
+
+      case 'listDishes': {
         return ok(await fetchDishes())
-      case 'saveDish':
+      }
+
+      case 'saveDish': {
+        const config = await ensureAdminConfig()
+        if (event.adminToken !== config) {
+          return fail('未授权的管理操作')
+        }
+        log(action, `dish ${event.dish ? event.dish.id : ''}`)
         return ok(await saveDish(event.dish || {}))
-      case 'deleteDish':
+      }
+
+      case 'deleteDish': {
+        const config = await ensureAdminConfig()
+        if (event.adminToken !== config) {
+          return fail('未授权的管理操作')
+        }
+        log(action, `dish ${event.dishId}`)
         return ok(await deleteDish(event.dishId))
-      case 'listMembers':
+      }
+
+      case 'listMembers': {
         return ok(await listMembers())
-      case 'deleteMember':
+      }
+
+      case 'deleteMember': {
+        const config = await ensureAdminConfig()
+        if (event.adminToken !== config) {
+          return fail('未授权的管理操作')
+        }
+        log(action, `member ${event.memberId}`)
         return ok(await deleteMember(event.memberId))
-      case 'listMemberOrders':
+      }
+
+      case 'listMemberOrders': {
         return ok(await listMemberOrders(event.memberId))
-      case 'updateOrderStatus':
+      }
+
+      case 'updateOrderStatus': {
+        const config = await ensureAdminConfig()
+        if (event.adminToken !== config) {
+          return fail('未授权的管理操作')
+        }
+        log(action, `order ${event.orderId} -> ${event.status}`)
         return ok(await updateOrderStatus(event.orderId, event.status))
-      case 'createOrder':
+      }
+
+      case 'createOrder': {
+        log(action, `member ${event.memberId}`)
         return ok(await createOrder(event))
+      }
+
       default:
         return fail('unknown action')
     }
   } catch (error) {
+    log(action, `error: ${error.message}`)
     return fail(error.message || 'cloud error')
   }
 }

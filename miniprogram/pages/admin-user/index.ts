@@ -1,5 +1,5 @@
 import { fetchCloudMemberOrders, initCloud, updateCloudOrderStatus } from '../../utils/cloud'
-import { formatMoney, formatShortDate, getAvatarStyle, getMembers, getMonogram, getOrdersByMemberId, isAdminSession, updateOrderStatus } from '../../utils/orander'
+import { formatMoney, formatShortDate, getAdminToken, getAvatarStyle, getMembers, getMonogram, getOrdersByMemberId, isAdminSession, updateOrderStatus } from '../../utils/orander'
 
 Page({
   data: {
@@ -96,7 +96,7 @@ Page({
         }
 
         if (initCloud()) {
-          await updateCloudOrderStatus(orderId, 'completed')
+          await updateCloudOrderStatus(orderId, 'completed', getAdminToken())
         }
 
         await this.refreshOrders(this.data.memberId)

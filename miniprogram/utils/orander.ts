@@ -99,6 +99,7 @@ export interface SessionUser {
   avatarUrl: string
   loginCode: string
   loggedInAt: string
+  adminToken?: string
 }
 
 const STORAGE_KEYS = {
@@ -110,8 +111,6 @@ const STORAGE_KEYS = {
   session: 'orander-session',
   lastOrderId: 'orander-last-order-id',
 }
-
-export const ADMIN_PASSWORD = 'admin'
 
 export const DEFAULT_AVATAR_URL = ''
 
@@ -547,6 +546,11 @@ export const isAdminSession = () => {
   return !!session && session.role === 'admin'
 }
 
+export const getAdminToken = () => {
+  const session = getSession()
+  return session && session.role === 'admin' ? session.adminToken || '' : ''
+}
+
 export const clearSession = (clearCurrentUser = false) => {
   removeStorage(STORAGE_KEYS.session)
   removeStorage(STORAGE_KEYS.lastOrderId)
@@ -558,7 +562,7 @@ export const clearSession = (clearCurrentUser = false) => {
 }
 
 export const verifyAdminPassword = (password: string) => {
-  return password.trim() === ADMIN_PASSWORD
+  return password.trim().length > 0
 }
 
 export const saveSession = (session: SessionUser) => {
@@ -610,7 +614,7 @@ export const loginVisitor = (profile?: Partial<WechatMiniprogram.UserInfo>, logi
   })
 }
 
-export const loginAdmin = (profile?: Partial<WechatMiniprogram.UserInfo>, loginCode = '') => {
+export const loginAdmin = (profile?: Partial<WechatMiniprogram.UserInfo>, loginCode = '', adminToken?: string) => {
   const identity = buildProfileIdentity(profile, 'Admin')
 
   return saveSession({
@@ -619,6 +623,7 @@ export const loginAdmin = (profile?: Partial<WechatMiniprogram.UserInfo>, loginC
     avatarUrl: identity.avatarUrl,
     loginCode,
     loggedInAt: new Date().toISOString(),
+    adminToken,
   })
 }
 

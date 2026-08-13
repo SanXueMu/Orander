@@ -1,4 +1,4 @@
-import { initCloud, syncVisitorMemberCloud } from '../../utils/cloud'
+import { initCloud, syncVisitorMemberCloud, verifyAdminCloud } from '../../utils/cloud'
 import {
   clearCart,
   clearSession,
@@ -150,7 +150,19 @@ Page({
     this.setData({ busy: false })
 
     if (this.data.activeRole === 'admin') {
-      loginAdmin(userInfo, loginCode)
+      let adminToken: string | undefined
+      if (initCloud()) {
+        const result = await verifyAdminCloud(this.data.adminPassword)
+        if (!result) {
+          wx.showToast({
+            title: '密码错误',
+            icon: 'none',
+          })
+          return
+        }
+        adminToken = result.adminToken
+      }
+      loginAdmin(userInfo, loginCode, adminToken)
       wx.reLaunch({
         url: '/pages/admin/index',
       })

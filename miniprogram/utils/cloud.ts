@@ -11,6 +11,8 @@ import {
 import type { ContactCard, Dish, Member, Order, OrderItem } from './orander'
 
 type OranderAction =
+  | 'verifyAdmin'
+  | 'changeAdminPassword'
   | 'bootstrap'
   | 'syncVisitor'
   | 'listDishes'
@@ -87,6 +89,14 @@ const callOrander = async <T>(action: OranderAction, payload: Record<string, unk
   }
 }
 
+export const verifyAdminCloud = async (password: string) => {
+  return callOrander<{ adminToken: string }>('verifyAdmin', { password })
+}
+
+export const changeAdminPasswordCloud = async (adminToken: string, newPassword: string) => {
+  return callOrander<{ adminToken: string }>('changeAdminPassword', { adminToken, newPassword })
+}
+
 export const bootstrapCloudMenu = async () => {
   const dishes = await callOrander<Dish[]>('bootstrap', {
     dishes: getDishes(),
@@ -132,8 +142,8 @@ export const fetchCloudDishes = async () => {
   return dishes
 }
 
-export const saveDishCloud = async (dish: Dish) => {
-  return callOrander<Dish>('saveDish', { dish })
+export const saveDishCloud = async (dish: Dish, adminToken: string) => {
+  return callOrander<Dish>('saveDish', { dish, adminToken })
 }
 
 const resolveCloudImagePath = async (dish: Dish) => {
@@ -152,7 +162,7 @@ const resolveCloudImagePath = async (dish: Dish) => {
   return result.fileID || image
 }
 
-export const publishLocalDishesToCloud = async () => {
+export const publishLocalDishesToCloud = async (adminToken: string) => {
   if (!canUseCloud()) {
     return null
   }
@@ -167,7 +177,7 @@ export const publishLocalDishesToCloud = async () => {
       image: cloudImage,
     })
 
-    const savedDish = await saveDishCloud(nextDish)
+    const savedDish = await saveDishCloud(nextDish, adminToken)
     if (savedDish) {
       publishedDishes.push(savedDish)
     }
@@ -177,8 +187,8 @@ export const publishLocalDishesToCloud = async () => {
   return publishedDishes
 }
 
-export const deleteDishCloud = async (dishId: string) => {
-  const result = await callOrander<{ id: string }>('deleteDish', { dishId })
+export const deleteDishCloud = async (dishId: string, adminToken: string) => {
+  const result = await callOrander<{ id: string }>('deleteDish', { dishId, adminToken })
   return !!result
 }
 
@@ -193,8 +203,8 @@ export const fetchCloudMembers = async () => {
   return members
 }
 
-export const deleteMemberCloud = async (memberId: string) => {
-  const result = await callOrander<{ id: string }>('deleteMember', { memberId })
+export const deleteMemberCloud = async (memberId: string, adminToken: string) => {
+  const result = await callOrander<{ id: string }>('deleteMember', { memberId, adminToken })
   return !!result
 }
 
@@ -202,8 +212,8 @@ export const fetchCloudMemberOrders = async (memberId: string) => {
   return callOrander<Order[]>('listMemberOrders', { memberId })
 }
 
-export const updateCloudOrderStatus = async (orderId: string, status: 'submitted' | 'completed') => {
-  const order = await callOrander<Order>('updateOrderStatus', { orderId, status })
+export const updateCloudOrderStatus = async (orderId: string, status: 'submitted' | 'completed', adminToken: string) => {
+  const order = await callOrander<Order>('updateOrderStatus', { orderId, status, adminToken })
   if (order) {
     cacheOrder(order)
   }

@@ -7,6 +7,7 @@ import {
   formatMoney,
   formatShortDate,
   getAvatarStyle,
+  getAdminToken,
   getContactCards,
   getDishCoverStyle,
   getDishes,
@@ -183,7 +184,7 @@ Page({
         wx.showLoading({ title: '发布中' })
 
         try {
-          const dishes = await publishLocalDishesToCloud()
+          const dishes = await publishLocalDishesToCloud(getAdminToken())
           if (!dishes) {
             wx.showToast({
               title: '发布失败',
@@ -261,7 +262,7 @@ Page({
 
         deleteMember(memberId)
         if (initCloud()) {
-          await deleteMemberCloud(memberId)
+          await deleteMemberCloud(memberId, getAdminToken())
           await fetchCloudMembers()
         }
 
