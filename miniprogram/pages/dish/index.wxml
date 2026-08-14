@@ -62,10 +62,32 @@
           </block>
           <block wx:else>
             <view class="menu-cover" style="{{item.coverStyle}}">
-              <view class="menu-cover-kicker">MENU</view>
+              <view class="food-icon">
+                <block wx:if="{{item.foodIcon === 'cup'}}">
+                  <view class="food-cup"></view>
+                  <view class="food-cup-handle"></view>
+                  <view class="food-cup-saucer"></view>
+                </block>
+                <block wx:elif="{{item.foodIcon === 'plate'}}">
+                  <view class="food-plate-ring"></view>
+                  <view class="food-plate-core"></view>
+                </block>
+                <block wx:else>
+                  <view class="food-steam">
+                    <view class="food-steam-line"></view>
+                    <view class="food-steam-line"></view>
+                  </view>
+                  <view class="food-bowl"></view>
+                  <view class="food-bowl-foot"></view>
+                </block>
+              </view>
               <view class="menu-cover-name">{{item.name}}</view>
             </view>
           </block>
+
+          <view wx:if="{{item.soldOut}}" class="menu-soldout-mask">
+            <view class="menu-soldout-tag">售罄</view>
+          </view>
 
           <view class="menu-content">
             <view class="menu-line-top">
@@ -76,8 +98,7 @@
             <view class="menu-dish-description">{{item.description}}</view>
 
             <view class="menu-line-bottom menu-card-footer">
-              <view wx:if="{{item.soldOut}}" class="menu-soldout">已售罄</view>
-              <dish-stepper wx:else variant="menu" quantity="{{item.quantity}}" dish-id="{{item.id}}" bind:minus="decreaseDish" bind:plus="increaseDish" />
+              <dish-stepper wx:if="{{!item.soldOut}}" variant="menu" quantity="{{item.quantity}}" dish-id="{{item.id}}" bind:minus="decreaseDish" bind:plus="increaseDish" />
             </view>
           </view>
         </view>
@@ -90,6 +111,17 @@
       </view>
     </view>
   </scroll-view>
+
+  <view wx:if="{{cartCount > 0}}" class="settle-bar" hover-class="press-deep" hover-stay-time="60" bindtap="tapSettle">
+    <view class="settle-total">
+      <view class="settle-total-label">合计</view>
+      <view class="settle-total-amount num">{{cartTotalText}}</view>
+    </view>
+    <view class="settle-cta {{businessLoaded && !businessOpen ? 'settle-cta-disabled' : ''}}">
+      <view>去结算</view>
+      <view class="settle-count num">{{cartCount}}</view>
+    </view>
+  </view>
 
   <visitor-tab-bar active="menu"></visitor-tab-bar>
 </view>

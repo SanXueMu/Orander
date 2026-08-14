@@ -30,6 +30,22 @@ const resolveDishId = (event: WechatMiniprogram.BaseEvent) => {
   return (detail && detail.id) || (event.currentTarget.dataset.id as string)
 }
 
+const FOOD_ICON_RULES: Array<[string, string]> = [
+  ['饮', 'cup'], ['茶', 'cup'], ['咖', 'cup'], ['酒', 'cup'], ['水', 'cup'], ['奶', 'cup'], ['汁', 'cup'], ['浆', 'cup'], ['甜品', 'cup'],
+  ['面', 'bowl'], ['粉', 'bowl'], ['饭', 'bowl'], ['粥', 'bowl'], ['包', 'bowl'], ['饺', 'bowl'], ['汤', 'bowl'], ['锅', 'bowl'], ['主食', 'bowl'],
+  ['凉', 'plate'], ['沙拉', 'plate'], ['卤', 'plate'], ['腌', 'plate'], ['素', 'plate'],
+]
+
+const classifyFoodIcon = (category: string) => {
+  for (const [keyword, icon] of FOOD_ICON_RULES) {
+    if (category.indexOf(keyword) >= 0) {
+      return icon
+    }
+  }
+
+  return 'bowl'
+}
+
 const buildMenuDishes = (category: string, keyword: string) => {
   const cartMap = new Map(getCart().map((item) => [item.dishId, item.quantity]))
   const search = keyword.trim().toLowerCase()
@@ -41,6 +57,7 @@ const buildMenuDishes = (category: string, keyword: string) => {
       ...dish,
       quantity: cartMap.get(dish.id) || 0,
       coverStyle: getDishCoverStyle(dish.id),
+      foodIcon: classifyFoodIcon(dish.category),
       priceText: formatMoney(dish.price),
     }))
 }
@@ -210,5 +227,17 @@ Page({
     wx.redirectTo({
       url: '/pages/orders/index',
     })
+  },
+
+  tapSettle() {
+    if (this.data.businessLoaded && !this.data.businessOpen) {
+      wx.showToast({
+        title: '今日暂停营业，暂不能下单',
+        icon: 'none',
+      })
+      return
+    }
+
+    this.goBill()
   },
 })

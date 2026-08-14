@@ -16,19 +16,21 @@
       </view>
 
       <view wx:if="{{lines.length}}" class="list-gap bill-list">
-        <view wx:for="{{lines}}" wx:key="dishId" class="surface cart-line">
-          <view class="cart-line-image" style="{{item.coverStyle}}">
-            <view class="cart-line-art">{{item.dish.name}}</view>
-          </view>
-          <view class="cart-line-copy">
-            <view class="cart-line-header">
-              <view class="cart-line-name">{{item.dish.name}}</view>
-              <view class="num cart-line-price">{{item.subtotalText}}</view>
+        <view wx:for="{{lines}}" wx:key="dishId" class="swipe-shell" data-id="{{item.dishId}}" bindtouchstart="onLineTouchStart" bindtouchend="onLineTouchEnd">
+          <view class="swipe-delete" data-id="{{item.dishId}}" bindtap="removeLine">删除</view>
+          <view class="surface cart-line swipe-content {{swipedLineId === item.dishId ? 'swipe-open' : ''}}">
+            <view class="cart-line-image" style="{{item.coverStyle}}">
+              <view class="cart-line-art">{{item.dish.name}}</view>
             </view>
-            <view class="cart-line-desc">{{item.dish.category}}</view>
-            <view class="cart-line-actions">
-              <dish-stepper variant="line" quantity="{{item.quantity}}" dish-id="{{item.dishId}}" bind:minus="decreaseQuantity" bind:plus="increaseQuantity" />
-              <view class="line-remove" data-id="{{item.dishId}}" bindtap="removeLine">删除</view>
+            <view class="cart-line-copy">
+              <view class="cart-line-header">
+                <view class="cart-line-name">{{item.dish.name}}</view>
+                <view class="num cart-line-price">{{item.subtotalText}}</view>
+              </view>
+              <view class="cart-line-desc">{{item.dish.category}}</view>
+              <view class="cart-line-actions">
+                <dish-stepper variant="line" quantity="{{item.quantity}}" dish-id="{{item.dishId}}" bind:minus="decreaseQuantity" bind:plus="increaseQuantity" />
+              </view>
             </view>
           </view>
         </view>
@@ -38,16 +40,6 @@
           <input class="field-input {{noteFocused ? 'field-focused' : ''}}" placeholder="口味偏好、忌口或上菜要求（选填）" value="{{note}}" maxlength="60" bindinput="onNoteInput" bindfocus="onNoteFocus" bindblur="onNoteBlur" />
         </view>
 
-        <view class="surface summary-card">
-          <view class="summary-row">
-            <view class="summary-title">合计</view>
-            <view class="num summary-amount">{{totalText}}</view>
-          </view>
-          <view class="button-row summary-buttons">
-            <view hover-class="press-scale" hover-stay-time="60" class="button-ghost summary-button" bindtap="backMenu">继续选菜</view>
-            <view hover-class="press-scale" hover-stay-time="60" class="button-primary summary-button" bindtap="submitOrder">下单</view>
-          </view>
-        </view>
       </view>
 
       <view wx:else class="surface empty-state empty-cart">
@@ -57,4 +49,17 @@
       </view>
     </view>
   </scroll-view>
+
+  <view wx:if="{{lines.length}}" class="bill-footer-fixed">
+    <view class="surface summary-card">
+      <view class="summary-row">
+        <view class="summary-title">合计</view>
+        <view class="num summary-amount">{{totalText}}</view>
+      </view>
+      <view class="button-row summary-buttons">
+        <view hover-class="press-scale" hover-stay-time="60" class="button-ghost summary-button" bindtap="backMenu">继续选菜</view>
+        <view hover-class="press-scale" hover-stay-time="60" class="button-primary summary-button" bindtap="submitOrder">下单</view>
+      </view>
+    </view>
+  </view>
 </view>

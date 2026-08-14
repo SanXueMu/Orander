@@ -163,3 +163,47 @@
 .note-card {
   padding: 24rpx 28rpx;
 }
+
+/* ========== D3：滑动删除 + 吸底合计 ========== */
+
+.swipe-shell {
+  position: relative;
+  overflow: hidden;
+  border-radius: 28rpx;
+}
+
+.swipe-delete {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 132rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--danger);
+  color: #fff;
+  font-size: 26rpx;
+  font-weight: 600;
+}
+
+.swipe-content {
+  position: relative;
+  transition: transform 0.2s ease;
+}
+
+.swipe-open {
+  transform: translateX(-132rpx);
+}
+
+.bill-footer-fixed {
+  position: fixed;
+  left: 24rpx;
+  right: 24rpx;
+  bottom: calc(24rpx + env(safe-area-inset-bottom));
+  z-index: 30;
+}
+
+.cart-page-body {
+  padding-bottom: 320rpx;
+}

@@ -29,6 +29,10 @@ Page({
   data: {
     nickname: '访客',
     note: '',
+    noteFocused: false,
+    swipedLineId: '',
+    touchStartX: 0,
+    touchStartY: 0,
     submitting: false,
     lines: [] as CartLineView[],
     totalText: formatMoney(0),
@@ -92,6 +96,40 @@ Page({
     this.refreshPage()
   },
 
+  onLineTouchStart(event: WechatMiniprogram.TouchEvent) {
+    const touch = event.changedTouches[0]
+    this.setData({
+      touchStartX: touch ? touch.clientX : 0,
+      touchStartY: touch ? touch.clientY : 0,
+    })
+  },
+
+  onLineTouchEnd(event: WechatMiniprogram.TouchEvent) {
+    const touch = event.changedTouches[0]
+    const endX = touch ? touch.clientX : 0
+    const endY = touch ? touch.clientY : 0
+    const deltaX = endX - this.data.touchStartX
+    const deltaY = endY - this.data.touchStartY
+    const lineId = event.currentTarget.dataset.id as string
+
+    if (Math.abs(deltaY) > Math.abs(deltaX)) {
+      return
+    }
+
+    if (deltaX < -36) {
+      this.setData({
+        swipedLineId: lineId,
+      })
+      return
+    }
+
+    if (deltaX > 20 || this.data.swipedLineId === lineId) {
+      this.setData({
+        swipedLineId: '',
+      })
+    }
+  },
+
   removeLine(event: WechatMiniprogram.BaseEvent) {
     const dishId = event.currentTarget.dataset.id as string
     const line = buildCartLines().find((item) => item.dishId === dishId)
@@ -108,6 +146,7 @@ Page({
         }
 
         removeFromCart(dishId)
+        this.setData({ swipedLineId: '' })
         this.refreshPage()
       },
     })

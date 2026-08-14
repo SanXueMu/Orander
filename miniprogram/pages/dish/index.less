@@ -243,3 +243,230 @@
 .menu-body .business-banner {
   margin-bottom: 20rpx;
 }
+
+/* ========== D3：菜单页重构 ========== */
+
+/* 大封面 + 居中插画 */
+.menu-cover {
+  height: 240rpx;
+  align-items: center;
+  justify-content: center;
+  gap: 14rpx;
+}
+
+.menu-cover-name {
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* 食物符号插画（白色，叠在渐变上） */
+.food-icon {
+  position: relative;
+  width: 120rpx;
+  height: 120rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.food-steam {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 22rpx;
+}
+
+.food-steam-line {
+  width: 6rpx;
+  height: 26rpx;
+  border-radius: 6rpx;
+  background: rgba(255, 255, 255, 0.85);
+}
+
+.food-bowl {
+  width: 108rpx;
+  height: 54rpx;
+  border-radius: 8rpx 8rpx 54rpx 54rpx;
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.food-bowl-foot {
+  width: 42rpx;
+  height: 10rpx;
+  border-radius: 0 0 10rpx 10rpx;
+  background: rgba(255, 255, 255, 0.72);
+  margin-top: 4rpx;
+}
+
+.food-cup {
+  width: 66rpx;
+  height: 76rpx;
+  border-radius: 10rpx 10rpx 26rpx 26rpx;
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.food-cup-handle {
+  position: absolute;
+  right: 8rpx;
+  top: 30rpx;
+  width: 26rpx;
+  height: 26rpx;
+  border: 9rpx solid rgba(255, 255, 255, 0.85);
+  border-radius: 50%;
+  box-sizing: border-box;
+}
+
+.food-cup-saucer {
+  width: 92rpx;
+  height: 10rpx;
+  border-radius: 6rpx;
+  background: rgba(255, 255, 255, 0.72);
+  margin-top: 6rpx;
+}
+
+.food-plate-ring {
+  width: 106rpx;
+  height: 106rpx;
+  border-radius: 50%;
+  border: 12rpx solid rgba(255, 255, 255, 0.9);
+  box-sizing: border-box;
+  margin-bottom: 7rpx;
+}
+
+.food-plate-core {
+  position: absolute;
+  top: 36rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+}
+
+/* 售罄整卡蒙层 */
+.menu-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.menu-soldout-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 28rpx;
+  background: rgba(20, 12, 6, 0.45);
+  backdrop-filter: blur(1px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+}
+
+.menu-soldout-tag {
+  padding: 14rpx 36rpx;
+  border-radius: 999rpx;
+  border: 2rpx solid rgba(255, 255, 255, 0.9);
+  color: #fff;
+  font-size: 26rpx;
+  font-weight: 600;
+  letter-spacing: 6rpx;
+}
+
+/* 文字层级加重 */
+.menu-dish-name {
+  font-size: 30rpx;
+}
+
+.menu-dish-price {
+  font-size: 30rpx;
+  color: var(--accent-deep);
+}
+
+/* 分类条吸顶 */
+.menu-category-strip {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--page-bg);
+}
+
+/* 吸底结算条 */
+.settle-bar {
+  position: fixed;
+  left: 32rpx;
+  right: 32rpx;
+  bottom: calc(164rpx + env(safe-area-inset-bottom));
+  height: 100rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 14rpx 0 34rpx;
+  border-radius: 999rpx;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  box-shadow: 0 24rpx 56rpx rgba(43, 29, 18, 0.18);
+  z-index: 29;
+  transition: transform 0.15s ease;
+}
+
+.settle-total {
+  display: flex;
+  align-items: baseline;
+  gap: 12rpx;
+}
+
+.settle-total-label {
+  font-size: 22rpx;
+  color: var(--muted);
+}
+
+.settle-total-amount {
+  font-size: 38rpx;
+  font-weight: 800;
+  color: var(--accent-deep);
+}
+
+.settle-cta {
+  min-width: 210rpx;
+  height: 72rpx;
+  padding: 0 30rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 999rpx;
+  font-size: 28rpx;
+  font-weight: 700;
+}
+
+.settle-cta-disabled {
+  background: var(--muted);
+}
+
+.settle-count {
+  min-width: 36rpx;
+  height: 36rpx;
+  padding: 0 8rpx;
+  border-radius: 999rpx;
+  background: rgba(255, 255, 255, 0.26);
+  font-size: 22rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 菜单页底部留白（结算条+dock） */
+.menu-body {
+  padding-bottom: 340rpx;
+}
