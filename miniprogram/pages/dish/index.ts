@@ -1,4 +1,4 @@
-import { fetchCloudDishes, initCloud } from '../../utils/cloud'
+import { fetchCloudDishes, getBusinessStatusCloud, initCloud } from '../../utils/cloud'
 import {
   addToCart,
   cleanSoldOutFromCart,
@@ -45,6 +45,16 @@ const buildMenuDishes = (category: string, keyword: string) => {
     }))
 }
 
+const WEEKDAYS = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
+
+const buildGreeting = () => {
+  const now = new Date()
+  const hour = now.getHours()
+  const greeting = hour < 6 ? '夜深了' : hour < 11 ? '早上好' : hour < 14 ? '中午好' : hour < 18 ? '下午好' : '晚上好'
+  const dateText = `${now.getMonth() + 1}月${now.getDate()}日 ${WEEKDAYS[now.getDay()]}`
+  return { greetingText: greeting, dateText }
+}
+
 Page({
   behaviors: [pageLookBehavior],
 
@@ -55,6 +65,10 @@ Page({
   data: {
     nickname: '访客',
     menuLoading: true,
+    greetingText: '你好',
+    dateText: '',
+    businessOpen: true,
+    businessLoaded: false,
     categories: ['全部'],
     activeCategory: '全部',
     searchKeyword: '',
@@ -71,9 +85,17 @@ Page({
       return
     }
 
+    this.setData(buildGreeting())
+
     if (initCloud()) {
       this.setData({ menuLoading: true })
       await fetchCloudDishes()
+
+      getBusinessStatusCloud().then((status) => {
+        if (status) {
+          this.setData({ businessOpen: status.open, businessLoaded: true })
+        }
+      })
     }
 
     const removed = cleanSoldOutFromCart()
@@ -181,6 +203,12 @@ Page({
   goBill() {
     wx.navigateTo({
       url: '/pages/cart/index',
+    })
+  },
+
+  goOrders() {
+    wx.redirectTo({
+      url: '/pages/orders/index',
     })
   },
 })

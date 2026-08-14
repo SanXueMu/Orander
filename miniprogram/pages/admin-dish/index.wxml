@@ -1,6 +1,6 @@
 <view class="orander-page {{themeClass}} {{fontClass}}">
   <navigation-bar color="{{navColor}}" background="{{navBackground}}">
-    <view slot="center" class="nav-black-pill">{{editing ? '编辑菜品' : '新增菜品'}}</view>
+    <view slot="center" class="nav-title">{{editing ? '编辑菜品' : '新增菜品'}}</view>
   </navigation-bar>
 
   <scroll-view class="page-scroll" scroll-y>

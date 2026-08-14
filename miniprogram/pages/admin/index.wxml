@@ -1,6 +1,6 @@
 <view class="orander-page {{themeClass}} {{fontClass}} admin-page">
   <navigation-bar color="{{navColor}}" background="{{navBackground}}">
-    <view slot="center" class="nav-black-pill">管理</view>
+    <view slot="center" class="nav-title">管理</view>
   </navigation-bar>
 
   <scroll-view class="page-scroll" scroll-y>

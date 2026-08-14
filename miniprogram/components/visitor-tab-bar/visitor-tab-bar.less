@@ -1,30 +1,37 @@
 .visitor-tabbar {
   position: fixed;
-  left: 24rpx;
-  right: 24rpx;
-  bottom: 24rpx;
-  height: 104rpx;
-  padding: 0 18rpx;
+  left: 32rpx;
+  right: 32rpx;
+  bottom: calc(24rpx + env(safe-area-inset-bottom));
+  height: 110rpx;
+  padding: 12rpx 14rpx;
   display: flex;
   align-items: center;
-  gap: 16rpx;
+  gap: 12rpx;
+  border-radius: 999rpx;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  box-shadow: 0 24rpx 56rpx rgba(43, 29, 18, 0.16);
   z-index: 30;
 }
 
 .visitor-tab {
   flex: 1;
-  height: 72rpx;
-  border-radius: 20rpx;
+  height: 86rpx;
+  border-radius: 999rpx;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 12rpx;
   color: var(--muted);
+  transition: color 0.2s ease, background 0.2s ease, transform 0.2s ease;
 }
 
 .visitor-tab-active {
-  background: #111;
+  background: var(--accent);
   color: #fff;
+  transform: translateY(-4rpx);
+  box-shadow: 0 10rpx 24rpx var(--accent-soft);
 }
 
 .visitor-tab-dot {

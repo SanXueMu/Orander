@@ -1,4 +1,4 @@
-<view class="visitor-tabbar surface">
+<view class="visitor-tabbar">
   <view class="visitor-tab {{active === 'menu' ? 'visitor-tab-active' : ''}}" bindtap="goMenu">
     <view class="tab-icon icon-menu">
       <view class="icon-menu-line"></view>

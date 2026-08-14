@@ -1,6 +1,6 @@
 <view class="orander-page {{themeClass}} {{fontClass}}">
   <navigation-bar color="{{navColor}}" background="{{navBackground}}">
-    <view slot="center" class="nav-black-pill">订单历史</view>
+    <view slot="center" class="nav-title">订单历史</view>
   </navigation-bar>
 
   <scroll-view class="page-scroll" scroll-y>

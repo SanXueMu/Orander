@@ -1,6 +1,6 @@
 <view class="orander-page {{themeClass}} {{fontClass}}">
   <navigation-bar back="{{false}}" color="{{navColor}}" background="{{navBackground}}">
-    <view slot="center" class="nav-black-pill">我的</view>
+    <view slot="center" class="nav-title">我的</view>
   </navigation-bar>
 
   <scroll-view class="page-scroll" scroll-y>

@@ -1,6 +1,6 @@
 <view class="orander-page {{themeClass}} {{fontClass}} bill-page">
   <navigation-bar color="{{navColor}}" background="{{navBackground}}">
-    <view slot="center" class="nav-black-pill">账单</view>
+    <view slot="center" class="nav-title">账单</view>
   </navigation-bar>
 
   <scroll-view class="page-scroll" scroll-y>

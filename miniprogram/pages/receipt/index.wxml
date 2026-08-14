@@ -1,6 +1,6 @@
 <view class="orander-page {{themeClass}} {{fontClass}} waiting-page">
   <navigation-bar color="{{navColor}}" background="{{navBackground}}">
-    <view slot="center" class="nav-black-pill">等候中</view>
+    <view slot="center" class="nav-title">等候中</view>
   </navigation-bar>
 
   <scroll-view class="page-scroll" scroll-y>

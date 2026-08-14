@@ -1,6 +1,6 @@
 <view class="orander-page {{themeClass}} {{fontClass}} login-page">
   <navigation-bar back="{{false}}" color="{{navColor}}" background="{{navBackground}}">
-    <view slot="center" class="nav-black-pill">Orander</view>
+    <view slot="center" class="nav-title">Orander</view>
   </navigation-bar>
 
   <view class="login-shell">

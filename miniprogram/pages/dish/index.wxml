@@ -1,16 +1,31 @@
 <view class="orander-page {{themeClass}} {{fontClass}} menu-page">
   <navigation-bar back="{{false}}" color="{{navColor}}" background="{{navBackground}}">
-    <view slot="center" class="nav-black-pill">菜单</view>
+    <view slot="center" class="nav-title">菜单</view>
+    <view slot="right" class="nav-orders-entry" hover-class="press-dim" hover-stay-time="60" bindtap="goOrders">
+      <view class="nav-orders-icon">
+        <view class="nav-orders-line"></view>
+        <view class="nav-orders-line"></view>
+        <view class="nav-orders-line nav-orders-line-short"></view>
+      </view>
+    </view>
   </navigation-bar>
 
   <scroll-view class="page-scroll" scroll-y>
     <view class="page-body with-tabbar menu-body">
-      <view class="menu-top-row">
-        <view class="surface menu-summary-card">
-          <view class="menu-name">{{nickname}}</view>
-          <view class="num menu-count">{{cartCount}} 件</view>
+      <view wx:if="{{businessLoaded && !businessOpen}}" class="business-banner">
+        <view class="business-badge-dot"></view>
+        <view>今日暂停营业，暂时无法下单，欢迎明天再来。</view>
+      </view>
+
+      <view class="surface menu-hero">
+        <view>
+          <view class="menu-hero-greeting">{{greetingText}}，{{nickname}}</view>
+          <view class="menu-hero-date">{{dateText}}</view>
         </view>
-        <view hover-class="press-scale" hover-stay-time="60" class="menu-mini-action menu-bill-action" bindtap="goBill">账单 {{cartTotalText}}</view>
+        <view wx:if="{{businessLoaded}}" class="business-badge {{businessOpen ? '' : 'business-badge-closed'}}">
+          <view class="business-badge-dot"></view>
+          <view>{{businessOpen ? '营业中' : '已暂停'}}</view>
+        </view>
       </view>
 
       <view class="surface menu-search-card">
