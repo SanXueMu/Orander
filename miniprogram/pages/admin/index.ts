@@ -30,6 +30,7 @@ import {
   updateDishAvailability,
 } from '../../utils/orander'
 import type { Order } from '../../utils/orander'
+import { pageLookBehavior } from '../../behaviors/page-look'
 
 const ORDER_PAGE_SIZE = 15
 
@@ -58,9 +59,9 @@ const mapDishCards = (activeCategory: string) => {
 }
 
 Page({
+  behaviors: [pageLookBehavior],
+
   data: {
-    themeClass: 'theme-amber',
-    fontClass: 'font-modern',
     navColor: '#111111',
     navBackground: '#f4f4f4',
     adminName: 'Admin',

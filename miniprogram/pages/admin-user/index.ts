@@ -1,10 +1,11 @@
 import { fetchCloudMemberOrders, initCloud, updateCloudOrderStatus } from '../../utils/cloud'
 import { formatMoney, formatShortDate, getAdminToken, getAvatarStyle, getMembers, getMonogram, getOrdersByMemberId, isAdminSession, updateOrderStatus } from '../../utils/orander'
+import { pageLookBehavior } from '../../behaviors/page-look'
 
 Page({
+  behaviors: [pageLookBehavior],
+
   data: {
-    themeClass: 'theme-amber',
-    fontClass: 'font-modern',
     navColor: '#111111',
     navBackground: '#f4f4f4',
     avatarUrl: '',

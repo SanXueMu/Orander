@@ -1,5 +1,4 @@
 import {
-  buildPageLook,
   formatMoney,
   formatShortDate,
   getCurrentMember,
@@ -7,6 +6,7 @@ import {
   isVisitorSession,
 } from '../../utils/orander'
 import type { Member } from '../../utils/orander'
+import { applyPageLook, pageLookBehavior } from '../../behaviors/page-look'
 
 const mapOrders = () => {
   return getOrdersForCurrentMember().map((order) => ({
@@ -20,11 +20,9 @@ const mapOrders = () => {
 }
 
 Page({
+  behaviors: [pageLookBehavior],
+
   data: {
-    themeClass: 'theme-amber',
-    fontClass: 'font-modern',
-    navColor: '#2b1d14',
-    navBackground: '#f5eadc',
     profile: null as Member | null,
     orders: [] as Array<Record<string, unknown>>,
   },
@@ -38,10 +36,9 @@ Page({
     }
 
     const profile = getCurrentMember()
-    const pageLook = buildPageLook(profile)
+    applyPageLook(this, profile)
 
     this.setData({
-      ...pageLook,
       profile,
       orders: mapOrders(),
     })

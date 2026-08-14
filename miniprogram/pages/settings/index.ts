@@ -3,13 +3,13 @@ import {
   FONT_OPTIONS,
   RELATION_OPTIONS,
   THEME_OPTIONS,
-  buildPageLook,
   getAvatarStyle,
   getCurrentMember,
   getMonogram,
   saveCurrentMember,
 } from '../../utils/orander'
 import type { FontId, Member, ThemeId } from '../../utils/orander'
+import { applyPageLook, pageLookBehavior } from '../../behaviors/page-look'
 
 const getRelationIndex = (relation: string) => {
   const index = RELATION_OPTIONS.findIndex((item) => item === relation)
@@ -17,11 +17,9 @@ const getRelationIndex = (relation: string) => {
 }
 
 Page({
+  behaviors: [pageLookBehavior],
+
   data: {
-    themeClass: 'theme-amber',
-    fontClass: 'font-modern',
-    navColor: '#2b1d14',
-    navBackground: '#f5eadc',
     profile: null as Member | null,
     avatarLabel: 'OR',
     avatarStyle: getAvatarStyle('guest'),
@@ -38,10 +36,9 @@ Page({
 
   onShow() {
     const profile = getCurrentMember()
-    const pageLook = buildPageLook(profile)
+    applyPageLook(this, profile)
 
     this.setData({
-      ...pageLook,
       profile,
       avatarLabel: getMonogram(profile ? profile.nickname : 'OR'),
       avatarStyle: getAvatarStyle(profile ? profile.nickname : 'guest'),

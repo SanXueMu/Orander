@@ -1,17 +1,17 @@
 import {
   formatMoney,
   formatShortDate,
+  getCurrentMember,
   getLastOrderId,
   getOrderById,
   isVisitorSession,
 } from '../../utils/orander'
+import { applyPageLook, pageLookBehavior } from '../../behaviors/page-look'
 
 Page({
+  behaviors: [pageLookBehavior],
+
   data: {
-    themeClass: 'theme-amber',
-    fontClass: 'font-modern',
-    navColor: '#111111',
-    navBackground: '#f4f4f4',
     order: null as Record<string, unknown> | null,
     totalText: formatMoney(0),
     createdText: '',
@@ -43,6 +43,8 @@ Page({
       }, 500)
       return
     }
+
+    applyPageLook(this, getCurrentMember())
 
     this.setData({
       order: {

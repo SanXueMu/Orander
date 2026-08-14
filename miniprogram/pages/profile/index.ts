@@ -10,13 +10,12 @@ import {
   saveCurrentMember,
   saveSession,
 } from '../../utils/orander'
+import { applyPageLook, pageLookBehavior } from '../../behaviors/page-look'
 
 Page({
+  behaviors: [pageLookBehavior],
+
   data: {
-    themeClass: 'theme-amber',
-    fontClass: 'font-modern',
-    navColor: '#111111',
-    navBackground: '#f4f4f4',
     nickname: '访客',
     avatarUrl: '',
     showAvatarImage: false,
@@ -34,6 +33,7 @@ Page({
 
     const member = getCurrentMember()
     const session = getSession()
+    applyPageLook(this, member)
     const nickname = member ? member.nickname : session ? session.nickname : '访客'
     const avatarUrl = member ? member.avatarUrl : session ? session.avatarUrl : ''
     const showAvatarImage = !!avatarUrl

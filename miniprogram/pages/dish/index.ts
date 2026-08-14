@@ -5,6 +5,7 @@ import {
   formatMoney,
   getCart,
   getCartStats,
+  getCurrentMember,
   getDishes,
   getDishCoverStyle,
   getLastCategory,
@@ -15,6 +16,7 @@ import {
   setCartQuantity,
 } from '../../utils/orander'
 import type { Dish } from '../../utils/orander'
+import { applyPageLook, pageLookBehavior } from '../../behaviors/page-look'
 
 type MenuDishView = Dish & {
   quantity: number
@@ -36,11 +38,9 @@ const buildMenuDishes = (category: string, keyword: string) => {
 }
 
 Page({
+  behaviors: [pageLookBehavior],
+
   data: {
-    themeClass: 'theme-amber',
-    fontClass: 'font-modern',
-    navColor: '#111111',
-    navBackground: '#f4f4f4',
     nickname: '访客',
     categories: ['全部'],
     activeCategory: '全部',
@@ -75,6 +75,7 @@ Page({
 
   refreshPage() {
     const session = getSession()
+    applyPageLook(this, getCurrentMember())
     const categories = ['全部', ...getMenuCategories()]
     const remembered = getLastCategory()
     const activeCategory = categories.includes(this.data.activeCategory) && this.data.activeCategory !== '全部'

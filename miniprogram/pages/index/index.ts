@@ -8,6 +8,7 @@ import {
   verifyAdminPassword,
 } from '../../utils/orander'
 import type { SessionRole } from '../../utils/orander'
+import { pageLookBehavior } from '../../behaviors/page-look'
 
 const ROLE_TABS: Array<{ id: SessionRole; label: string }> = [
   { id: 'visitor', label: '访客' },
@@ -15,9 +16,9 @@ const ROLE_TABS: Array<{ id: SessionRole; label: string }> = [
 ]
 
 Page({
+  behaviors: [pageLookBehavior],
+
   data: {
-    themeClass: 'theme-amber',
-    fontClass: 'font-modern',
     navColor: '#111111',
     navBackground: '#f4f4f4',
     roleTabs: ROLE_TABS,

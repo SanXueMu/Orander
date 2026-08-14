@@ -1,11 +1,12 @@
 import { deleteDish, getDishCoverStyle, getDishes, getMonogram, isAdminSession, saveDish } from '../../utils/orander'
+import { pageLookBehavior } from '../../behaviors/page-look'
 
 const DEFAULT_DISH_IMAGE = ''
 
 Page({
+  behaviors: [pageLookBehavior],
+
   data: {
-    themeClass: 'theme-amber',
-    fontClass: 'font-modern',
     navColor: '#111111',
     navBackground: '#f4f4f4',
     dishId: '',

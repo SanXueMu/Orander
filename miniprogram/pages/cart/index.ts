@@ -12,13 +12,12 @@ import {
   clearCart,
   createOrder,
 } from '../../utils/orander'
+import { applyPageLook, pageLookBehavior } from '../../behaviors/page-look'
 
 Page({
+  behaviors: [pageLookBehavior],
+
   data: {
-    themeClass: 'theme-amber',
-    fontClass: 'font-modern',
-    navColor: '#111111',
-    navBackground: '#f4f4f4',
     nickname: '访客',
     note: '',
     lines: [] as Array<Record<string, unknown>>,
@@ -38,6 +37,7 @@ Page({
 
   refreshPage() {
     const session = getSession()
+    applyPageLook(this, getCurrentMember())
     const stats = getCartStats()
     const lines = buildCartLines().map((line) => ({
       ...line,

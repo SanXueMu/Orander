@@ -1,11 +1,11 @@
 import {
-  buildPageLook,
   formatMoney,
   formatReceiptDate,
   getCurrentMember,
   getOrderById,
   saveReview,
 } from '../../utils/orander'
+import { applyPageLook, pageLookBehavior } from '../../behaviors/page-look'
 
 const getOrderView = (orderId: string) => {
   const order = getOrderById(orderId)
@@ -26,11 +26,9 @@ const getOrderView = (orderId: string) => {
 }
 
 Page({
+  behaviors: [pageLookBehavior],
+
   data: {
-    themeClass: 'theme-amber',
-    fontClass: 'font-modern',
-    navColor: '#2b1d14',
-    navBackground: '#f5eadc',
     order: null as Record<string, unknown> | null,
     ratingOptions: [1, 2, 3, 4, 5],
     rating: 5,
@@ -43,7 +41,6 @@ Page({
 
   loadOrder(orderId: string) {
     const profile = getCurrentMember()
-    const pageLook = buildPageLook(profile)
     const order = getOrderView(orderId)
 
     if (!order) {
@@ -59,8 +56,9 @@ Page({
       return
     }
 
+    applyPageLook(this, profile)
+
     this.setData({
-      ...pageLook,
       order,
       rating: order.review ? order.review.rating : 5,
       comment: order.review ? order.review.comment : '',
