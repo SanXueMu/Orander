@@ -111,6 +111,14 @@ Page({
     })
   },
 
+  onNoteFocus() {
+    this.setData({ noteFocused: true })
+  },
+
+  onNoteBlur() {
+    this.setData({ noteFocused: false })
+  },
+
   submitOrder() {
     if (this.data.submitting) {
       return

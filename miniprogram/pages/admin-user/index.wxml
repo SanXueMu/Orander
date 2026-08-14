@@ -38,7 +38,7 @@
       </view>
 
       <view wx:else class="surface empty-state">
-        <view class="empty-emoji">NO ORDERS</view>
+<view class="empty-plate"><view class="empty-plate-inner"></view></view>
         <view class="section-title">暂无订单</view>
       </view>
     </view>

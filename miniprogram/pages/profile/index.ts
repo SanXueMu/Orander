@@ -56,6 +56,14 @@ Page({
     })
   },
 
+  onNicknameFocus() {
+    this.setData({ nicknameFocused: true })
+  },
+
+  onNicknameBlur() {
+    this.setData({ nicknameFocused: false })
+  },
+
   onNicknameInput(event: WechatMiniprogram.CustomEvent) {
     const detail = event.detail as { value?: string }
     const nickname = (detail.value || '').trim()

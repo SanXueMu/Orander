@@ -24,17 +24,17 @@
 
         <view class="field-block admin-dish-field-first">
           <view class="field-label">菜名</view>
-          <input class="field-input" placeholder="输入菜名" value="{{dishName}}" bindinput="onDishNameInput" />
+          <input class="field-input {{focusedField === 'name' ? 'field-focused' : ''}}" placeholder="输入菜名" bindfocus="onFieldFocus" data-field="name" bindblur="onFieldBlur" value="{{dishName}}" bindinput="onDishNameInput" />
         </view>
 
         <view class="field-block">
           <view class="field-label">分类</view>
-          <input class="field-input" placeholder="输入分类" value="{{dishCategory}}" bindinput="onDishCategoryInput" />
+          <input class="field-input {{focusedField === 'category' ? 'field-focused' : ''}}" placeholder="输入分类" bindfocus="onFieldFocus" data-field="category" bindblur="onFieldBlur" value="{{dishCategory}}" bindinput="onDishCategoryInput" />
         </view>
 
         <view class="field-block">
           <view class="field-label">价格</view>
-          <input class="field-input" type="digit" placeholder="输入价格" value="{{dishPrice}}" bindinput="onDishPriceInput" />
+          <input class="field-input {{focusedField === 'price' ? 'field-focused' : ''}}" type="digit" placeholder="输入价格" bindfocus="onFieldFocus" data-field="price" bindblur="onFieldBlur" value="{{dishPrice}}" bindinput="onDishPriceInput" />
         </view>
 
         <view class="field-block">

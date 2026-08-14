@@ -19,6 +19,19 @@
   padding: 18rpx;
   box-sizing: border-box;
   background: conic-gradient(from 0deg, #111111 0deg, #111111 230deg, rgba(17, 17, 17, 0.12) 230deg, rgba(17, 17, 17, 0.12) 360deg);
+  animation: receipt-breathe 2.6s ease-in-out infinite;
+}
+
+@keyframes receipt-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.82;
+  }
 }
 
 .waiting-ring-core {

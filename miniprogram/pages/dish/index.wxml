@@ -32,6 +32,14 @@
         </view>
       </scroll-view>
 
+      <view wx:if="{{menuLoading && !dishes.length}}" class="list-gap">
+        <view wx:for="{{[1, 2, 3]}}" wx:key="*this" class="surface skeleton-card">
+          <view class="skeleton-line" style="width: 40%"></view>
+          <view class="skeleton-line" style="width: 88%; margin-top: 18rpx"></view>
+          <view class="skeleton-line" style="width: 64%; margin-top: 14rpx"></view>
+        </view>
+      </view>
+
       <view class="menu-grid">
         <view wx:for="{{dishes}}" wx:key="id" class="surface menu-card">
           <block wx:if="{{item.image}}">
@@ -47,12 +55,12 @@
           <view class="menu-content">
             <view class="menu-line-top">
               <view class="menu-dish-name">{{item.name}}</view>
-              <view class="menu-dish-price">¥{{item.price}}</view>
+              <view class="menu-dish-price">{{item.priceText}}</view>
             </view>
             <view class="menu-dish-category">{{item.category}}</view>
             <view class="menu-dish-description">{{item.description}}</view>
 
-            <view class="menu-line-bottom">
+            <view class="menu-line-bottom menu-card-footer">
               <view wx:if="{{item.soldOut}}" class="menu-soldout">已售罄</view>
               <view wx:else class="menu-stepper">
                 <view class="menu-stepper-button" data-id="{{item.id}}" bindtap="decreaseDish">-</view>
@@ -64,7 +72,7 @@
         </view>
       </view>
       <view wx:if="{{!dishes.length}}" class="surface empty-state menu-empty">
-        <view class="empty-emoji">NO MATCH</view>
+<view class="empty-plate"><view class="empty-plate-inner"></view></view>
         <view class="section-title">没有找到相关菜品</view>
         <view class="section-copy">换个关键词，或清除搜索看看全部菜品。</view>
         <view class="button-primary menu-empty-button" bindtap="clearSearch">清除搜索</view>

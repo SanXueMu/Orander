@@ -17,7 +17,7 @@
 
         <view class="field-block profile-field">
           <view class="field-label">名称</view>
-          <input class="field-input" type="nickname" placeholder="输入名称" value="{{nickname}}" bindinput="onNicknameInput" />
+          <input class="field-input {{nicknameFocused ? 'field-focused' : ''}}" type="nickname" placeholder="输入名称" bindfocus="onNicknameFocus" bindblur="onNicknameBlur" value="{{nickname}}" bindinput="onNicknameInput" />
         </view>
 
         <view class="button-primary profile-button" bindtap="saveProfile">保存</view>

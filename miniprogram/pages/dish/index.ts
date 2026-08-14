@@ -21,6 +21,7 @@ import { applyPageLook, pageLookBehavior } from '../../behaviors/page-look'
 type MenuDishView = Dish & {
   quantity: number
   coverStyle: string
+  priceText: string
 }
 
 const buildMenuDishes = (category: string, keyword: string) => {
@@ -34,6 +35,7 @@ const buildMenuDishes = (category: string, keyword: string) => {
       ...dish,
       quantity: cartMap.get(dish.id) || 0,
       coverStyle: getDishCoverStyle(dish.id),
+      priceText: formatMoney(dish.price),
     }))
 }
 
@@ -42,6 +44,7 @@ Page({
 
   data: {
     nickname: '访客',
+    menuLoading: true,
     categories: ['全部'],
     activeCategory: '全部',
     searchKeyword: '',
@@ -59,6 +62,7 @@ Page({
     }
 
     if (initCloud()) {
+      this.setData({ menuLoading: true })
       await fetchCloudDishes()
     }
 
@@ -71,6 +75,7 @@ Page({
     }
 
     this.refreshPage()
+    this.setData({ menuLoading: false })
   },
 
   refreshPage() {

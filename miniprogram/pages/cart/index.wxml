@@ -39,7 +39,7 @@
 
         <view class="surface note-card">
           <view class="field-label">备注</view>
-          <input class="field-input" placeholder="口味偏好、忌口或上菜要求（选填）" value="{{note}}" maxlength="60" bindinput="onNoteInput" />
+          <input class="field-input {{noteFocused ? 'field-focused' : ''}}" placeholder="口味偏好、忌口或上菜要求（选填）" value="{{note}}" maxlength="60" bindinput="onNoteInput" bindfocus="onNoteFocus" bindblur="onNoteBlur" />
         </view>
 
         <view class="surface summary-card">
@@ -55,7 +55,7 @@
       </view>
 
       <view wx:else class="surface empty-state empty-cart">
-        <view class="empty-emoji">EMPTY BILL</view>
+<view class="empty-plate"><view class="empty-plate-inner"></view></view>
         <view class="section-title">账单为空</view>
         <view class="button-primary empty-cart-button" bindtap="backMenu">去选菜</view>
       </view>

@@ -241,13 +241,13 @@ button::after {
   --panel: #211d1b;
   --panel-soft: #2a2523;
   --ink: #f7efe8;
-  --muted: #baada2;
+  --muted: #cec4bb;
   --accent: #d88b57;
   --accent-deep: #a75f35;
-  --accent-soft: rgba(216, 139, 87, 0.14);
-  --line: rgba(247, 239, 232, 0.08);
-  --line-strong: rgba(247, 239, 232, 0.18);
-  --success: #8ed0ae;
+  --accent-soft: rgba(216, 139, 87, 0.16);
+  --line: rgba(247, 239, 232, 0.12);
+  --line-strong: rgba(247, 239, 232, 0.28);
+  --success: #9fdcbf;
 }
 
 .font-modern {
@@ -260,4 +260,53 @@ button::after {
 
 .font-serif {
   font-family: Georgia, 'Times New Roman', 'PingFang SC', serif;
+}
+
+/* ========== 阶段10：设计打磨 ========== */
+
+/* 空状态插画 — 同心圆餐盘 */
+.empty-plate {
+  width: 120rpx;
+  height: 120rpx;
+  margin: 0 auto;
+  border-radius: 50%;
+  border: 3rpx solid var(--line-strong);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty-plate-inner {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 50%;
+  background: var(--accent-soft);
+}
+
+/* 表单 focus 态边框 */
+.field-focused {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 4rpx var(--accent-soft);
+}
+
+/* 骨架屏 */
+.skeleton-card {
+  padding: 28rpx;
+}
+
+.skeleton-line {
+  height: 28rpx;
+  border-radius: 10rpx;
+  background: linear-gradient(90deg, var(--panel-soft) 25%, var(--line) 45%, var(--panel-soft) 65%);
+  background-size: 400% 100%;
+  animation: skeleton-flow 1.4s ease infinite;
+}
+
+@keyframes skeleton-flow {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
 }

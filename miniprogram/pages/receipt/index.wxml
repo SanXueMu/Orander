@@ -25,7 +25,7 @@
         <view wx:for="{{order.lines}}" wx:key="dishId" class="waiting-line">
           <view>
             <view class="waiting-line-name">{{item.name}}</view>
-            <view class="waiting-line-meta">{{item.quantity}} x ¥{{item.price}}</view>
+            <view class="waiting-line-meta">{{item.quantity}} x {{item.priceText}}</view>
           </view>
           <view class="waiting-line-price">{{item.subtotalText}}</view>
         </view>

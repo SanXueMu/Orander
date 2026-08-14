@@ -20,6 +20,7 @@ const getOrderView = (orderId: string) => {
     statusText: order.status === 'completed' ? '已完成' : '已提交',
     lines: order.items.map((item) => ({
       ...item,
+      priceText: formatMoney(item.price),
       subtotalText: formatMoney(item.subtotal),
     })),
   }

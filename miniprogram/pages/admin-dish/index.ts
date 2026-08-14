@@ -10,6 +10,7 @@ Page({
     navColor: '#111111',
     navBackground: '#f4f4f4',
     dishId: '',
+    focusedField: '',
     dishName: '',
     dishCategory: '',
     dishPrice: '',
@@ -67,6 +68,14 @@ Page({
       dishAvailable: !dish.soldOut,
       editing: true,
     })
+  },
+
+  onFieldFocus(event: WechatMiniprogram.BaseEvent) {
+    this.setData({ focusedField: event.currentTarget.dataset.field as string })
+  },
+
+  onFieldBlur() {
+    this.setData({ focusedField: '' })
   },
 
   onDishNameInput(event: WechatMiniprogram.CustomEvent) {

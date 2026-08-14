@@ -1,14 +1,25 @@
 <view class="visitor-tabbar surface">
   <view class="visitor-tab {{active === 'menu' ? 'visitor-tab-active' : ''}}" bindtap="goMenu">
-    <view class="visitor-tab-dot"></view>
+    <view class="tab-icon icon-menu">
+      <view class="icon-menu-line"></view>
+      <view class="icon-menu-line"></view>
+      <view class="icon-menu-line icon-menu-line-short"></view>
+    </view>
     <view class="visitor-tab-label">菜单</view>
   </view>
   <view class="visitor-tab {{active === 'orders' ? 'visitor-tab-active' : ''}}" bindtap="goOrders">
-    <view class="visitor-tab-dot"></view>
+    <view class="tab-icon icon-receipt">
+      <view class="icon-receipt-line"></view>
+      <view class="icon-receipt-line"></view>
+      <view class="icon-receipt-line icon-receipt-line-short"></view>
+    </view>
     <view class="visitor-tab-label">订单</view>
   </view>
   <view class="visitor-tab {{active === 'mine' ? 'visitor-tab-active' : ''}}" bindtap="goProfile">
-    <view class="visitor-tab-dot"></view>
+    <view class="tab-icon icon-person">
+      <view class="icon-person-head"></view>
+      <view class="icon-person-body"></view>
+    </view>
     <view class="visitor-tab-label">我的</view>
   </view>
 </view>

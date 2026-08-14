@@ -104,3 +104,40 @@
   font-size: 24rpx;
   color: var(--muted);
 }
+
+/* 品牌行 — 徽标 + 餐盘符号 */
+.login-brand-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20rpx;
+}
+
+.login-brand-row .login-brand {
+  margin: 0;
+}
+
+.login-brand-glyph {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 50%;
+  border: 4rpx solid #111;
+  display: flex;
+}
+
+.login-brand-glyph::after {
+  content: '';
+  width: 18rpx;
+  height: 18rpx;
+  margin: auto;
+  border-radius: 50%;
+  background: #111;
+}
+
+.login-tagline {
+  margin-top: 10rpx;
+  text-align: center;
+  font-size: 24rpx;
+  letter-spacing: 4rpx;
+  color: #757575;
+}

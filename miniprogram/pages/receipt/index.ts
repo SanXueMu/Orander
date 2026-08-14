@@ -60,6 +60,7 @@ Page({
         statusText: completed ? '已完成' : '制作中',
         lines: order.items.map((item) => ({
           ...item,
+          priceText: formatMoney(item.price),
           subtotalText: formatMoney(item.subtotal),
         })),
       },
