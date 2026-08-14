@@ -20,6 +20,7 @@ Page({
     navColor: '#111111',
     navBackground: '#f4f4f4',
     nickname: '访客',
+    note: '',
     lines: [] as Array<Record<string, unknown>>,
     totalText: formatMoney(0),
   },
@@ -78,6 +79,13 @@ Page({
     this.refreshPage()
   },
 
+  onNoteInput(event: WechatMiniprogram.CustomEvent) {
+    const detail = event.detail as { value?: string }
+    this.setData({
+      note: detail.value || '',
+    })
+  },
+
   submitOrder() {
     const profile = getCurrentMember()
     const lines = buildCartLines()
@@ -89,8 +97,10 @@ Page({
       return
     }
 
+    const note = this.data.note.trim()
+
     const submitLocal = () => {
-      const order = createOrder('')
+      const order = createOrder(note)
       if (!order) {
         wx.showToast({
           title: '账单为空',
@@ -115,7 +125,7 @@ Page({
       nickname: profile.nickname,
       relationLabel: getRelationLabel(profile),
       total: lines.reduce((result, line) => result + line.subtotal, 0),
-      note: '',
+      note,
       items: lines.map((line) => ({
         dishId: line.dish.id,
         name: line.dish.name,

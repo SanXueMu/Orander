@@ -37,6 +37,11 @@
           </view>
         </view>
 
+        <view class="surface note-card">
+          <view class="field-label">备注</view>
+          <input class="field-input" placeholder="口味偏好、忌口或上菜要求（选填）" value="{{note}}" maxlength="60" bindinput="onNoteInput" />
+        </view>
+
         <view class="surface summary-card">
           <view class="summary-row">
             <view class="summary-title">合计</view>

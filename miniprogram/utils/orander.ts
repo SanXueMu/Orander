@@ -849,6 +849,21 @@ export const clearCart = () => {
   writeStorage(STORAGE_KEYS.cart, [])
 }
 
+export const cleanSoldOutFromCart = () => {
+  const dishes = getDishes()
+  const cart = getCart()
+  const soldOutIds = new Set(dishes.filter((dish) => dish.soldOut).map((dish) => dish.id))
+  const validIds = new Set(dishes.map((dish) => dish.id))
+  const nextCart = cart.filter((item) => !soldOutIds.has(item.dishId) && validIds.has(item.dishId))
+
+  if (nextCart.length !== cart.length) {
+    writeStorage(STORAGE_KEYS.cart, nextCart)
+    return cart.length - nextCart.length
+  }
+
+  return 0
+}
+
 export const buildCartLines = () => {
   const dishMap = new Map(getDishes().map((dish) => [dish.id, dish]))
   return getCart()
