@@ -60,17 +60,15 @@ Component({
   lifetimes: {
     attached() {
       const rect = wx.getMenuButtonBoundingClientRect()
-      wx.getSystemInfo({
-        success: (res) => {
-          const isAndroid = res.platform === 'android'
-          const isDevtools = res.platform === 'devtools'
-          this.setData({
-            ios: !isAndroid,
-            innerPaddingRight: `padding-right: ${res.windowWidth - rect.left}px`,
-            leftWidth: `width: ${res.windowWidth - rect.left }px`,
-            safeAreaTop: isDevtools || isAndroid ? `height: calc(var(--height) + ${res.safeArea.top}px); padding-top: ${res.safeArea.top}px` : ``
-          })
-        }
+      const windowInfo = (wx as any).getWindowInfo ? (wx as any).getWindowInfo() : wx.getSystemInfoSync()
+      const deviceInfo = (wx as any).getDeviceInfo ? (wx as any).getDeviceInfo() : wx.getSystemInfoSync()
+      const isAndroid = deviceInfo.platform === 'android'
+      const isDevtools = deviceInfo.platform === 'devtools'
+      this.setData({
+        ios: !isAndroid,
+        innerPaddingRight: `padding-right: ${windowInfo.windowWidth - rect.left}px`,
+        leftWidth: `width: ${windowInfo.windowWidth - rect.left}px`,
+        safeAreaTop: isDevtools || isAndroid ? `height: calc(var(--height) + ${windowInfo.safeArea.top}px); padding-top: ${windowInfo.safeArea.top}px` : ``
       })
     },
   },

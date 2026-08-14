@@ -1,3 +1,7 @@
+// ========================================
+// 类型定义
+// ========================================
+
 export type ThemeId = 'amber' | 'olive' | 'ink'
 export type FontId = 'modern' | 'soft' | 'serif'
 export type OrderStatus = 'submitted' | 'completed'
@@ -102,6 +106,10 @@ export interface SessionUser {
   adminToken?: string
 }
 
+// ========================================
+// 常量与种子数据
+// ========================================
+
 const STORAGE_KEYS = {
   currentMember: 'orander-current-member',
   members: 'orander-members',
@@ -110,6 +118,7 @@ const STORAGE_KEYS = {
   cart: 'orander-cart',
   session: 'orander-session',
   lastOrderId: 'orander-last-order-id',
+  lastCategory: 'orander-last-category',
 }
 
 export const DEFAULT_AVATAR_URL = ''
@@ -355,6 +364,10 @@ const LEGACY_DISH_IDS = [
   'midnight-plum-soda',
 ]
 
+// ========================================
+// 内部工具
+// ========================================
+
 const clone = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T
 
 const hashString = (value: string) => {
@@ -422,6 +435,10 @@ const normalizeOrder = (order: Order): Order => ({
   })),
 })
 
+// ========================================
+// 数据层 — Storage 读写
+// ========================================
+
 const readStorage = <T>(key: string, fallback: T): T => {
   const value = wx.getStorageSync(key)
   if (!value) {
@@ -457,6 +474,25 @@ const sortOrders = (orders: Order[]) => {
   return [...orders].sort((left, right) => {
     return new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime()
   })
+}
+
+// ========================================
+// 数据层 — 菜品缓存
+// ========================================
+
+let _dishCache: Dish[] | null = null
+let _dishCacheDirty = true
+
+const invalidateDishCache = () => {
+  _dishCacheDirty = true
+}
+
+const getCachedDishes = (): Dish[] => {
+  if (_dishCacheDirty || !_dishCache) {
+    _dishCache = sortDishes(readStorage(STORAGE_KEYS.dishes, SAMPLE_DISHES))
+    _dishCacheDirty = false
+  }
+  return _dishCache
 }
 
 export const ensureSeedData = () => {
@@ -495,6 +531,8 @@ export const ensureSeedData = () => {
   if (storedSession) {
     writeStorage(STORAGE_KEYS.session, storedSession as SessionUser)
   }
+
+  invalidateDishCache()
 }
 
 export const getRelationLabel = (memberLike: Pick<Member, 'relation' | 'customRelation'>) => {
@@ -636,6 +674,15 @@ export const getLastOrderId = () => {
   return orderId ? String(orderId) : ''
 }
 
+export const saveLastCategory = (category: string) => {
+  writeStorage(STORAGE_KEYS.lastCategory, category)
+}
+
+export const getLastCategory = () => {
+  const value = wx.getStorageSync(STORAGE_KEYS.lastCategory)
+  return value ? String(value) : ''
+}
+
 export const getMembers = () => {
   const members = readStorage(STORAGE_KEYS.members, SAMPLE_MEMBERS)
   return members.sort((left, right) => {
@@ -704,12 +751,17 @@ export const saveCurrentMember = (input: Omit<Member, 'id' | 'joinedAt'> & Parti
   return nextMember
 }
 
+// ========================================
+// 数据层 — 菜品 CRUD
+// ========================================
+
 export const getDishes = () => {
-  return sortDishes(readStorage(STORAGE_KEYS.dishes, SAMPLE_DISHES))
+  return clone(getCachedDishes())
 }
 
 export const replaceDishes = (dishes: Dish[]) => {
   writeStorage(STORAGE_KEYS.dishes, dishes.map(normalizeDish))
+  invalidateDishCache()
 }
 
 export const getMenuCategories = () => {
@@ -733,12 +785,14 @@ export const saveDish = (dish: Dish) => {
   }
 
   writeStorage(STORAGE_KEYS.dishes, dishes)
+  invalidateDishCache()
   return nextDish
 }
 
 export const deleteDish = (dishId: string) => {
   const dishes = getDishes().filter((dish) => dish.id !== dishId)
   writeStorage(STORAGE_KEYS.dishes, dishes)
+  invalidateDishCache()
   removeFromCart(dishId)
 }
 
@@ -749,7 +803,12 @@ export const updateDishAvailability = (dishId: string, soldOut: boolean) => {
   }
 
   saveDish({ ...dish, soldOut })
+  invalidateDishCache()
 }
+
+// ========================================
+// 数据层 — 购物车
+// ========================================
 
 export const getCart = () => {
   return readStorage<CartItem[]>(STORAGE_KEYS.cart, [])
@@ -818,6 +877,10 @@ export const getCartStats = () => {
     total: Number(total.toFixed(2)),
   }
 }
+
+// ========================================
+// 数据层 — 订单
+// ========================================
 
 export const getOrders = () => {
   return sortOrders(readStorage(STORAGE_KEYS.orders, SAMPLE_ORDERS))
@@ -934,6 +997,10 @@ export const updateOrderStatus = (orderId: string, status: OrderStatus) => {
   writeStorage(STORAGE_KEYS.orders, orders)
   return nextOrder
 }
+
+// ========================================
+// 视图工具
+// ========================================
 
 export const formatMoney = (amount: number) => {
   return `¥${amount.toFixed(2)}`
