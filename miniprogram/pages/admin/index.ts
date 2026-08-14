@@ -1,4 +1,15 @@
-import { deleteMemberCloud, fetchCloudDishes, fetchCloudMembers, initCloud, publishLocalDishesToCloud } from '../../utils/cloud'
+import {
+  deleteMemberCloud,
+  fetchCloudDishes,
+  fetchCloudMembers,
+  getBusinessStatusCloud,
+  getOrderStatsCloud,
+  initCloud,
+  listAllOrdersCloud,
+  publishLocalDishesToCloud,
+  setBusinessStatusCloud,
+} from '../../utils/cloud'
+import type { OrderStats, PaginatedOrders } from '../../utils/cloud'
 import {
   clearCart,
   clearSession,
@@ -13,10 +24,25 @@ import {
   getDishes,
   getMenuCategories,
   getMonogram,
+  getOrders,
   getSession,
   isAdminSession,
   updateDishAvailability,
 } from '../../utils/orander'
+import type { Order } from '../../utils/orander'
+
+const ORDER_PAGE_SIZE = 15
+
+const mapOrderRows = (orders: Order[]) => {
+  return orders.map((order) => ({
+    ...order,
+    totalText: formatMoney(order.total),
+    createdText: formatShortDate(order.createdAt),
+    statusText: order.status === 'completed' ? '已完成' : '已提交',
+    previewText: order.items.slice(0, 3).map((item) => item.name).join(' · '),
+    canComplete: order.status !== 'completed',
+  }))
+}
 
 const mapDishCards = (activeCategory: string) => {
     return getDishes()
@@ -47,6 +73,15 @@ Page({
     touchStartX: 0,
     touchStartY: 0,
     publishingCloud: false,
+    orders: [] as Array<Record<string, unknown>>,
+    ordersPage: 1,
+    ordersPageSize: ORDER_PAGE_SIZE,
+    ordersTotal: 0,
+    ordersLoading: false,
+    statsRevenueText: formatMoney(0),
+    stats: null as OrderStats | null,
+    businessOpen: true,
+    businessSyncing: false,
   },
 
   async onShow() {
@@ -58,6 +93,13 @@ Page({
     }
 
     await this.refreshPage(true)
+
+    if (initCloud()) {
+      const status = await getBusinessStatusCloud()
+      if (status) {
+        this.setData({ businessOpen: status.open })
+      }
+    }
   },
 
   async refreshPage(syncRemote = false) {
@@ -95,6 +137,178 @@ Page({
     this.setData({
       activePanel: panel,
     })
+
+    if (panel === 'orders') {
+      this.loadOrders(1)
+    } else if (panel === 'stats') {
+      this.loadStats()
+    }
+  },
+
+  async loadOrders(page: number) {
+    if (!initCloud()) {
+      this.loadLocalOrders(page)
+      return
+    }
+
+    this.setData({ ordersLoading: true })
+    try {
+      const result = await listAllOrdersCloud(page, ORDER_PAGE_SIZE)
+      if (!result) {
+        this.loadLocalOrders(page)
+        return
+      }
+
+      this.applyOrders(result)
+    } finally {
+      this.setData({ ordersLoading: false })
+    }
+  },
+
+  loadLocalOrders(page: number) {
+    const allOrders = getOrders()
+    const total = allOrders.length
+    const start = (page - 1) * ORDER_PAGE_SIZE
+    const items = allOrders.slice(start, start + ORDER_PAGE_SIZE)
+
+    this.setData({
+      orders: mapOrderRows(items),
+      ordersPage: page,
+      ordersTotal: total,
+    })
+  },
+
+  applyOrders(result: PaginatedOrders) {
+    this.setData({
+      orders: mapOrderRows(result.items),
+      ordersPage: result.page,
+      ordersTotal: result.total,
+    })
+  },
+
+  prevOrdersPage() {
+    if (this.data.ordersPage <= 1) {
+      return
+    }
+    this.loadOrders(this.data.ordersPage - 1)
+  },
+
+  nextOrdersPage() {
+    const maxPage = Math.max(1, Math.ceil(this.data.ordersTotal / ORDER_PAGE_SIZE))
+    if (this.data.ordersPage >= maxPage) {
+      return
+    }
+    this.loadOrders(this.data.ordersPage + 1)
+  },
+
+  async completeOrder(event: WechatMiniprogram.BaseEvent) {
+    const orderId = event.currentTarget.dataset.id as string
+    const order = this.data.orders.find((item) => (item as { id: string }).id === orderId) as Order | undefined
+    if (!order || order.status === 'completed') {
+      return
+    }
+
+    if (initCloud()) {
+      const { updateCloudOrderStatus } = await import('../../utils/cloud')
+      const nextOrder = await updateCloudOrderStatus(orderId, 'completed', getAdminToken())
+      if (!nextOrder) {
+        wx.showToast({
+          title: '操作失败',
+          icon: 'none',
+        })
+        return
+      }
+    } else {
+      const { updateOrderStatus } = await import('../../utils/orander')
+      updateOrderStatus(orderId, 'completed')
+    }
+
+    await this.loadOrders(this.data.ordersPage)
+    wx.showToast({
+      title: '已完成',
+      icon: 'success',
+    })
+  },
+
+  async loadStats() {
+    if (!initCloud()) {
+      this.loadLocalStats()
+      return
+    }
+
+    const stats = await getOrderStatsCloud()
+    if (!stats) {
+      this.loadLocalStats()
+      return
+    }
+
+    this.setData({
+      stats,
+      statsRevenueText: formatMoney(stats.revenue),
+    })
+  },
+
+  loadLocalStats() {
+    const orders = getOrders()
+    const revenue = orders.reduce((sum, order) => sum + order.total, 0)
+    const dishSales: Record<string, { dishId: string; name: string; quantity: number; revenue: number }> = {}
+
+    orders.forEach((order) => {
+      order.items.forEach((item) => {
+        if (!dishSales[item.dishId]) {
+          dishSales[item.dishId] = { dishId: item.dishId, name: item.name, quantity: 0, revenue: 0 }
+        }
+        dishSales[item.dishId].quantity += item.quantity
+        dishSales[item.dishId].revenue += item.subtotal
+      })
+    })
+
+    const topDishes = Object.values(dishSales)
+      .sort((left, right) => right.quantity - left.quantity)
+      .slice(0, 10)
+
+    this.setData({
+      stats: {
+        totalOrders: orders.length,
+        completedCount: orders.filter((order) => order.status === 'completed').length,
+        submittedCount: orders.filter((order) => order.status === 'submitted').length,
+        revenue: Number(revenue.toFixed(2)),
+        topDishes,
+      },
+      statsRevenueText: formatMoney(revenue),
+    })
+  },
+
+  async toggleBusinessStatus() {
+    if (this.data.businessSyncing) {
+      return
+    }
+
+    const nextOpen = !this.data.businessOpen
+    this.setData({ businessSyncing: true })
+
+    try {
+      if (initCloud()) {
+        const result = await setBusinessStatusCloud(nextOpen, getAdminToken())
+        if (!result) {
+          wx.showToast({
+            title: '同步失败',
+            icon: 'none',
+          })
+          return
+        }
+        this.setData({ businessOpen: result.open })
+      } else {
+        this.setData({ businessOpen: nextOpen })
+      }
+
+      wx.showToast({
+        title: nextOpen ? '已开始营业' : '已暂停营业',
+        icon: 'none',
+      })
+    } finally {
+      this.setData({ businessSyncing: false })
+    }
   },
 
   switchCategory(event: WechatMiniprogram.BaseEvent) {

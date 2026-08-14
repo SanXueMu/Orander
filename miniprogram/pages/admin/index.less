@@ -157,3 +157,135 @@
   font-size: 30rpx;
   font-weight: 700;
 }
+
+.admin-hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.admin-business-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  padding: 10rpx 20rpx;
+  border-radius: 999rpx;
+  border: 2rpx solid var(--line, rgba(0, 0, 0, 0.12));
+}
+
+.admin-business-toggle.business-open {
+  border-color: #3bb093;
+}
+
+.admin-business-toggle.business-closed {
+  border-color: #c0563f;
+  opacity: 0.85;
+}
+
+.admin-business-dot {
+  width: 14rpx;
+  height: 14rpx;
+  border-radius: 50%;
+  background: #3bb093;
+}
+
+.business-closed .admin-business-dot {
+  background: #c0563f;
+}
+
+.admin-business-label {
+  font-size: 22rpx;
+}
+
+.admin-empty {
+  padding: 48rpx 28rpx;
+  text-align: center;
+  color: var(--muted, #999);
+  font-size: 24rpx;
+}
+
+.admin-order-status {
+  font-size: 22rpx;
+  padding: 6rpx 16rpx;
+  border-radius: 999rpx;
+}
+
+.admin-order-status.status-completed {
+  color: #3bb093;
+  border: 2rpx solid #3bb093;
+}
+
+.admin-order-status.status-submitted {
+  color: #c0863f;
+  border: 2rpx solid #c0863f;
+}
+
+.admin-order-note {
+  color: #c0563f;
+}
+
+.admin-orders-pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx 28rpx;
+}
+
+.pager-disabled {
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+.admin-stats-grid {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.admin-stats-item {
+  flex: 1 1 40%;
+  padding: 24rpx 12rpx;
+  text-align: center;
+}
+
+.admin-stats-value {
+  font-size: 40rpx;
+  font-weight: 700;
+}
+
+.admin-stats-label {
+  font-size: 22rpx;
+  color: var(--muted, #999);
+  margin-top: 6rpx;
+}
+
+.admin-rank-row {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  padding: 18rpx 0;
+  border-bottom: 2rpx solid rgba(0, 0, 0, 0.06);
+}
+
+.admin-rank-row:last-child {
+  border-bottom: none;
+}
+
+.admin-rank-index {
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22rpx;
+  background: rgba(0, 0, 0, 0.08);
+  flex-shrink: 0;
+}
+
+.admin-rank-row .admin-card-title {
+  flex: 1;
+}
+
+.admin-rank-row .admin-card-copy {
+  flex-shrink: 0;
+}
