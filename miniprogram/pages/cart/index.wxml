@@ -58,7 +58,7 @@
       </view>
       <view class="button-row summary-buttons">
         <view hover-class="press-scale" hover-stay-time="60" class="button-ghost summary-button" bindtap="backMenu">继续选菜</view>
-        <view hover-class="press-scale" hover-stay-time="60" class="button-primary summary-button" bindtap="submitOrder">下单</view>
+        <view hover-class="press-scale" hover-stay-time="60" class="button-primary summary-button" bindtap="submitOrder">{{submitting ? '提交中…' : '下单'}}</view>
       </view>
     </view>
   </view>

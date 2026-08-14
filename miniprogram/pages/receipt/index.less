@@ -130,3 +130,78 @@
   background: currentColor;
   opacity: 0.5;
 }
+
+/* ========== D4：票据化 ========== */
+
+.receipt-zigzag {
+  position: relative;
+  margin-top: 22rpx;
+}
+
+.receipt-zigzag::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -13rpx;
+  height: 14rpx;
+  background:
+    linear-gradient(-45deg, var(--panel) 10rpx, transparent 0),
+    linear-gradient(45deg, var(--panel) 10rpx, transparent 0);
+  background-size: 28rpx 14rpx;
+  background-repeat: repeat-x;
+}
+
+.receipt-zigzag::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -13rpx;
+  height: 14rpx;
+  transform: rotate(180deg);
+  background:
+    linear-gradient(-45deg, var(--panel) 10rpx, transparent 0),
+    linear-gradient(45deg, var(--panel) 10rpx, transparent 0);
+  background-size: 28rpx 14rpx;
+  background-repeat: repeat-x;
+}
+
+.receipt-no-kicker {
+  margin-top: 16rpx;
+  color: var(--accent);
+}
+
+.waiting-number {
+  font-size: 46rpx;
+  letter-spacing: 8rpx;
+}
+
+/* 合计行虚线分隔 */
+.waiting-summary .waiting-total-row {
+  border-top: 2rpx dashed var(--line-strong);
+  padding-top: 22rpx;
+  margin-top: 10rpx;
+}
+
+/* 状态步进打钩动画 */
+.waiting-step-active::before {
+  content: '✓';
+  margin-right: 6rpx;
+  display: inline-block;
+  animation: step-pop 0.3s ease;
+}
+
+@keyframes step-pop {
+  0% {
+    transform: scale(0);
+  }
+
+  60% {
+    transform: scale(1.35);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}

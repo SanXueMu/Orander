@@ -212,6 +212,8 @@ Page({
       return
     }
 
+    wx.vibrateShort({ type: 'light' })
+
     if (initCloud()) {
       const { updateCloudOrderStatus } = await import('../../utils/cloud')
       const nextOrder = await updateCloudOrderStatus(orderId, 'completed', getAdminToken())
@@ -289,6 +291,7 @@ Page({
     }
 
     const nextOpen = !this.data.businessOpen
+    wx.vibrateShort({ type: 'light' })
     this.setData({ businessSyncing: true })
 
     try {

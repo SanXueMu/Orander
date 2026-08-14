@@ -66,6 +66,10 @@ Page({
     eventBus.emit('cart-changed', { count: stats.count })
   },
 
+  vibrateLight() {
+    wx.vibrateShort({ type: 'light' })
+  },
+
   increaseQuantity(event: WechatMiniprogram.BaseEvent) {
     const dishId = resolveDishId(event)
     const line = buildCartLines().find((item) => item.dishId === dishId)
@@ -82,6 +86,7 @@ Page({
     }
 
     setCartQuantity(dishId, line.quantity + 1)
+    this.vibrateLight()
     this.refreshPage()
   },
 
@@ -201,6 +206,7 @@ Page({
       }
 
       eventBus.emit('order-created', { orderId: order.id })
+      wx.vibrateShort({ type: 'light' })
       wx.redirectTo({
         url: `/pages/receipt/index?id=${order.id}`,
       })
@@ -235,6 +241,7 @@ Page({
 
       clearCart()
       eventBus.emit('order-created', { orderId: order.id })
+      wx.vibrateShort({ type: 'light' })
       wx.redirectTo({
         url: `/pages/receipt/index?id=${order.id}`,
       })

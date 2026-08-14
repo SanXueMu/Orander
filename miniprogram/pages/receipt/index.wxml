@@ -4,7 +4,7 @@
   </navigation-bar>
 
   <scroll-view class="page-scroll" scroll-y>
-    <view wx:if="{{order}}" class="page-body receipt-page-body list-gap">
+    <view wx:if="{{order}}" class="page-body receipt-page-body list-gap fade-in-up">
       <view class="surface waiting-card">
         <view class="waiting-ring">
           <view class="waiting-ring-core"></view>
@@ -21,7 +21,7 @@
         </view>
       </view>
 
-      <view class="surface waiting-summary">
+      <view class="surface waiting-summary receipt-zigzag fade-in-up-late">
         <view wx:for="{{order.lines}}" wx:key="dishId" class="waiting-line">
           <view>
             <view class="waiting-line-name">{{item.name}}</view>

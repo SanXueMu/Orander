@@ -119,7 +119,7 @@
     </view>
     <view class="settle-cta {{businessLoaded && !businessOpen ? 'settle-cta-disabled' : ''}}">
       <view>去结算</view>
-      <view class="settle-count num">{{cartCount}}</view>
+      <view class="settle-count num {{countBounce ? 'badge-bounce' : ''}}">{{cartCount}}</view>
     </view>
   </view>
 

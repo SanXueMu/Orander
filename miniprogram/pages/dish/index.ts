@@ -91,6 +91,7 @@ Page({
     searchKeyword: '',
     dishes: [] as MenuDishView[],
     cartCount: 0,
+    countBounce: false,
     cartTotalText: formatMoney(0),
   },
 
@@ -128,7 +129,10 @@ Page({
 
     if (!this.cartChangedHandler) {
       this.cartChangedHandler = (payload) => {
-        this.setData({ cartCount: payload.count })
+        this.setData({ cartCount: payload.count, countBounce: true })
+        setTimeout(() => {
+          this.setData({ countBounce: false })
+        }, 420)
       }
       this.orderCreatedHandler = () => {
         this.setData({ cartCount: 0 })
@@ -203,6 +207,7 @@ Page({
     }
 
     addToCart(dishId, 1)
+    wx.vibrateShort({ type: 'light' })
     this.refreshPage()
   },
 
