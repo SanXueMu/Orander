@@ -101,10 +101,21 @@ Page({
       })
     }
 
-    this.onShow()
+    this.refreshIdentity(nextMember)
     wx.showToast({
       title: '已保存',
       icon: 'success',
+    })
+  },
+
+  refreshIdentity(member: NonNullable<ReturnType<typeof getCurrentMember>>) {
+    applyPageLook(this, member)
+    this.setData({
+      nickname: member.nickname,
+      avatarUrl: member.avatarUrl,
+      showAvatarImage: !!member.avatarUrl,
+      avatarLabel: getMonogram(member.nickname, 'ME'),
+      avatarStyle: getAvatarStyle(member.nickname),
     })
   },
 

@@ -15,6 +15,37 @@ const ROLE_TABS: Array<{ id: SessionRole; label: string }> = [
   { id: 'admin', label: '管理员' },
 ]
 
+const ADMIN_LOCK_MAX_FAILS = 5
+const ADMIN_LOCK_MS = 60 * 1000
+const ADMIN_FAIL_COUNT_KEY = 'orander-admin-fail-count'
+const ADMIN_LOCKED_UNTIL_KEY = 'orander-admin-locked-until'
+
+const getAdminLockState = () => {
+  const lockedUntil = Number(wx.getStorageSync(ADMIN_LOCKED_UNTIL_KEY) || 0)
+  if (lockedUntil && Date.now() < lockedUntil) {
+    return { locked: true, remainSeconds: Math.ceil((lockedUntil - Date.now()) / 1000) }
+  }
+
+  return { locked: false, remainSeconds: 0 }
+}
+
+const recordAdminFailure = () => {
+  const count = Number(wx.getStorageSync(ADMIN_FAIL_COUNT_KEY) || 0) + 1
+  if (count >= ADMIN_LOCK_MAX_FAILS) {
+    wx.setStorageSync(ADMIN_FAIL_COUNT_KEY, 0)
+    wx.setStorageSync(ADMIN_LOCKED_UNTIL_KEY, Date.now() + ADMIN_LOCK_MS)
+    return { locked: true, remainSeconds: Math.ceil(ADMIN_LOCK_MS / 1000), remainAttempts: 0 }
+  }
+
+  wx.setStorageSync(ADMIN_FAIL_COUNT_KEY, count)
+  return { locked: false, remainSeconds: 0, remainAttempts: ADMIN_LOCK_MAX_FAILS - count }
+}
+
+const clearAdminFailures = () => {
+  wx.removeStorageSync(ADMIN_FAIL_COUNT_KEY)
+  wx.removeStorageSync(ADMIN_LOCKED_UNTIL_KEY)
+}
+
 Page({
   behaviors: [pageLookBehavior],
 
@@ -87,12 +118,26 @@ Page({
       return
     }
 
-    if (this.data.activeRole === 'admin' && !verifyAdminPassword(this.data.adminPassword)) {
-      wx.showToast({
-        title: '密码错误',
-        icon: 'none',
-      })
-      return
+    if (this.data.activeRole === 'admin') {
+      const lock = getAdminLockState()
+      if (lock.locked) {
+        wx.showToast({
+          title: `尝试过多，${lock.remainSeconds} 秒后再试`,
+          icon: 'none',
+        })
+        return
+      }
+
+      if (!verifyAdminPassword(this.data.adminPassword)) {
+        const failState = recordAdminFailure()
+        wx.showToast({
+          title: failState.locked
+            ? `连续错误 ${ADMIN_LOCK_MAX_FAILS} 次，锁定 ${failState.remainSeconds} 秒`
+            : `密码错误，还可尝试 ${failState.remainAttempts} 次`,
+          icon: 'none',
+        })
+        return
+      }
     }
 
     this.setData({ busy: true })
@@ -133,12 +178,26 @@ Page({
       return
     }
 
-    if (this.data.activeRole === 'admin' && !verifyAdminPassword(this.data.adminPassword)) {
-      wx.showToast({
-        title: '密码错误',
-        icon: 'none',
-      })
-      return
+    if (this.data.activeRole === 'admin') {
+      const lock = getAdminLockState()
+      if (lock.locked) {
+        wx.showToast({
+          title: `尝试过多，${lock.remainSeconds} 秒后再试`,
+          icon: 'none',
+        })
+        return
+      }
+
+      if (!verifyAdminPassword(this.data.adminPassword)) {
+        const failState = recordAdminFailure()
+        wx.showToast({
+          title: failState.locked
+            ? `连续错误 ${ADMIN_LOCK_MAX_FAILS} 次，锁定 ${failState.remainSeconds} 秒`
+            : `密码错误，还可尝试 ${failState.remainAttempts} 次`,
+          icon: 'none',
+        })
+        return
+      }
     }
 
     this.finishLogin({
@@ -153,16 +212,29 @@ Page({
     if (this.data.activeRole === 'admin') {
       let adminToken: string | undefined
       if (initCloud()) {
+        const lock = getAdminLockState()
+        if (lock.locked) {
+          wx.showToast({
+            title: `尝试过多，${lock.remainSeconds} 秒后再试`,
+            icon: 'none',
+          })
+          return
+        }
+
         const result = await verifyAdminCloud(this.data.adminPassword)
         if (!result) {
+          const failState = recordAdminFailure()
           wx.showToast({
-            title: '密码错误',
+            title: failState.locked
+              ? `连续错误 ${ADMIN_LOCK_MAX_FAILS} 次，锁定 ${failState.remainSeconds} 秒`
+              : `密码错误，还可尝试 ${failState.remainAttempts} 次`,
             icon: 'none',
           })
           return
         }
         adminToken = result.adminToken
       }
+      clearAdminFailures()
       loginAdmin(userInfo, loginCode, adminToken)
       wx.reLaunch({
         url: '/pages/admin/index',

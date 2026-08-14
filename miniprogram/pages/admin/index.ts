@@ -137,6 +137,7 @@ Page({
     const panel = event.currentTarget.dataset.panel as string
     this.setData({
       activePanel: panel,
+      swipedDishId: '',
     })
 
     if (panel === 'orders') {

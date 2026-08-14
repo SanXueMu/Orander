@@ -14,11 +14,10 @@
         <view class="waiting-time">{{createdText}}</view>
 
         <view class="waiting-status-row">
-          <view class="waiting-step waiting-step-active">已下单</view>
-          <view class="waiting-step-line"></view>
-          <view class="waiting-step waiting-step-active">账单确认</view>
-          <view class="waiting-step-line"></view>
-          <view class="waiting-step">等候中</view>
+          <block wx:for="{{statusSteps}}" wx:key="label">
+            <view wx:if="{{index > 0}}" class="waiting-step-line {{item.active ? 'waiting-step-line-active' : ''}}"></view>
+            <view class="waiting-step {{item.active ? 'waiting-step-active' : ''}}">{{item.label}}</view>
+          </block>
         </view>
       </view>
 

@@ -12,6 +12,7 @@ import {
   clearCart,
   createOrder,
 } from '../../utils/orander'
+import { MAX_CART_QUANTITY } from '../../utils/orander'
 import { applyPageLook, pageLookBehavior } from '../../behaviors/page-look'
 
 Page({
@@ -20,6 +21,7 @@ Page({
   data: {
     nickname: '访客',
     note: '',
+    submitting: false,
     lines: [] as Array<Record<string, unknown>>,
     totalText: formatMoney(0),
   },
@@ -58,6 +60,14 @@ Page({
       return
     }
 
+    if (line.quantity >= MAX_CART_QUANTITY) {
+      wx.showToast({
+        title: `每样菜品最多 ${MAX_CART_QUANTITY} 份`,
+        icon: 'none',
+      })
+      return
+    }
+
     setCartQuantity(dishId, line.quantity + 1)
     this.refreshPage()
   },
@@ -75,8 +85,23 @@ Page({
 
   removeLine(event: WechatMiniprogram.BaseEvent) {
     const dishId = event.currentTarget.dataset.id as string
-    removeFromCart(dishId)
-    this.refreshPage()
+    const line = buildCartLines().find((item) => item.dishId === dishId)
+    if (!line) {
+      return
+    }
+
+    wx.showModal({
+      title: '移除菜品',
+      content: `确定把「${line.dish.name}」从账单中移除吗？`,
+      success: (result) => {
+        if (!result.confirm) {
+          return
+        }
+
+        removeFromCart(dishId)
+        this.refreshPage()
+      },
+    })
   },
 
   onNoteInput(event: WechatMiniprogram.CustomEvent) {
@@ -87,6 +112,10 @@ Page({
   },
 
   submitOrder() {
+    if (this.data.submitting) {
+      return
+    }
+
     const profile = getCurrentMember()
     const lines = buildCartLines()
     if (!profile || !lines.length) {
@@ -98,10 +127,16 @@ Page({
     }
 
     const note = this.data.note.trim()
+    this.setData({ submitting: true })
+
+    const finishSubmit = () => {
+      this.setData({ submitting: false })
+    }
 
     const submitLocal = () => {
       const order = createOrder(note)
       if (!order) {
+        finishSubmit()
         wx.showToast({
           title: '账单为空',
           icon: 'none',

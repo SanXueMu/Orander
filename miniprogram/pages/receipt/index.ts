@@ -13,6 +13,7 @@ Page({
 
   data: {
     order: null as Record<string, unknown> | null,
+    statusSteps: [] as Array<{ label: string; active: boolean }>,
     totalText: formatMoney(0),
     createdText: '',
   },
@@ -46,14 +47,23 @@ Page({
 
     applyPageLook(this, getCurrentMember())
 
+    const completed = order.status === 'completed'
+    const statusSteps = [
+      { label: '已下单', active: true },
+      { label: '账单确认', active: true },
+      { label: completed ? '已完成' : '等候中', active: completed },
+    ]
+
     this.setData({
       order: {
         ...order,
+        statusText: completed ? '已完成' : '制作中',
         lines: order.items.map((item) => ({
           ...item,
           subtotalText: formatMoney(item.subtotal),
         })),
       },
+      statusSteps,
       totalText: formatMoney(order.total),
       createdText: formatShortDate(order.createdAt),
     })

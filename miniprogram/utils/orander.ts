@@ -814,14 +814,20 @@ export const getCart = () => {
   return readStorage<CartItem[]>(STORAGE_KEYS.cart, [])
 }
 
+export const MAX_CART_QUANTITY = 99
+
+const clampQuantity = (quantity: number) => {
+  return Math.min(MAX_CART_QUANTITY, Math.max(0, quantity))
+}
+
 export const addToCart = (dishId: string, quantity = 1) => {
   const cart = getCart()
   const currentIndex = cart.findIndex((item) => item.dishId === dishId)
 
   if (currentIndex >= 0) {
-    cart[currentIndex].quantity += quantity
+    cart[currentIndex].quantity = clampQuantity(cart[currentIndex].quantity + quantity)
   } else {
-    cart.push({ dishId, quantity })
+    cart.push({ dishId, quantity: clampQuantity(quantity) })
   }
 
   writeStorage(STORAGE_KEYS.cart, cart.filter((item) => item.quantity > 0))
@@ -830,11 +836,12 @@ export const addToCart = (dishId: string, quantity = 1) => {
 export const setCartQuantity = (dishId: string, quantity: number) => {
   const cart = getCart()
   const currentIndex = cart.findIndex((item) => item.dishId === dishId)
+  const nextQuantity = clampQuantity(quantity)
 
-  if (currentIndex < 0 && quantity > 0) {
-    cart.push({ dishId, quantity })
+  if (currentIndex < 0 && nextQuantity > 0) {
+    cart.push({ dishId, quantity: nextQuantity })
   } else if (currentIndex >= 0) {
-    cart[currentIndex].quantity = quantity
+    cart[currentIndex].quantity = nextQuantity
   }
 
   writeStorage(STORAGE_KEYS.cart, cart.filter((item) => item.quantity > 0))
