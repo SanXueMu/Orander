@@ -1,0 +1,5 @@
+<view class="stepper stepper-{{variant}}">
+  <view class="stepper-button" catchtap="onMinus">-</view>
+  <view class="stepper-value">{{quantity}}</view>
+  <view class="stepper-button" catchtap="onPlus">+</view>
+</view>

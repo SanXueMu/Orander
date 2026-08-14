@@ -8,6 +8,8 @@ import {
 import type { Member } from '../../utils/orander'
 import { applyPageLook, pageLookBehavior } from '../../behaviors/page-look'
 
+type OrderCardView = ReturnType<typeof mapOrders>[number]
+
 const mapOrders = () => {
   return getOrdersForCurrentMember().map((order) => ({
     ...order,
@@ -24,7 +26,7 @@ Page({
 
   data: {
     profile: null as Member | null,
-    orders: [] as Array<Record<string, unknown>>,
+    orders: [] as OrderCardView[],
   },
 
   onShow() {

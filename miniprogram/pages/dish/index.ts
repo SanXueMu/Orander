@@ -17,11 +17,17 @@ import {
 } from '../../utils/orander'
 import type { Dish } from '../../utils/orander'
 import { applyPageLook, pageLookBehavior } from '../../behaviors/page-look'
+import { eventBus } from '../../utils/event-bus'
 
 type MenuDishView = Dish & {
   quantity: number
   coverStyle: string
   priceText: string
+}
+
+const resolveDishId = (event: WechatMiniprogram.BaseEvent) => {
+  const detail = (event as WechatMiniprogram.CustomEvent).detail as { id?: string } | undefined
+  return (detail && detail.id) || (event.currentTarget.dataset.id as string)
 }
 
 const buildMenuDishes = (category: string, keyword: string) => {
@@ -41,6 +47,10 @@ const buildMenuDishes = (category: string, keyword: string) => {
 
 Page({
   behaviors: [pageLookBehavior],
+
+  cartChangedHandler: null as ((payload: { count: number }) => void) | null,
+
+  orderCreatedHandler: null as (() => void) | null,
 
   data: {
     nickname: '访客',
@@ -76,6 +86,29 @@ Page({
 
     this.refreshPage()
     this.setData({ menuLoading: false })
+
+    if (!this.cartChangedHandler) {
+      this.cartChangedHandler = (payload) => {
+        this.setData({ cartCount: payload.count })
+      }
+      this.orderCreatedHandler = () => {
+        this.setData({ cartCount: 0 })
+      }
+      eventBus.on('cart-changed', this.cartChangedHandler)
+      eventBus.on('order-created', this.orderCreatedHandler)
+    }
+  },
+
+  onHide() {
+    if (this.cartChangedHandler) {
+      eventBus.off('cart-changed', this.cartChangedHandler)
+      this.cartChangedHandler = null
+    }
+
+    if (this.orderCreatedHandler) {
+      eventBus.off('order-created', this.orderCreatedHandler)
+      this.orderCreatedHandler = null
+    }
   },
 
   refreshPage() {
@@ -124,7 +157,7 @@ Page({
   },
 
   increaseDish(event: WechatMiniprogram.BaseEvent) {
-    const dishId = event.currentTarget.dataset.id as string
+    const dishId = resolveDishId(event)
     const dish = getDishes().find((item) => item.id === dishId)
     if (!dish || dish.soldOut) {
       return
@@ -135,7 +168,7 @@ Page({
   },
 
   decreaseDish(event: WechatMiniprogram.BaseEvent) {
-    const dishId = event.currentTarget.dataset.id as string
+    const dishId = resolveDishId(event)
     const cartLine = getCart().find((item) => item.dishId === dishId)
     if (!cartLine) {
       return

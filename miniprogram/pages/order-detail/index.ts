@@ -6,8 +6,17 @@ import {
   saveReview,
 } from '../../utils/orander'
 import { applyPageLook, pageLookBehavior } from '../../behaviors/page-look'
+import type { Order, OrderItem } from '../../utils/orander'
 
-const getOrderView = (orderId: string) => {
+type OrderDetailLine = OrderItem & { priceText: string; subtotalText: string }
+type OrderDetailView = Order & {
+  totalText: string
+  receiptDate: string
+  statusText: string
+  lines: OrderDetailLine[]
+}
+
+const getOrderView = (orderId: string): OrderDetailView | null => {
   const order = getOrderById(orderId)
   if (!order) {
     return null
@@ -30,7 +39,7 @@ Page({
   behaviors: [pageLookBehavior],
 
   data: {
-    order: null as Record<string, unknown> | null,
+    order: null as OrderDetailView | null,
     ratingOptions: [1, 2, 3, 4, 5],
     rating: 5,
     comment: '',

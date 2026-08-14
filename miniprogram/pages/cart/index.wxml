@@ -27,11 +27,7 @@
             </view>
             <view class="cart-line-desc">{{item.dish.category}}</view>
             <view class="cart-line-actions">
-              <view class="line-stepper">
-                <view class="line-stepper-button" data-id="{{item.dishId}}" bindtap="decreaseQuantity">-</view>
-                <view class="line-stepper-value">{{item.quantity}}</view>
-                <view class="line-stepper-button" data-id="{{item.dishId}}" bindtap="increaseQuantity">+</view>
-              </view>
+              <dish-stepper variant="line" quantity="{{item.quantity}}" dish-id="{{item.dishId}}" bind:minus="decreaseQuantity" bind:plus="increaseQuantity" />
               <view class="line-remove" data-id="{{item.dishId}}" bindtap="removeLine">删除</view>
             </view>
           </view>

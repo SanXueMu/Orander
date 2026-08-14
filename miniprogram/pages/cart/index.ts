@@ -13,7 +13,15 @@ import {
   createOrder,
 } from '../../utils/orander'
 import { MAX_CART_QUANTITY } from '../../utils/orander'
+import { eventBus } from '../../utils/event-bus'
 import { applyPageLook, pageLookBehavior } from '../../behaviors/page-look'
+
+type CartLineView = ReturnType<typeof buildCartLines>[number] & { subtotalText: string }
+
+const resolveDishId = (event: WechatMiniprogram.BaseEvent) => {
+  const detail = (event as WechatMiniprogram.CustomEvent).detail as { id?: string } | undefined
+  return (detail && detail.id) || (event.currentTarget.dataset.id as string)
+}
 
 Page({
   behaviors: [pageLookBehavior],
@@ -22,7 +30,7 @@ Page({
     nickname: '访客',
     note: '',
     submitting: false,
-    lines: [] as Array<Record<string, unknown>>,
+    lines: [] as CartLineView[],
     totalText: formatMoney(0),
   },
 
@@ -41,7 +49,7 @@ Page({
     const session = getSession()
     applyPageLook(this, getCurrentMember())
     const stats = getCartStats()
-    const lines = buildCartLines().map((line) => ({
+    const lines: CartLineView[] = buildCartLines().map((line) => ({
       ...line,
       subtotalText: formatMoney(line.subtotal),
     }))
@@ -51,10 +59,11 @@ Page({
       lines,
       totalText: formatMoney(stats.total),
     })
+    eventBus.emit('cart-changed', { count: stats.count })
   },
 
   increaseQuantity(event: WechatMiniprogram.BaseEvent) {
-    const dishId = event.currentTarget.dataset.id as string
+    const dishId = resolveDishId(event)
     const line = buildCartLines().find((item) => item.dishId === dishId)
     if (!line) {
       return
@@ -73,7 +82,7 @@ Page({
   },
 
   decreaseQuantity(event: WechatMiniprogram.BaseEvent) {
-    const dishId = event.currentTarget.dataset.id as string
+    const dishId = resolveDishId(event)
     const line = buildCartLines().find((item) => item.dishId === dishId)
     if (!line) {
       return
@@ -152,6 +161,7 @@ Page({
         return
       }
 
+      eventBus.emit('order-created', { orderId: order.id })
       wx.redirectTo({
         url: `/pages/receipt/index?id=${order.id}`,
       })
@@ -185,6 +195,7 @@ Page({
       }
 
       clearCart()
+      eventBus.emit('order-created', { orderId: order.id })
       wx.redirectTo({
         url: `/pages/receipt/index?id=${order.id}`,
       })

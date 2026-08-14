@@ -7,12 +7,16 @@ import {
   isVisitorSession,
 } from '../../utils/orander'
 import { applyPageLook, pageLookBehavior } from '../../behaviors/page-look'
+import type { Order, OrderItem } from '../../utils/orander'
+
+type OrderReceiptLine = OrderItem & { priceText: string; subtotalText: string }
+type OrderReceiptView = Order & { statusText: string; lines: OrderReceiptLine[] }
 
 Page({
   behaviors: [pageLookBehavior],
 
   data: {
-    order: null as Record<string, unknown> | null,
+    order: null as OrderReceiptView | null,
     statusSteps: [] as Array<{ label: string; active: boolean }>,
     totalText: formatMoney(0),
     createdText: '',

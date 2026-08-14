@@ -34,6 +34,17 @@ import { pageLookBehavior } from '../../behaviors/page-look'
 
 const ORDER_PAGE_SIZE = 15
 
+const mapMemberCards = () => {
+  return getContactCards().map((member) => ({
+    ...member,
+    showAvatarImage: !!member.avatarUrl,
+    avatarLabel: getMonogram(member.nickname, 'OR'),
+    avatarStyle: getAvatarStyle(member.nickname),
+    joinedText: formatShortDate(member.joinedAt),
+    lastOrderText: formatShortDate(member.lastOrderAt),
+  }))
+}
+
 const mapOrderRows = (orders: Order[]) => {
   return orders.map((order) => ({
     ...order,
@@ -68,13 +79,13 @@ Page({
     activePanel: 'menu',
     categories: ['全部'],
     activeCategory: '全部',
-    dishes: [] as Array<Record<string, unknown>>,
-    members: [] as Array<Record<string, unknown>>,
+    dishes: [] as Array<ReturnType<typeof mapDishCards>[number]>,
+    members: [] as Array<ReturnType<typeof mapMemberCards>[number]>,
     swipedDishId: '',
     touchStartX: 0,
     touchStartY: 0,
     publishingCloud: false,
-    orders: [] as Array<Record<string, unknown>>,
+    orders: [] as Array<ReturnType<typeof mapOrderRows>[number]>,
     ordersPage: 1,
     ordersPageSize: ORDER_PAGE_SIZE,
     ordersTotal: 0,
@@ -115,14 +126,7 @@ Page({
 
     const categories = ['全部', ...getMenuCategories()]
     const activeCategory = categories.indexOf(this.data.activeCategory) >= 0 ? this.data.activeCategory : '全部'
-    const members = getContactCards().map((member) => ({
-      ...member,
-      showAvatarImage: !!member.avatarUrl,
-      avatarLabel: getMonogram(member.nickname, 'OR'),
-      avatarStyle: getAvatarStyle(member.nickname),
-      joinedText: formatShortDate(member.joinedAt),
-      lastOrderText: formatShortDate(member.lastOrderAt),
-    }))
+    const members = mapMemberCards()
 
     this.setData({
       adminName: session ? session.nickname : 'Admin',

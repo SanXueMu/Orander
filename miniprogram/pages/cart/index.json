@@ -1,5 +1,6 @@
 {
   "usingComponents": {
-    "navigation-bar": "/components/navigation-bar/navigation-bar"
+    "navigation-bar": "/components/navigation-bar/navigation-bar",
+    "dish-stepper": "/components/dish-stepper/dish-stepper"
   }
 }

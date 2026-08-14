@@ -62,11 +62,7 @@
 
             <view class="menu-line-bottom menu-card-footer">
               <view wx:if="{{item.soldOut}}" class="menu-soldout">已售罄</view>
-              <view wx:else class="menu-stepper">
-                <view class="menu-stepper-button" data-id="{{item.id}}" bindtap="decreaseDish">-</view>
-                <view class="menu-stepper-value">{{item.quantity}}</view>
-                <view class="menu-stepper-button" data-id="{{item.id}}" bindtap="increaseDish">+</view>
-              </view>
+              <dish-stepper wx:else variant="menu" quantity="{{item.quantity}}" dish-id="{{item.id}}" bind:minus="decreaseDish" bind:plus="increaseDish" />
             </view>
           </view>
         </view>

@@ -1,6 +1,18 @@
 import { fetchCloudMemberOrders, initCloud, updateCloudOrderStatus } from '../../utils/cloud'
 import { formatMoney, formatShortDate, getAdminToken, getAvatarStyle, getMembers, getMonogram, getOrdersByMemberId, isAdminSession, updateOrderStatus } from '../../utils/orander'
 import { pageLookBehavior } from '../../behaviors/page-look'
+import type { Order } from '../../utils/orander'
+
+const mapOrderRows = (orders: Order[]) => {
+  return orders.map((order) => ({
+    ...order,
+    totalText: formatMoney(order.total),
+    createdText: formatShortDate(order.createdAt),
+    statusText: order.status === 'completed' ? '已完成' : '进行中',
+    canComplete: order.status !== 'completed',
+    itemsText: order.items.map((item) => item.name).join(' / '),
+  }))
+}
 
 Page({
   behaviors: [pageLookBehavior],
@@ -15,7 +27,7 @@ Page({
     memberId: '',
     nickname: '',
     relationLabel: '',
-    orders: [] as Array<Record<string, unknown>>,
+    orders: [] as ReturnType<typeof mapOrderRows>,
   },
 
   async onLoad(options: Record<string, string>) {
@@ -62,14 +74,7 @@ Page({
     }
 
     this.setData({
-      orders: orders.map((order) => ({
-        ...order,
-        totalText: formatMoney(order.total),
-        createdText: formatShortDate(order.createdAt),
-        statusText: order.status === 'completed' ? '已完成' : '进行中',
-        canComplete: order.status !== 'completed',
-        itemsText: order.items.map((item) => item.name).join(' / '),
-      })),
+      orders: mapOrderRows(orders),
     })
   },
 

@@ -1,0 +1,47 @@
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+}
+
+.stepper-button {
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  font-weight: 700;
+}
+
+.stepper-value {
+  min-width: 44rpx;
+  text-align: center;
+  font-size: 26rpx;
+  font-weight: 700;
+}
+
+/* menu 变体 — 菜单卡片内 */
+.stepper-menu .stepper-button {
+  background: var(--ink);
+  color: var(--panel);
+}
+
+.stepper-menu .stepper-value {
+  color: var(--ink);
+}
+
+/* line 变体 — 账单行内 */
+.stepper-line .stepper-button {
+  background: var(--panel-soft);
+  color: var(--ink);
+  width: 40rpx;
+  height: 40rpx;
+  font-size: 26rpx;
+}
+
+.stepper-line .stepper-value {
+  color: var(--ink);
+  font-size: 24rpx;
+}
