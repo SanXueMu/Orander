@@ -245,15 +245,15 @@ button::after {
 
 .theme-ink {
   --page-bg: #1a1411;
-  --panel: #251e19;
-  --panel-soft: #2f2620;
-  --ink: #f5ede3;
-  --muted: #c4b3a3;
+  --panel: #262019;
+  --panel-soft: #342b23;
+  --ink: #f7efe5;
+  --muted: #cdc0b2;
   --accent: #e09158;
   --accent-deep: #c97a42;
-  --accent-soft: rgba(224, 145, 88, 0.16);
-  --line: rgba(245, 237, 227, 0.12);
-  --line-strong: rgba(245, 237, 227, 0.28);
+  --accent-soft: rgba(224, 145, 88, 0.18);
+  --line: rgba(247, 239, 229, 0.14);
+  --line-strong: rgba(247, 239, 229, 0.32);
   --success: #9fdcc0;
   --warning: #e3b465;
   --danger: #e08580;
@@ -493,4 +493,120 @@ button::after {
 
 .fade-in-up-late {
   animation: fade-in-up 0.32s ease 0.08s both;
+}
+
+/* ========== D6：分场景空态插画 ========== */
+
+.empty-icon {
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.empty-bill {
+  width: 96rpx;
+  height: 124rpx;
+  padding: 26rpx 20rpx;
+  border: 3rpx solid var(--line-strong);
+  border-radius: 14rpx 14rpx 18rpx 18rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.empty-bill-line {
+  height: 6rpx;
+  border-radius: 999rpx;
+  background: var(--line-strong);
+}
+
+.empty-bill-line:first-child {
+  width: 80%;
+  background: var(--accent-soft);
+}
+
+.empty-ticket {
+  width: 116rpx;
+  height: 96rpx;
+  padding: 24rpx 22rpx;
+  border: 3rpx dashed var(--line-strong);
+  border-radius: 16rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.empty-ticket-line {
+  height: 6rpx;
+  border-radius: 999rpx;
+  background: var(--line-strong);
+}
+
+.empty-ticket-line:first-child {
+  width: 70%;
+  background: var(--accent-soft);
+}
+
+.empty-person {
+  width: 104rpx;
+  height: 116rpx;
+  position: relative;
+}
+
+.empty-person-head {
+  width: 40rpx;
+  height: 40rpx;
+  margin: 0 auto;
+  border-radius: 50%;
+  border: 3rpx solid var(--line-strong);
+  box-sizing: border-box;
+}
+
+.empty-person-body {
+  margin-top: 14rpx;
+  height: 44rpx;
+  border: 3rpx solid var(--line-strong);
+  border-top: none;
+  border-radius: 0 0 44rpx 44rpx;
+  box-sizing: border-box;
+  background: var(--accent-soft);
+}
+
+/* 云端降级重试卡 */
+.cloud-degraded {
+  margin-top: 18rpx;
+  padding: 22rpx 26rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+  border-radius: 20rpx;
+  background: rgba(201, 138, 45, 0.12);
+  border: 1px solid rgba(201, 138, 45, 0.35);
+}
+
+.cloud-degraded-copy {
+  flex: 1;
+  font-size: 24rpx;
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+.cloud-degraded-copy-label {
+  font-weight: 700;
+  color: var(--warning);
+}
+
+.cloud-retry-button {
+  min-width: 120rpx;
+  min-height: 80rpx;
+  padding: 0 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 18rpx;
+  background: var(--panel);
+  border: 1px solid var(--line-strong);
+  font-size: 24rpx;
+  font-weight: 600;
+  color: var(--ink);
 }

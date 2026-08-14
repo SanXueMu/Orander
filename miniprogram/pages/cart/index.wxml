@@ -43,7 +43,7 @@
       </view>
 
       <view wx:else class="surface empty-state empty-cart">
-<view class="empty-plate"><view class="empty-plate-inner"></view></view>
+<view class="empty-icon empty-bill"><view class="empty-bill-line"></view><view class="empty-bill-line"></view></view>
         <view class="section-title">账单为空</view>
         <view hover-class="press-scale" hover-stay-time="60" class="button-primary empty-cart-button" bindtap="backMenu">去选菜</view>
       </view>

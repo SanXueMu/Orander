@@ -27,6 +27,14 @@
       </view>
 
       <block wx:if="{{activePanel === 'orders'}}">
+        <view wx:if="{{cloudDegraded}}" class="cloud-degraded">
+          <view class="cloud-degraded-copy">
+            <view class="cloud-degraded-copy-label">云端数据加载失败</view>
+            <view>正在展示本地缓存，可重试拉取云端数据。</view>
+          </view>
+          <view class="cloud-retry-button" hover-class="press-scale" hover-stay-time="60" bindtap="retryCloud">重试</view>
+        </view>
+
         <view wx:if="{{ordersLoading}}" class="surface admin-empty">加载中…</view>
         <view wx:elif="{{!orders.length}}" class="surface admin-empty">还没有订单</view>
         <view wx:else class="list-gap">
@@ -59,6 +67,13 @@
       </block>
 
       <block wx:elif="{{activePanel === 'stats'}}">
+        <view wx:if="{{cloudDegraded}}" class="cloud-degraded">
+          <view class="cloud-degraded-copy">
+            <view class="cloud-degraded-copy-label">云端统计加载失败</view>
+            <view>正在展示本地统计，可重试拉取云端数据。</view>
+          </view>
+          <view class="cloud-retry-button" hover-class="press-scale" hover-stay-time="60" bindtap="retryCloud">重试</view>
+        </view>
         <view wx:if="{{!stats}}" class="surface admin-empty">暂无统计数据</view>
         <view wx:else class="list-gap">
           <view class="surface admin-card admin-today-card">

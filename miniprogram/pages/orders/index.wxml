@@ -10,7 +10,7 @@
       </view>
 
       <view wx:if="{{!profile}}" class="surface empty-state">
-<view class="empty-plate"><view class="empty-plate-inner"></view></view>
+<view class="empty-icon empty-ticket"><view class="empty-ticket-line"></view><view class="empty-ticket-line"></view></view>
         <view class="section-title">还没有登记客人身份</view>
         <view class="section-copy">回首页先选头像、昵称和关系，之后订单才会归档到你名下。</view>
         <view hover-class="press-scale" hover-stay-time="60" class="button-primary empty-orders-button" bindtap="goMenu">回到菜单页</view>
@@ -34,7 +34,7 @@
       </view>
 
       <view wx:else class="surface empty-state">
-<view class="empty-plate"><view class="empty-plate-inner"></view></view>
+<view class="empty-icon empty-ticket"><view class="empty-ticket-line"></view><view class="empty-ticket-line"></view></view>
         <view class="section-title">还没有下过单</view>
         <view class="section-copy">现在去菜单页点一桌，第一张回执就会在这里出现。</view>
         <view hover-class="press-scale" hover-stay-time="60" class="button-primary empty-orders-button" bindtap="goMenu">去点菜</view>

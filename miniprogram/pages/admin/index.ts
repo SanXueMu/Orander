@@ -196,10 +196,12 @@ Page({
     try {
       const result = await listAllOrdersCloud(page, ORDER_PAGE_SIZE)
       if (!result) {
+        this.setData({ cloudDegraded: true })
         this.loadLocalOrders(page)
         return
       }
 
+      this.setData({ cloudDegraded: false })
       this.applyOrders(result)
     } finally {
       this.setData({ ordersLoading: false })
@@ -281,10 +283,12 @@ Page({
 
     const stats = await getOrderStatsCloud()
     if (!stats) {
+      this.setData({ cloudDegraded: true })
       this.loadLocalStats()
       return
     }
 
+    this.setData({ cloudDegraded: false })
     this.applyStats(stats)
   },
 
@@ -343,6 +347,11 @@ Page({
       daily: buildDailyFromOrders(orders),
       topDishes,
     })
+  },
+
+  async retryCloud() {
+    this.setData({ cloudDegraded: false })
+    await Promise.all([this.loadOrders(1), this.loadStats()])
   },
 
   async toggleBusinessStatus() {
