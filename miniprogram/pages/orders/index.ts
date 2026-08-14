@@ -4,6 +4,7 @@ import {
   formatShortDate,
   getCurrentMember,
   getOrdersForCurrentMember,
+  isVisitorSession,
 } from '../../utils/orander'
 import type { Member } from '../../utils/orander'
 
@@ -29,6 +30,13 @@ Page({
   },
 
   onShow() {
+    if (!isVisitorSession()) {
+      wx.reLaunch({
+        url: '/pages/index/index',
+      })
+      return
+    }
+
     const profile = getCurrentMember()
     const pageLook = buildPageLook(profile)
 

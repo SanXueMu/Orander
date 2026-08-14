@@ -21,6 +21,7 @@
         </view>
 
         <view class="button-primary profile-button" bindtap="saveProfile">保存</view>
+        <view class="button-ghost profile-button" bindtap="goSettings">通用设置</view>
         <view class="button-ghost profile-button" bindtap="logout">退出登录</view>
       </view>
     </view>

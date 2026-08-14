@@ -41,4 +41,6 @@
       </view>
     </view>
   </scroll-view>
+
+  <visitor-tab-bar active="orders"></visitor-tab-bar>
 </view>

@@ -3,6 +3,10 @@
     <view class="visitor-tab-dot"></view>
     <view class="visitor-tab-label">菜单</view>
   </view>
+  <view class="visitor-tab {{active === 'orders' ? 'visitor-tab-active' : ''}}" bindtap="goOrders">
+    <view class="visitor-tab-dot"></view>
+    <view class="visitor-tab-label">订单</view>
+  </view>
   <view class="visitor-tab {{active === 'mine' ? 'visitor-tab-active' : ''}}" bindtap="goProfile">
     <view class="visitor-tab-dot"></view>
     <view class="visitor-tab-label">我的</view>

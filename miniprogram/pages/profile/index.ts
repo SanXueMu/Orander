@@ -115,4 +115,10 @@ Page({
       url: '/pages/index/index',
     })
   },
+
+  goSettings() {
+    wx.navigateTo({
+      url: '/pages/settings/index',
+    })
+  },
 })

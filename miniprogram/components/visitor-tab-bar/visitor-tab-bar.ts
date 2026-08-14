@@ -17,6 +17,16 @@ Component({
       })
     },
 
+    goOrders() {
+      if (this.data.active === 'orders') {
+        return
+      }
+
+      wx.redirectTo({
+        url: '/pages/orders/index',
+      })
+    },
+
     goProfile() {
       if (this.data.active === 'mine') {
         return
