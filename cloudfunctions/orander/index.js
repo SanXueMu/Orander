@@ -394,11 +394,44 @@ const actions = {
       .sort((left, right) => right.quantity - left.quantity)
       .slice(0, 10)
 
+    const startOfToday = new Date()
+    startOfToday.setHours(0, 0, 0, 0)
+
+    const todayOrders = orders.filter((order) => new Date(order.createdAt) >= startOfToday)
+
+    const today = {
+      orders: todayOrders.length,
+      revenue: Number(todayOrders.reduce((sum, order) => sum + order.total, 0).toFixed(2)),
+      submitted: todayOrders.filter((order) => order.status === 'submitted').length,
+    }
+
+    const daily = []
+    for (let offset = 6; offset >= 0; offset -= 1) {
+      const day = new Date()
+      day.setHours(0, 0, 0, 0)
+      day.setDate(day.getDate() - offset)
+      const next = new Date(day)
+      next.setDate(day.getDate() + 1)
+
+      const dayOrders = orders.filter((order) => {
+        const time = new Date(order.createdAt)
+        return time >= day && time < next
+      })
+
+      daily.push({
+        date: `${day.getMonth() + 1}/${day.getDate()}`,
+        orders: dayOrders.length,
+        revenue: Number(dayOrders.reduce((sum, order) => sum + order.total, 0).toFixed(2)),
+      })
+    }
+
     return {
       totalOrders: orders.length,
       completedCount,
       submittedCount,
       revenue: Number(revenue.toFixed(2)),
+      today,
+      daily,
       topDishes,
     }
   },

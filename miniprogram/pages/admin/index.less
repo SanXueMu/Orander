@@ -289,3 +289,157 @@
 .admin-rank-row .admin-card-copy {
   flex-shrink: 0;
 }
+
+/* ========== D5：管理端专业化 ========== */
+
+.admin-order-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.admin-order-colorbar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 8rpx;
+}
+
+.colorbar-submitted {
+  background: var(--warning);
+}
+
+.colorbar-completed {
+  background: var(--success);
+}
+
+.admin-pending-badge {
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 12rpx;
+  padding: 4rpx 14rpx;
+  border-radius: 999rpx;
+  background: rgba(201, 138, 45, 0.16);
+  color: var(--warning);
+  font-size: 20rpx;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.admin-complete-button {
+  min-width: 200rpx;
+  min-height: 76rpx;
+  padding: 0 30rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20rpx;
+  background: var(--accent);
+  color: #fff;
+  font-size: 26rpx;
+  font-weight: 700;
+}
+
+.admin-today-grid {
+  margin-top: 22rpx;
+  display: flex;
+  gap: 16rpx;
+}
+
+.admin-today-item {
+  flex: 1;
+  padding: 22rpx 12rpx;
+  border-radius: 20rpx;
+  background: var(--panel-soft);
+  text-align: center;
+}
+
+.admin-today-value {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.admin-today-pending {
+  color: var(--warning);
+}
+
+.admin-today-label {
+  margin-top: 8rpx;
+  font-size: 22rpx;
+  color: var(--muted);
+}
+
+.chart-row {
+  margin-top: 24rpx;
+  display: flex;
+  align-items: flex-end;
+  gap: 14rpx;
+  height: 220rpx;
+}
+
+.chart-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+}
+
+.chart-bar-wrap {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.chart-bar {
+  width: 34rpx;
+  border-radius: 10rpx 10rpx 4rpx 4rpx;
+  background: linear-gradient(180deg, var(--accent) 0%, var(--accent-deep) 100%);
+  transition: height 0.4s ease;
+}
+
+.chart-bar-empty {
+  background: var(--line);
+}
+
+.chart-label {
+  margin-top: 10rpx;
+  font-size: 20rpx;
+  color: var(--muted);
+}
+
+.admin-rank-row {
+  display: flex;
+  align-items: center;
+  gap: 18rpx;
+}
+
+.admin-rank-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.admin-rank-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12rpx;
+}
+
+.admin-rank-progress {
+  margin-top: 12rpx;
+  height: 10rpx;
+  border-radius: 999rpx;
+  background: var(--panel-soft);
+  overflow: hidden;
+}
+
+.admin-rank-progress-fill {
+  height: 100%;
+  border-radius: 999rpx;
+  background: linear-gradient(90deg, var(--accent-deep), var(--accent));
+  transition: width 0.4s ease;
+}

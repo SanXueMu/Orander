@@ -257,6 +257,16 @@ export interface OrderStats {
   completedCount: number
   submittedCount: number
   revenue: number
+  today?: {
+    orders: number
+    revenue: number
+    submitted: number
+  }
+  daily?: Array<{
+    date: string
+    orders: number
+    revenue: number
+  }>
   topDishes: Array<{
     dishId: string
     name: string

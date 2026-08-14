@@ -30,10 +30,14 @@
         <view wx:if="{{ordersLoading}}" class="surface admin-empty">加载中…</view>
         <view wx:elif="{{!orders.length}}" class="surface admin-empty">还没有订单</view>
         <view wx:else class="list-gap">
-          <view wx:for="{{orders}}" wx:key="id" class="surface admin-card">
+          <view wx:for="{{orders}}" wx:key="id" class="surface admin-card admin-order-card">
+            <view class="admin-order-colorbar {{item.status === 'completed' ? 'colorbar-completed' : 'colorbar-submitted'}}"></view>
             <view class="admin-card-top">
               <view>
-                <view class="admin-card-title">{{item.nickname}}</view>
+                <view class="admin-card-title">
+                  {{item.nickname}}
+                  <view wx:if="{{item.canComplete}}" class="admin-pending-badge">待完成</view>
+                </view>
                 <view class="admin-card-copy">{{item.orderNumber}} · {{item.createdText}}</view>
               </view>
               <view class="admin-order-status {{item.status === 'completed' ? 'status-completed' : 'status-submitted'}}">{{item.statusText}}</view>
@@ -42,7 +46,7 @@
             <view wx:if="{{item.note}}" class="admin-card-copy admin-order-note">备注：{{item.note}}</view>
             <view class="admin-card-actions user-card-actions">
               <view class="num admin-card-price">{{item.totalText}}</view>
-              <view wx:if="{{item.canComplete}}" hover-class="press-scale" hover-stay-time="60" class="button-secondary mini-action" data-id="{{item.id}}" bindtap="completeOrder">标记完成</view>
+              <view wx:if="{{item.canComplete}}" hover-class="press-deep" hover-stay-time="60" class="admin-complete-button" data-id="{{item.id}}" bindtap="completeOrder">✓ 标记完成</view>
             </view>
           </view>
 
@@ -57,6 +61,38 @@
       <block wx:elif="{{activePanel === 'stats'}}">
         <view wx:if="{{!stats}}" class="surface admin-empty">暂无统计数据</view>
         <view wx:else class="list-gap">
+          <view class="surface admin-card admin-today-card">
+            <view class="section-kicker">TODAY</view>
+            <view class="section-title">今日速览</view>
+            <view class="admin-today-grid">
+              <view class="admin-today-item">
+                <view class="num admin-today-value">{{statsTodayRevenueText}}</view>
+                <view class="admin-today-label">今日营收</view>
+              </view>
+              <view class="admin-today-item">
+                <view class="num admin-today-value">{{statsToday.orders}}</view>
+                <view class="admin-today-label">今日订单</view>
+              </view>
+              <view class="admin-today-item">
+                <view class="num admin-today-value {{statsToday.submitted > 0 ? 'admin-today-pending' : ''}}">{{statsToday.submitted}}</view>
+                <view class="admin-today-label">待完成</view>
+              </view>
+            </view>
+          </view>
+
+          <view class="surface admin-card">
+            <view class="section-kicker">LAST 7 DAYS</view>
+            <view class="section-title">近 7 日营收</view>
+            <view class="chart-row">
+              <view wx:for="{{statsDaily}}" wx:key="date" class="chart-col">
+                <view class="chart-bar-wrap">
+                  <view class="chart-bar {{item.revenue === 0 ? 'chart-bar-empty' : ''}}" style="height: {{item.percent}}%"></view>
+                </view>
+                <view class="chart-label">{{item.date}}</view>
+              </view>
+            </view>
+          </view>
+
           <view class="surface admin-stats-grid">
             <view class="admin-stats-item">
               <view class="num admin-stats-value">{{statsRevenueText}}</view>
@@ -79,12 +115,19 @@
           <view class="surface admin-card">
             <view class="section-kicker">TOP DISHES</view>
             <view class="section-title">菜品销量榜</view>
-            <view wx:for="{{stats.topDishes}}" wx:key="dishId" class="admin-rank-row">
+            <view wx:for="{{statsTopDishes}}" wx:key="dishId" class="admin-rank-row">
               <view class="admin-rank-index">{{index + 1}}</view>
-              <view class="admin-card-title">{{item.name}}</view>
-              <view class="admin-card-copy">售出 {{item.quantity}} 份</view>
+              <view class="admin-rank-main">
+                <view class="admin-rank-head">
+                  <view class="admin-card-title">{{item.name}}</view>
+                  <view class="admin-card-copy">售出 {{item.quantity}} 份</view>
+                </view>
+                <view class="admin-rank-progress">
+                  <view class="admin-rank-progress-fill" style="width: {{item.percent}}%"></view>
+                </view>
+              </view>
             </view>
-            <view wx:if="{{!stats.topDishes.length}}" class="admin-empty">还没有销量数据</view>
+            <view wx:if="{{!statsTopDishes.length}}" class="admin-empty">还没有销量数据</view>
           </view>
         </view>
       </block>

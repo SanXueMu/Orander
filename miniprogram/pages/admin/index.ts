@@ -34,6 +34,43 @@ import { pageLookBehavior } from '../../behaviors/page-look'
 
 const ORDER_PAGE_SIZE = 15
 
+const buildTodayFromOrders = (orders: Order[]) => {
+  const startOfToday = new Date()
+  startOfToday.setHours(0, 0, 0, 0)
+  const todayOrders = orders.filter((order) => new Date(order.createdAt) >= startOfToday)
+
+  return {
+    orders: todayOrders.length,
+    revenue: Number(todayOrders.reduce((sum, order) => sum + order.total, 0).toFixed(2)),
+    submitted: todayOrders.filter((order) => order.status === 'submitted').length,
+  }
+}
+
+const buildDailyFromOrders = (orders: Order[]) => {
+  const daily: Array<{ date: string; orders: number; revenue: number }> = []
+
+  for (let offset = 6; offset >= 0; offset -= 1) {
+    const day = new Date()
+    day.setHours(0, 0, 0, 0)
+    day.setDate(day.getDate() - offset)
+    const next = new Date(day)
+    next.setDate(day.getDate() + 1)
+
+    const dayOrders = orders.filter((order) => {
+      const time = new Date(order.createdAt)
+      return time >= day && time < next
+    })
+
+    daily.push({
+      date: `${day.getMonth() + 1}/${day.getDate()}`,
+      orders: dayOrders.length,
+      revenue: Number(dayOrders.reduce((sum, order) => sum + order.total, 0).toFixed(2)),
+    })
+  }
+
+  return daily
+}
+
 const mapMemberCards = () => {
   return getContactCards().map((member) => ({
     ...member,
@@ -248,9 +285,33 @@ Page({
       return
     }
 
+    this.applyStats(stats)
+  },
+
+  applyStats(base: OrderStats) {
+    const localOrders = getOrders()
+    const today = base.today || buildTodayFromOrders(localOrders)
+    const daily = base.daily && base.daily.length ? base.daily : buildDailyFromOrders(localOrders)
+    const maxRevenue = Math.max(...daily.map((day) => day.revenue), 0)
+    const chartDaily = daily.map((day) => ({
+      ...day,
+      percent: maxRevenue > 0 ? Math.max(4, Math.round((day.revenue / maxRevenue) * 100)) : 0,
+    }))
+
+    const topDishes = base.topDishes || []
+    const maxQuantity = topDishes.length ? Math.max(...topDishes.map((dish) => dish.quantity)) : 0
+    const chartTopDishes = topDishes.map((dish) => ({
+      ...dish,
+      percent: maxQuantity > 0 ? Math.max(4, Math.round((dish.quantity / maxQuantity) * 100)) : 0,
+    }))
+
     this.setData({
-      stats,
-      statsRevenueText: formatMoney(stats.revenue),
+      stats: base,
+      statsRevenueText: formatMoney(base.revenue),
+      statsToday: today,
+      statsTodayRevenueText: formatMoney(today.revenue),
+      statsDaily: chartDaily,
+      statsTopDishes: chartTopDishes,
     })
   },
 
@@ -273,15 +334,14 @@ Page({
       .sort((left, right) => right.quantity - left.quantity)
       .slice(0, 10)
 
-    this.setData({
-      stats: {
-        totalOrders: orders.length,
-        completedCount: orders.filter((order) => order.status === 'completed').length,
-        submittedCount: orders.filter((order) => order.status === 'submitted').length,
-        revenue: Number(revenue.toFixed(2)),
-        topDishes,
-      },
-      statsRevenueText: formatMoney(revenue),
+    this.applyStats({
+      totalOrders: orders.length,
+      completedCount: orders.filter((order) => order.status === 'completed').length,
+      submittedCount: orders.filter((order) => order.status === 'submitted').length,
+      revenue: Number(revenue.toFixed(2)),
+      today: buildTodayFromOrders(orders),
+      daily: buildDailyFromOrders(orders),
+      topDishes,
     })
   },
 
