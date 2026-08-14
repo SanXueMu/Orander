@@ -8,9 +8,9 @@
       <view class="menu-top-row">
         <view class="surface menu-summary-card">
           <view class="menu-name">{{nickname}}</view>
-          <view class="menu-count">{{cartCount}} 件</view>
+          <view class="num menu-count">{{cartCount}} 件</view>
         </view>
-        <view class="menu-mini-action menu-bill-action" bindtap="goBill">账单 {{cartTotalText}}</view>
+        <view hover-class="press-scale" hover-stay-time="60" class="menu-mini-action menu-bill-action" bindtap="goBill">账单 {{cartTotalText}}</view>
       </view>
 
       <view class="surface menu-search-card">
@@ -23,7 +23,7 @@
           <view
             wx:for="{{categories}}"
             wx:key="*this"
-            class="chip {{item === activeCategory ? 'chip-active' : ''}}"
+            hover-class="press-dim" hover-stay-time="60" class="chip {{item === activeCategory ? 'chip-active' : ''}}"
             data-category="{{item}}"
             bindtap="switchCategory"
           >
@@ -55,7 +55,7 @@
           <view class="menu-content">
             <view class="menu-line-top">
               <view class="menu-dish-name">{{item.name}}</view>
-              <view class="menu-dish-price">{{item.priceText}}</view>
+              <view class="num menu-dish-price">{{item.priceText}}</view>
             </view>
             <view class="menu-dish-category">{{item.category}}</view>
             <view class="menu-dish-description">{{item.description}}</view>
@@ -71,7 +71,7 @@
 <view class="empty-plate"><view class="empty-plate-inner"></view></view>
         <view class="section-title">没有找到相关菜品</view>
         <view class="section-copy">换个关键词，或清除搜索看看全部菜品。</view>
-        <view class="button-primary menu-empty-button" bindtap="clearSearch">清除搜索</view>
+        <view hover-class="press-scale" hover-stay-time="60" class="button-primary menu-empty-button" bindtap="clearSearch">清除搜索</view>
       </view>
     </view>
   </scroll-view>

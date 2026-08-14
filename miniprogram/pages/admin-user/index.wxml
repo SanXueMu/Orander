@@ -32,7 +32,7 @@
           <view class="admin-user-order-items">{{item.itemsText}}</view>
           <view class="admin-user-order-total">{{item.totalText}}</view>
           <view wx:if="{{item.canComplete}}" class="admin-user-order-actions">
-            <view class="button-ghost mini-action" data-id="{{item.id}}" bindtap="completeOrder">标记完成</view>
+            <view hover-class="press-scale" hover-stay-time="60" class="button-ghost mini-action" data-id="{{item.id}}" bindtap="completeOrder">标记完成</view>
           </view>
         </view>
       </view>

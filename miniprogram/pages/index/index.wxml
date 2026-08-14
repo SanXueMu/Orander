@@ -17,7 +17,7 @@
         <view
           wx:for="{{roleTabs}}"
           wx:key="id"
-          class="role-pill {{item.id === activeRole ? 'role-pill-active' : ''}}"
+          hover-class="press-scale" hover-stay-time="60" class="role-pill {{item.id === activeRole ? 'role-pill-active' : ''}}"
           data-role="{{item.id}}"
           bindtap="chooseRole"
         >
@@ -29,11 +29,11 @@
         <input class="field-input" password placeholder="管理员密码" value="{{adminPassword}}" bindinput="onPasswordInput" />
       </view>
 
-      <view class="button-primary login-button" bindtap="login">微信登录</view>
-      <view wx:if="{{showDebugLogin}}" class="button-ghost debug-button" bindtap="debugLogin">调试进入</view>
+      <view hover-class="press-scale" hover-stay-time="60" class="button-primary login-button" bindtap="login">微信登录</view>
+      <view wx:if="{{showDebugLogin}}" hover-class="press-scale" hover-stay-time="60" class="button-ghost debug-button" bindtap="debugLogin">调试进入</view>
 
       <view wx:if="{{sessionHint}}" class="session-actions">
-        <view class="button-ghost session-button" bindtap="continueSession">继续 {{sessionHint}}</view>
+        <view hover-class="press-scale" hover-stay-time="60" class="button-ghost session-button" bindtap="continueSession">继续 {{sessionHint}}</view>
         <view class="session-link" bindtap="resetSession">退出</view>
       </view>
     </view>

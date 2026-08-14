@@ -139,24 +139,24 @@ export const RELATION_OPTIONS = [
 export const THEME_OPTIONS: ThemeOption[] = [
   {
     id: 'amber',
-    name: 'Amber Dinner',
-    description: '暖金灯光与奶油纸张感。',
-    navColor: '#2b1d14',
-    navBackground: '#f5eadc',
+    name: '焦糖奶油',
+    description: '焦糖暖光与奶油纸感，温暖家常。',
+    navColor: '#2b1d12',
+    navBackground: '#faf6f0',
   },
   {
     id: 'olive',
-    name: 'Olive Garden',
-    description: '偏绿的午后餐桌气氛。',
-    navColor: '#273124',
-    navBackground: '#eef0e5',
+    name: '罗勒暖绿',
+    description: '罗勒香草气息的清新餐桌。',
+    navColor: '#26301f',
+    navBackground: '#f4f6ea',
   },
   {
     id: 'ink',
-    name: 'Midnight Ink',
-    description: '深色酒馆式菜单视觉。',
-    navColor: '#f7efe8',
-    navBackground: '#171413',
+    name: '深夜食堂',
+    description: '深咖夜里的一盏暖橙灯。',
+    navColor: '#f5ede3',
+    navBackground: '#1a1411',
   },
 ]
 

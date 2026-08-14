@@ -18,8 +18,6 @@ Page({
   behaviors: [pageLookBehavior],
 
   data: {
-    navColor: '#111111',
-    navBackground: '#f4f4f4',
     avatarUrl: '',
     showAvatarImage: false,
     avatarLabel: 'OR',

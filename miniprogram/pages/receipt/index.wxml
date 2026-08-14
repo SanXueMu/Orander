@@ -10,7 +10,7 @@
           <view class="waiting-ring-core"></view>
         </view>
         <view class="waiting-title">已下单</view>
-        <view class="waiting-number">{{order.orderNumber}}</view>
+        <view class="num waiting-number">{{order.orderNumber}}</view>
         <view class="waiting-time">{{createdText}}</view>
 
         <view class="waiting-status-row">
@@ -27,7 +27,7 @@
             <view class="waiting-line-name">{{item.name}}</view>
             <view class="waiting-line-meta">{{item.quantity}} x {{item.priceText}}</view>
           </view>
-          <view class="waiting-line-price">{{item.subtotalText}}</view>
+          <view class="num waiting-line-price">{{item.subtotalText}}</view>
         </view>
 
         <view class="waiting-total-row">
@@ -37,8 +37,8 @@
       </view>
 
       <view class="button-row receipt-buttons">
-        <view class="button-ghost receipt-button" bindtap="goProfile">我的</view>
-        <view class="button-primary receipt-button" bindtap="backMenu">返回菜单</view>
+        <view hover-class="press-scale" hover-stay-time="60" class="button-ghost receipt-button" bindtap="goProfile">我的</view>
+        <view hover-class="press-scale" hover-stay-time="60" class="button-primary receipt-button" bindtap="backMenu">返回菜单</view>
       </view>
     </view>
   </scroll-view>

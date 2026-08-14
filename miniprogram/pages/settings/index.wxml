@@ -70,7 +70,7 @@
         </view>
       </view>
 
-      <view class="button-primary save-settings-button" bindtap="saveProfile">保存当前设置</view>
+      <view hover-class="press-scale" hover-stay-time="60" class="button-primary save-settings-button" bindtap="saveProfile">保存当前设置</view>
     </view>
   </scroll-view>
 </view>

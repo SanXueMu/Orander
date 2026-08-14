@@ -1,7 +1,7 @@
 page {
   min-height: 100%;
-  background: #f3f3f3;
-  color: #111;
+  background: #faf6f0;
+  color: #2b1d12;
 }
 
 button::after {
@@ -84,8 +84,8 @@ button::after {
 }
 
 .chip-active {
-  background: var(--ink);
-  border-color: var(--ink);
+  background: var(--accent);
+  border-color: var(--accent);
   color: #fff;
 }
 
@@ -97,7 +97,7 @@ button::after {
   align-items: center;
   justify-content: center;
   border-radius: 16rpx;
-  background: #111;
+  background: var(--accent);
   color: #fff;
   font-size: 24rpx;
   font-weight: 700;
@@ -119,20 +119,22 @@ button::after {
   border-radius: 24rpx;
   font-size: 28rpx;
   font-weight: 600;
+  transition: opacity 0.15s ease, transform 0.15s ease;
 }
 
 .button-primary {
-  background: #111;
+  background: var(--accent);
   color: #fff;
 }
 
 .button-secondary {
-  background: #111;
-  color: #fff;
+  background: var(--accent-soft);
+  border: 1px solid var(--accent);
+  color: var(--accent-deep);
 }
 
 .button-ghost {
-  background: #fff;
+  background: var(--panel);
   border: 1px solid var(--line-strong);
   color: var(--ink);
 }
@@ -145,10 +147,11 @@ button::after {
   align-items: center;
   justify-content: center;
   border-radius: 16rpx;
-  background: #111;
-  border: 1px solid #111;
+  background: var(--accent);
+  border: 1px solid var(--accent);
   color: #fff;
   font-size: 24rpx;
+  transition: opacity 0.15s ease;
 }
 
 .field-block {
@@ -209,45 +212,51 @@ button::after {
 }
 
 .theme-amber {
-  --page-bg: #f4f4f4;
+  --page-bg: #faf6f0;
   --panel: #ffffff;
-  --panel-soft: #ededed;
-  --ink: #111111;
-  --muted: #757575;
-  --accent: #111111;
-  --accent-deep: #000000;
-  --accent-soft: rgba(17, 17, 17, 0.08);
-  --line: rgba(17, 17, 17, 0.08);
-  --line-strong: rgba(17, 17, 17, 0.16);
-  --success: #2c7b5f;
+  --panel-soft: #f3eae0;
+  --ink: #2b1d12;
+  --muted: #8a7563;
+  --accent: #b45f2d;
+  --accent-deep: #8f4a20;
+  --accent-soft: rgba(180, 95, 45, 0.12);
+  --line: rgba(43, 29, 18, 0.08);
+  --line-strong: rgba(43, 29, 18, 0.16);
+  --success: #3e7d5a;
+  --warning: #c98a2d;
+  --danger: #c25450;
 }
 
 .theme-olive {
-  --page-bg: #eef0e5;
-  --panel: #fafcf3;
-  --panel-soft: #dfe6d4;
-  --ink: #273124;
-  --muted: #687163;
+  --page-bg: #f4f6ea;
+  --panel: #fcfdf7;
+  --panel-soft: #e7edda;
+  --ink: #26301f;
+  --muted: #6e7a5e;
   --accent: #6a8a53;
-  --accent-deep: #436438;
+  --accent-deep: #4c6b3a;
   --accent-soft: rgba(106, 138, 83, 0.14);
-  --line: rgba(39, 49, 36, 0.08);
-  --line-strong: rgba(39, 49, 36, 0.16);
+  --line: rgba(38, 48, 31, 0.08);
+  --line-strong: rgba(38, 48, 31, 0.16);
   --success: #4e7a4c;
+  --warning: #c98a2d;
+  --danger: #c25450;
 }
 
 .theme-ink {
-  --page-bg: #171413;
-  --panel: #211d1b;
-  --panel-soft: #2a2523;
-  --ink: #f7efe8;
-  --muted: #cec4bb;
-  --accent: #d88b57;
-  --accent-deep: #a75f35;
-  --accent-soft: rgba(216, 139, 87, 0.16);
-  --line: rgba(247, 239, 232, 0.12);
-  --line-strong: rgba(247, 239, 232, 0.28);
-  --success: #9fdcbf;
+  --page-bg: #1a1411;
+  --panel: #251e19;
+  --panel-soft: #2f2620;
+  --ink: #f5ede3;
+  --muted: #c4b3a3;
+  --accent: #e09158;
+  --accent-deep: #c97a42;
+  --accent-soft: rgba(224, 145, 88, 0.16);
+  --line: rgba(245, 237, 227, 0.12);
+  --line-strong: rgba(245, 237, 227, 0.28);
+  --success: #9fdcc0;
+  --warning: #e3b465;
+  --danger: #e08580;
 }
 
 .font-modern {
@@ -309,4 +318,70 @@ button::after {
   100% {
     background-position: 0 0;
   }
+}
+
+/* ========== D1：设计系统 Token 2.0 ========== */
+
+/* 字号阶梯 */
+.text-display {
+  font-size: 44rpx;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.text-title {
+  font-size: 34rpx;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.text-body {
+  font-size: 28rpx;
+  line-height: 1.6;
+}
+
+.text-caption {
+  font-size: 24rpx;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.text-micro {
+  font-size: 20rpx;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+/* 价格/数字等宽对齐 */
+.num {
+  font-feature-settings: 'tnum';
+  font-variant-numeric: tabular-nums;
+}
+
+/* 阴影 3 级 */
+.shadow-1 {
+  box-shadow: 0 4rpx 12rpx rgba(43, 29, 18, 0.06);
+}
+
+.shadow-2 {
+  box-shadow: 0 12rpx 32rpx rgba(43, 29, 18, 0.08);
+}
+
+.shadow-3 {
+  box-shadow: 0 24rpx 56rpx rgba(43, 29, 18, 0.14);
+}
+
+/* 全站按压态（配合 hover-class 使用） */
+.press-dim {
+  opacity: 0.7;
+}
+
+.press-scale {
+  transform: scale(0.97);
+  opacity: 0.85;
+}
+
+.press-deep {
+  transform: translateY(2rpx);
+  opacity: 0.85;
 }

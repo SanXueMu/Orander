@@ -11,7 +11,7 @@
           <view class="bill-name">{{nickname}}</view>
         </view>
         <view class="bill-head-actions">
-          <view class="menu-mini-action" bindtap="backMenu">菜单</view>
+          <view hover-class="press-scale" hover-stay-time="60" class="menu-mini-action" bindtap="backMenu">菜单</view>
         </view>
       </view>
 
@@ -23,7 +23,7 @@
           <view class="cart-line-copy">
             <view class="cart-line-header">
               <view class="cart-line-name">{{item.dish.name}}</view>
-              <view class="cart-line-price">{{item.subtotalText}}</view>
+              <view class="num cart-line-price">{{item.subtotalText}}</view>
             </view>
             <view class="cart-line-desc">{{item.dish.category}}</view>
             <view class="cart-line-actions">
@@ -41,11 +41,11 @@
         <view class="surface summary-card">
           <view class="summary-row">
             <view class="summary-title">合计</view>
-            <view class="summary-amount">{{totalText}}</view>
+            <view class="num summary-amount">{{totalText}}</view>
           </view>
           <view class="button-row summary-buttons">
-            <view class="button-ghost summary-button" bindtap="backMenu">继续选菜</view>
-            <view class="button-primary summary-button" bindtap="submitOrder">下单</view>
+            <view hover-class="press-scale" hover-stay-time="60" class="button-ghost summary-button" bindtap="backMenu">继续选菜</view>
+            <view hover-class="press-scale" hover-stay-time="60" class="button-primary summary-button" bindtap="submitOrder">下单</view>
           </view>
         </view>
       </view>
@@ -53,7 +53,7 @@
       <view wx:else class="surface empty-state empty-cart">
 <view class="empty-plate"><view class="empty-plate-inner"></view></view>
         <view class="section-title">账单为空</view>
-        <view class="button-primary empty-cart-button" bindtap="backMenu">去选菜</view>
+        <view hover-class="press-scale" hover-stay-time="60" class="button-primary empty-cart-button" bindtap="backMenu">去选菜</view>
       </view>
     </view>
   </scroll-view>

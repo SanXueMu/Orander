@@ -20,9 +20,9 @@
           <input class="field-input {{nicknameFocused ? 'field-focused' : ''}}" type="nickname" placeholder="输入名称" bindfocus="onNicknameFocus" bindblur="onNicknameBlur" value="{{nickname}}" bindinput="onNicknameInput" />
         </view>
 
-        <view class="button-primary profile-button" bindtap="saveProfile">保存</view>
-        <view class="button-ghost profile-button" bindtap="goSettings">通用设置</view>
-        <view class="button-ghost profile-button" bindtap="logout">退出登录</view>
+        <view hover-class="press-scale" hover-stay-time="60" class="button-primary profile-button" bindtap="saveProfile">保存</view>
+        <view hover-class="press-scale" hover-stay-time="60" class="button-ghost profile-button" bindtap="goSettings">通用设置</view>
+        <view hover-class="press-scale" hover-stay-time="60" class="button-ghost profile-button" bindtap="logout">退出登录</view>
       </view>
     </view>
   </scroll-view>

@@ -49,7 +49,7 @@
           </view>
         </view>
         <textarea class="field-textarea review-input" maxlength="160" placeholder="例如：回锅还想点哪道菜，或者今天这桌气氛如何。" value="{{comment}}" bindinput="onCommentInput"></textarea>
-        <view class="button-primary review-button" bindtap="submitReview">保存评价</view>
+        <view hover-class="press-scale" hover-stay-time="60" class="button-primary review-button" bindtap="submitReview">保存评价</view>
       </view>
     </view>
   </scroll-view>

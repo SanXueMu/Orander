@@ -15,15 +15,15 @@
             <view class="admin-business-dot"></view>
             <view class="admin-business-label">{{businessOpen ? '营业中' : '已暂停'}}</view>
           </view>
-          <view class="menu-mini-action" bindtap="logout">退出</view>
+          <view hover-class="press-scale" hover-stay-time="60" class="menu-mini-action" bindtap="logout">退出</view>
         </view>
       </view>
 
       <view class="admin-tabs">
-        <view class="chip {{activePanel === 'menu' ? 'chip-active' : ''}}" data-panel="menu" bindtap="switchPanel">菜单管理</view>
-        <view class="chip {{activePanel === 'orders' ? 'chip-active' : ''}}" data-panel="orders" bindtap="switchPanel">订单</view>
-        <view class="chip {{activePanel === 'stats' ? 'chip-active' : ''}}" data-panel="stats" bindtap="switchPanel">统计</view>
-        <view class="chip {{activePanel === 'users' ? 'chip-active' : ''}}" data-panel="users" bindtap="switchPanel">用户管理</view>
+        <view hover-class="press-dim" hover-stay-time="60" class="chip {{activePanel === 'menu' ? 'chip-active' : ''}}" data-panel="menu" bindtap="switchPanel">菜单管理</view>
+        <view hover-class="press-dim" hover-stay-time="60" class="chip {{activePanel === 'orders' ? 'chip-active' : ''}}" data-panel="orders" bindtap="switchPanel">订单</view>
+        <view hover-class="press-dim" hover-stay-time="60" class="chip {{activePanel === 'stats' ? 'chip-active' : ''}}" data-panel="stats" bindtap="switchPanel">统计</view>
+        <view hover-class="press-dim" hover-stay-time="60" class="chip {{activePanel === 'users' ? 'chip-active' : ''}}" data-panel="users" bindtap="switchPanel">用户管理</view>
       </view>
 
       <block wx:if="{{activePanel === 'orders'}}">
@@ -41,15 +41,15 @@
             <view class="admin-card-copy">{{item.previewText}}</view>
             <view wx:if="{{item.note}}" class="admin-card-copy admin-order-note">备注：{{item.note}}</view>
             <view class="admin-card-actions user-card-actions">
-              <view class="admin-card-price">{{item.totalText}}</view>
-              <view wx:if="{{item.canComplete}}" class="button-secondary mini-action" data-id="{{item.id}}" bindtap="completeOrder">标记完成</view>
+              <view class="num admin-card-price">{{item.totalText}}</view>
+              <view wx:if="{{item.canComplete}}" hover-class="press-scale" hover-stay-time="60" class="button-secondary mini-action" data-id="{{item.id}}" bindtap="completeOrder">标记完成</view>
             </view>
           </view>
 
           <view class="surface admin-orders-pager">
-            <view class="button-ghost mini-action {{ordersPage <= 1 ? 'pager-disabled' : ''}}" bindtap="prevOrdersPage">上一页</view>
+            <view hover-class="press-scale" hover-stay-time="60" class="button-ghost mini-action {{ordersPage <= 1 ? 'pager-disabled' : ''}}" bindtap="prevOrdersPage">上一页</view>
             <view class="admin-card-copy">{{ordersPage}} / {{ordersTotal > 0 ? (ordersTotal + ordersPageSize - 1) / ordersPageSize : 1}}</view>
-            <view class="button-ghost mini-action {{ordersPage * ordersPageSize >= ordersTotal ? 'pager-disabled' : ''}}" bindtap="nextOrdersPage">下一页</view>
+            <view hover-class="press-scale" hover-stay-time="60" class="button-ghost mini-action {{ordersPage * ordersPageSize >= ordersTotal ? 'pager-disabled' : ''}}" bindtap="nextOrdersPage">下一页</view>
           </view>
         </view>
       </block>
@@ -59,19 +59,19 @@
         <view wx:else class="list-gap">
           <view class="surface admin-stats-grid">
             <view class="admin-stats-item">
-              <view class="admin-stats-value">{{statsRevenueText}}</view>
+              <view class="num admin-stats-value">{{statsRevenueText}}</view>
               <view class="admin-stats-label">累计营收</view>
             </view>
             <view class="admin-stats-item">
-              <view class="admin-stats-value">{{stats.totalOrders}}</view>
+              <view class="num admin-stats-value">{{stats.totalOrders}}</view>
               <view class="admin-stats-label">订单总数</view>
             </view>
             <view class="admin-stats-item">
-              <view class="admin-stats-value">{{stats.completedCount}}</view>
+              <view class="num admin-stats-value">{{stats.completedCount}}</view>
               <view class="admin-stats-label">已完成</view>
             </view>
             <view class="admin-stats-item">
-              <view class="admin-stats-value">{{stats.submittedCount}}</view>
+              <view class="num admin-stats-value">{{stats.submittedCount}}</view>
               <view class="admin-stats-label">待完成</view>
             </view>
           </view>
@@ -96,7 +96,7 @@
               <view
                 wx:for="{{categories}}"
                 wx:key="*this"
-                class="chip {{item === activeCategory ? 'chip-active' : ''}}"
+                hover-class="press-dim" hover-stay-time="60" class="chip {{item === activeCategory ? 'chip-active' : ''}}"
                 data-category="{{item}}"
                 bindtap="switchCategory"
               >
@@ -105,8 +105,8 @@
             </view>
           </scroll-view>
           <view class="admin-side-actions">
-            <view class="button-secondary add-dish-button" bindtap="goCreateDish">新增</view>
-            <view class="button-secondary publish-dish-button" bindtap="publishMenuToCloud">发布</view>
+            <view hover-class="press-scale" hover-stay-time="60" class="button-secondary add-dish-button" bindtap="goCreateDish">新增</view>
+            <view hover-class="press-scale" hover-stay-time="60" class="button-secondary publish-dish-button" bindtap="publishMenuToCloud">发布</view>
           </view>
         </view>
 
@@ -127,7 +127,7 @@
                   <view class="admin-card-copy">{{item.category}} · {{item.priceText}}</view>
                 </view>
                 <view class="admin-card-actions">
-                  <view class="button-ghost mini-action" data-id="{{item.id}}" bindtap="goEditDish">编辑</view>
+                  <view hover-class="press-scale" hover-stay-time="60" class="button-ghost mini-action" data-id="{{item.id}}" bindtap="goEditDish">编辑</view>
                 </view>
               </view>
               <view class="admin-card-copy">{{item.description}}</view>
@@ -156,12 +156,12 @@
                   <view class="admin-card-copy">{{item.joinedText}}</view>
                 </view>
               </view>
-              <view class="admin-card-price">{{item.ordersCount}} 单</view>
+              <view class="num admin-card-price">{{item.ordersCount}} 单</view>
             </view>
             <view class="admin-card-copy">最近下单 {{item.lastOrderText}}</view>
             <view class="admin-card-actions user-card-actions">
-              <view class="button-ghost mini-action" data-id="{{item.id}}" bindtap="goUserOrders">订单</view>
-              <view class="button-ghost mini-action" data-id="{{item.id}}" bindtap="removeMemberRecord">删除</view>
+              <view hover-class="press-scale" hover-stay-time="60" class="button-ghost mini-action" data-id="{{item.id}}" bindtap="goUserOrders">订单</view>
+              <view hover-class="press-scale" hover-stay-time="60" class="button-ghost mini-action" data-id="{{item.id}}" bindtap="removeMemberRecord">删除</view>
             </view>
           </view>
         </view>

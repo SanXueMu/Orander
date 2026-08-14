@@ -16,8 +16,8 @@
               <view class="admin-dish-image-fallback" style="{{dishImageStyle}}">{{dishImageLabel}}</view>
             </block>
             <view class="admin-dish-image-actions">
-              <view class="button-ghost admin-dish-image-button" bindtap="chooseDishImage">选择图片</view>
-              <view class="button-ghost admin-dish-image-button" bindtap="clearDishImage">清除图片</view>
+              <view hover-class="press-scale" hover-stay-time="60" class="button-ghost admin-dish-image-button" bindtap="chooseDishImage">选择图片</view>
+              <view hover-class="press-scale" hover-stay-time="60" class="button-ghost admin-dish-image-button" bindtap="clearDishImage">清除图片</view>
             </view>
           </view>
         </view>
@@ -45,14 +45,14 @@
         <view class="field-block">
           <view class="field-label">状态</view>
           <view class="admin-dish-status-row">
-            <view class="chip {{dishAvailable ? 'chip-active' : ''}}" data-status="available" bindtap="chooseStatus">供应中</view>
-            <view class="chip {{!dishAvailable ? 'chip-active' : ''}}" data-status="soldout" bindtap="chooseStatus">售罄</view>
+            <view hover-class="press-dim" hover-stay-time="60" class="chip {{dishAvailable ? 'chip-active' : ''}}" data-status="available" bindtap="chooseStatus">供应中</view>
+            <view hover-class="press-dim" hover-stay-time="60" class="chip {{!dishAvailable ? 'chip-active' : ''}}" data-status="soldout" bindtap="chooseStatus">售罄</view>
           </view>
         </view>
 
         <view class="button-row admin-dish-buttons">
-          <view class="button-ghost admin-dish-button" bindtap="removeDishDraft">{{editing ? '删除' : '返回'}}</view>
-          <view class="button-primary admin-dish-button" bindtap="saveDishDraft">保存</view>
+          <view hover-class="press-scale" hover-stay-time="60" class="button-ghost admin-dish-button" bindtap="removeDishDraft">{{editing ? '删除' : '返回'}}</view>
+          <view hover-class="press-scale" hover-stay-time="60" class="button-primary admin-dish-button" bindtap="saveDishDraft">保存</view>
         </view>
       </view>
     </view>
