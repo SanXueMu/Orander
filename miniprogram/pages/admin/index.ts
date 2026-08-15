@@ -129,6 +129,9 @@ Page({
     stats: null as OrderStats | null,
     businessOpen: true,
     businessSyncing: false,
+    chefName: '',
+    chefEditing: false,
+    chefInput: '',
   },
 
   async onShow() {
@@ -144,7 +147,7 @@ Page({
     if (initCloud()) {
       const status = await getBusinessStatusCloud()
       if (status) {
-        this.setData({ businessOpen: status.open })
+        this.setData({ businessOpen: status.open, chefName: status.chefName || '' })
       }
     }
   },
@@ -384,6 +387,37 @@ Page({
       })
     } finally {
       this.setData({ businessSyncing: false })
+    }
+  },
+
+  startChefEdit() {
+    this.setData({ chefEditing: true, chefInput: this.data.chefName })
+  },
+
+  cancelChefEdit() {
+    this.setData({ chefEditing: false })
+  },
+
+  onChefInput(event: WechatMiniprogram.CustomEvent<{ value: string }>) {
+    this.setData({ chefInput: event.detail.value })
+  },
+
+  async saveChefName() {
+    const name = this.data.chefInput.trim()
+    if (!name) {
+      wx.showToast({ title: '署名不能为空', icon: 'none' })
+      return
+    }
+    if (!initCloud()) {
+      wx.showToast({ title: '云服务不可用', icon: 'none' })
+      return
+    }
+    const result = await setBusinessStatusCloud(this.data.businessOpen, getAdminToken(), name)
+    if (result) {
+      this.setData({ chefName: name, chefEditing: false })
+      wx.showToast({ title: '署名已更新', icon: 'none' })
+    } else {
+      wx.showToast({ title: '保存失败', icon: 'none' })
     }
   },
 

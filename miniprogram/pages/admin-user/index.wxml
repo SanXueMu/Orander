@@ -1,4 +1,9 @@
 <view class="orander-page {{themeClass}} {{fontClass}}">
+  <view class="aurora">
+    <view class="aurora-dot aurora-a"></view>
+    <view class="aurora-dot aurora-b"></view>
+    <view class="aurora-dot aurora-c"></view>
+  </view>
   <navigation-bar color="{{navColor}}" background="{{navBackground}}">
     <view slot="center" class="nav-title">订单历史</view>
   </navigation-bar>

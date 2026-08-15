@@ -1,11 +1,16 @@
 <view class="orander-page {{themeClass}} {{fontClass}} admin-page">
+  <view class="aurora">
+    <view class="aurora-dot aurora-a"></view>
+    <view class="aurora-dot aurora-b"></view>
+    <view class="aurora-dot aurora-c"></view>
+  </view>
   <navigation-bar color="{{navColor}}" background="{{navBackground}}">
     <view slot="center" class="nav-title">管理</view>
   </navigation-bar>
 
   <scroll-view class="page-scroll" scroll-y>
     <view class="page-body admin-page-body list-gap">
-      <view class="surface admin-hero">
+      <view class="admin-hero surface glass-blur">
         <view>
           <view class="section-kicker">ADMIN</view>
           <view class="section-title admin-title">{{adminName}}</view>
@@ -16,6 +21,24 @@
             <view class="admin-business-label">{{businessOpen ? '营业中' : '已暂停'}}</view>
           </view>
           <view hover-class="press-scale" hover-stay-time="60" class="menu-mini-action" bindtap="logout">退出</view>
+        </view>
+      </view>
+
+      <view class="surface glass admin-chef-card">
+        <view class="admin-chef-row">
+          <view class="admin-chef-info">
+            <view class="section-kicker">CHEF</view>
+            <view class="admin-chef-name">{{chefName || '还没有署名'}}</view>
+            <view class="admin-card-copy">收据页将展示「今日由 {{chefName || '掌勺人'}} 掌勺」</view>
+          </view>
+          <view wx:if="{{!chefEditing}}" hover-class="press-scale" hover-stay-time="60" class="button-ghost mini-action" bindtap="startChefEdit">设置署名</view>
+        </view>
+        <view wx:if="{{chefEditing}}" class="admin-chef-edit">
+          <input class="field-input" placeholder="例如：张师傅 / 妈妈" value="{{chefInput}}" maxlength="12" bindinput="onChefInput" />
+          <view class="admin-chef-edit-actions">
+            <view hover-class="press-scale" hover-stay-time="60" class="button-ghost mini-action" bindtap="cancelChefEdit">取消</view>
+            <view hover-class="press-scale" hover-stay-time="60" class="button-primary mini-action" bindtap="saveChefName">保存</view>
+          </view>
         </view>
       </view>
 
@@ -39,7 +62,7 @@
         <view wx:elif="{{!orders.length}}" class="surface admin-empty">还没有订单</view>
         <view wx:else class="list-gap">
           <view wx:for="{{orders}}" wx:key="id" class="surface admin-card admin-order-card">
-            <view class="admin-order-colorbar {{item.status === 'completed' ? 'colorbar-completed' : 'colorbar-submitted'}}"></view>
+            <view class="admin-order-colorbar colorbar-{{item.status}}"></view>
             <view class="admin-card-top">
               <view>
                 <view class="admin-card-title">
@@ -48,7 +71,7 @@
                 </view>
                 <view class="admin-card-copy">{{item.orderNumber}} · {{item.createdText}}</view>
               </view>
-              <view class="admin-order-status {{item.status === 'completed' ? 'status-completed' : 'status-submitted'}}">{{item.statusText}}</view>
+              <view class="admin-order-status status-{{item.status}}">{{item.statusText}}</view>
             </view>
             <view class="admin-card-copy">{{item.previewText}}</view>
             <view wx:if="{{item.note}}" class="admin-card-copy admin-order-note">备注：{{item.note}}</view>
@@ -191,7 +214,7 @@
               <view class="admin-card-copy">{{item.description}}</view>
               <view class="admin-switch-row">
                 <view class="admin-card-copy">{{item.soldOutLabel}}</view>
-                <switch color="#111111" checked="{{item.availableChecked}}" data-id="{{item.id}}" bindchange="toggleDishAvailability"></switch>
+                <switch color="#1D1F24" checked="{{item.availableChecked}}" data-id="{{item.id}}" bindchange="toggleDishAvailability"></switch>
               </view>
             </view>
           </view>

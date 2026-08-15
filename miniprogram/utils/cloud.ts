@@ -284,8 +284,8 @@ export const getBusinessStatusCloud = async () => {
   return callOrander<BusinessStatus>('getBusinessStatus')
 }
 
-export const setBusinessStatusCloud = async (open: boolean, adminToken: string) => {
-  return callOrander<BusinessStatus>('setBusinessStatus', { open, adminToken })
+export const setBusinessStatusCloud = async (open: boolean, adminToken: string, chefName?: string) => {
+  return callOrander<BusinessStatus>('setBusinessStatus', { open, adminToken, chefName })
 }
 
 export const getOrderStatsCloud = async () => {
