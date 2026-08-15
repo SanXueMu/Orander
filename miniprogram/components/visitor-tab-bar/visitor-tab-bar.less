@@ -1,55 +1,63 @@
+/* 玻璃 dock 胶囊：玻璃材质由 app 级 .glass-dock 提供（apply-shared 透入），此处只管布局 */
 .visitor-tabbar {
   position: fixed;
-  left: 32rpx;
-  right: 32rpx;
+  left: 24rpx;
+  right: 24rpx;
   bottom: calc(24rpx + env(safe-area-inset-bottom));
-  height: 110rpx;
-  padding: 12rpx 14rpx;
+  height: 116rpx;
+  padding: 10rpx 14rpx;
   display: flex;
   align-items: center;
   gap: 12rpx;
   border-radius: 999rpx;
-  background: var(--panel);
-  border: 1px solid var(--line);
-  box-shadow: 0 24rpx 56rpx rgba(43, 29, 18, 0.16);
+  box-sizing: border-box;
   z-index: 30;
 }
 
+/* 图标在上、文字居中、墨点下标 */
 .visitor-tab {
   flex: 1;
-  height: 86rpx;
+  height: 96rpx;
   border-radius: 999rpx;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 12rpx;
+  gap: 4rpx;
   color: var(--muted);
-  transition: color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+  transition: color 0.2s ease, transform 0.2s ease;
 }
 
 .visitor-tab-active {
-  background: var(--accent);
-  color: #fff;
-  transform: translateY(-4rpx);
-  box-shadow: 0 10rpx 24rpx var(--accent-soft);
+  color: var(--ink);
 }
 
+/* 墨点下标：默认隐藏，active 时显现 */
 .visitor-tab-dot {
-  width: 14rpx;
-  height: 14rpx;
+  width: 10rpx;
+  height: 10rpx;
   border-radius: 50%;
-  background: currentColor;
+  background: var(--accent);
+  opacity: 0;
+  transform: scale(0.4);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.visitor-tab-active .visitor-tab-dot {
+  opacity: 1;
+  transform: scale(1);
 }
 
 .visitor-tab-label {
-  font-size: 24rpx;
+  font-size: 22rpx;
   font-weight: 600;
+  line-height: 1.2;
 }
 
-/* CSS 图标 — currentColor 自适应激活态 */
+/* CSS 线稿图标 — currentColor 自适应墨色/灰态 */
 .tab-icon {
-  width: 28rpx;
-  height: 28rpx;
+  width: 30rpx;
+  height: 30rpx;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -70,7 +78,7 @@
 .icon-receipt {
   border: 3rpx solid currentColor;
   border-radius: 6rpx;
-  padding: 5rpx 6rpx;
+  padding: 4rpx 6rpx;
   box-sizing: border-box;
   gap: 4rpx;
 }
