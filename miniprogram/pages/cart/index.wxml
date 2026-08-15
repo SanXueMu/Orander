@@ -1,4 +1,10 @@
 <view class="orander-page {{themeClass}} {{fontClass}} bill-page">
+  <view class="aurora">
+    <view class="aurora-dot aurora-a"></view>
+    <view class="aurora-dot aurora-b"></view>
+    <view class="aurora-dot aurora-c"></view>
+  </view>
+
   <navigation-bar color="{{navColor}}" background="{{navBackground}}">
     <view slot="center" class="nav-title">账单</view>
   </navigation-bar>
@@ -51,7 +57,7 @@
   </scroll-view>
 
   <view wx:if="{{lines.length}}" class="bill-footer-fixed">
-    <view class="surface summary-card">
+    <view class="glass-dock summary-card">
       <view class="summary-row">
         <view class="summary-title">合计</view>
         <view class="num summary-amount">{{totalText}}</view>

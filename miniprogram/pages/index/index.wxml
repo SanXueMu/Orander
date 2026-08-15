@@ -1,11 +1,16 @@
 <view class="orander-page {{themeClass}} {{fontClass}} login-page">
+  <view class="aurora">
+    <view class="aurora-dot aurora-a"></view>
+    <view class="aurora-dot aurora-b"></view>
+    <view class="aurora-dot aurora-c"></view>
+  </view>
+
   <navigation-bar back="{{false}}" color="{{navColor}}" background="{{navBackground}}">
     <view slot="center" class="nav-title">Orander</view>
   </navigation-bar>
 
   <view class="login-shell">
-    <view class="login-mark"></view>
-    <view class="surface login-card">
+    <view class="surface glass-blur login-card">
       <view class="login-brand-row">
         <view class="login-brand">OR</view>
         <view class="login-brand-glyph"></view>

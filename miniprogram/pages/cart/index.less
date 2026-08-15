@@ -159,14 +159,15 @@
   padding: 24rpx 28rpx;
 }
 
-/* ========== D3：滑动删除 + 吸底合计 ========== */
+/* ========== 滑动删除 + 吸底合计 ========== */
 
 .swipe-shell {
   position: relative;
   overflow: hidden;
-  border-radius: 28rpx;
+  border-radius: 32rpx;
 }
 
+/* 滑动删除钮：墨色 */
 .swipe-delete {
   position: absolute;
   top: 0;
@@ -176,8 +177,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--danger);
-  color: #fff;
+  background: var(--accent);
+  color: var(--accent-ink);
   font-size: 26rpx;
   font-weight: 600;
 }
@@ -197,6 +198,16 @@
   right: 24rpx;
   bottom: calc(24rpx + env(safe-area-inset-bottom));
   z-index: 30;
+}
+
+.bill-footer-fixed .summary-card {
+  border-radius: 32rpx;
+}
+
+/* 合计金额：琥珀大数字 */
+.summary-amount {
+  color: var(--appetite);
+  font-weight: 800;
 }
 
 .cart-page-body {

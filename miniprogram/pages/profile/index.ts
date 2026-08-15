@@ -10,7 +10,15 @@ import {
   saveCurrentMember,
   saveSession,
 } from '../../utils/orander'
+import type { ThemeId } from '../../utils/orander'
 import { applyPageLook, pageLookBehavior } from '../../behaviors/page-look'
+
+/* 成员主题色点：与三主题光斑同源 */
+const THEME_DOT: Record<ThemeId, string> = {
+  amber: '#f0c9a0',
+  olive: '#bcd4ae',
+  ink: '#8a5632',
+}
 
 Page({
   behaviors: [pageLookBehavior],
@@ -21,6 +29,7 @@ Page({
     showAvatarImage: false,
     avatarLabel: 'OR',
     avatarStyle: getAvatarStyle('profile'),
+    themeDotStyle: `background:${THEME_DOT.amber};`,
   },
 
   onShow() {
@@ -44,6 +53,7 @@ Page({
       showAvatarImage,
       avatarLabel: getMonogram(nickname, 'ME'),
       avatarStyle: getAvatarStyle(nickname),
+      themeDotStyle: `background:${THEME_DOT[member ? member.themeId : 'amber']};`,
     })
   },
 
@@ -124,6 +134,7 @@ Page({
       showAvatarImage: !!member.avatarUrl,
       avatarLabel: getMonogram(member.nickname, 'ME'),
       avatarStyle: getAvatarStyle(member.nickname),
+      themeDotStyle: `background:${THEME_DOT[member.themeId]};`,
     })
   },
 

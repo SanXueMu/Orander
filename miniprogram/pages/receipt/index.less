@@ -11,6 +11,7 @@
   text-align: center;
 }
 
+/* 等候圆环：呼吸动画保留 */
 .waiting-ring {
   width: 184rpx;
   height: 184rpx;
@@ -38,19 +39,21 @@
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  background: var(--panel);
+  background: var(--glass);
 }
 
 .waiting-title {
   margin-top: 24rpx;
   font-size: 44rpx;
-  font-weight: 700;
+  font-weight: 800;
 }
 
+/* 单号：800 字重墨色置顶 */
 .waiting-number {
   margin-top: 14rpx;
-  font-size: 30rpx;
-  font-weight: 700;
+  font-size: 40rpx;
+  font-weight: 800;
+  letter-spacing: 8rpx;
 }
 
 .waiting-time {
@@ -73,7 +76,7 @@
 }
 
 .waiting-step-active {
-  color: var(--accent-deep);
+  color: var(--ink);
   font-weight: 700;
 }
 
@@ -82,6 +85,33 @@
   height: 2px;
   background: var(--line-strong);
 }
+
+.waiting-step-line-active {
+  background: currentColor;
+  opacity: 0.5;
+}
+
+/* 状态步进打钩动画 */
+.waiting-step-active::before {
+  content: '✓';
+  margin-right: 6rpx;
+  display: inline-block;
+  animation: step-pop 0.3s ease;
+}
+
+@keyframes step-pop {
+  0% {
+    transform: scale(0);
+  }
+  60% {
+    transform: scale(1.35);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* ========== 玻璃小票（决策2.A，锯齿退役） ========== */
 
 .waiting-line,
 .waiting-total-row {
@@ -111,11 +141,28 @@
   color: var(--muted);
 }
 
+/* 合计行：2rpx 虚线分隔 */
 .waiting-total-row {
-  margin-top: 28rpx;
-  padding-top: 24rpx;
-  border-top: 1px solid var(--line);
+  border-top: 2rpx dashed var(--line-strong);
+  padding-top: 22rpx;
+  margin-top: 24rpx;
   font-weight: 700;
+}
+
+.waiting-total-amount {
+  color: var(--appetite);
+  font-weight: 800;
+}
+
+/* 掌勺署名：MUUUUU 式署名温度 */
+.receipt-signature {
+  margin-top: 28rpx;
+  padding-top: 20rpx;
+  border-top: 1rpx solid var(--line);
+  text-align: center;
+  font-size: 24rpx;
+  color: var(--muted);
+  letter-spacing: 2rpx;
 }
 
 .receipt-buttons {
@@ -124,84 +171,4 @@
 
 .receipt-button {
   flex: 1;
-}
-
-.waiting-step-line-active {
-  background: currentColor;
-  opacity: 0.5;
-}
-
-/* ========== D4：票据化 ========== */
-
-.receipt-zigzag {
-  position: relative;
-  margin-top: 22rpx;
-}
-
-.receipt-zigzag::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: -13rpx;
-  height: 14rpx;
-  background:
-    linear-gradient(-45deg, var(--panel) 10rpx, transparent 0),
-    linear-gradient(45deg, var(--panel) 10rpx, transparent 0);
-  background-size: 28rpx 14rpx;
-  background-repeat: repeat-x;
-}
-
-.receipt-zigzag::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: -13rpx;
-  height: 14rpx;
-  transform: rotate(180deg);
-  background:
-    linear-gradient(-45deg, var(--panel) 10rpx, transparent 0),
-    linear-gradient(45deg, var(--panel) 10rpx, transparent 0);
-  background-size: 28rpx 14rpx;
-  background-repeat: repeat-x;
-}
-
-.receipt-no-kicker {
-  margin-top: 16rpx;
-  color: var(--accent);
-}
-
-.waiting-number {
-  font-size: 46rpx;
-  letter-spacing: 8rpx;
-}
-
-/* 合计行虚线分隔 */
-.waiting-summary .waiting-total-row {
-  border-top: 2rpx dashed var(--line-strong);
-  padding-top: 22rpx;
-  margin-top: 10rpx;
-}
-
-/* 状态步进打钩动画 */
-.waiting-step-active::before {
-  content: '✓';
-  margin-right: 6rpx;
-  display: inline-block;
-  animation: step-pop 0.3s ease;
-}
-
-@keyframes step-pop {
-  0% {
-    transform: scale(0);
-  }
-
-  60% {
-    transform: scale(1.35);
-  }
-
-  100% {
-    transform: scale(1);
-  }
 }

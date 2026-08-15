@@ -4,7 +4,7 @@
 
 export type ThemeId = 'amber' | 'olive' | 'ink'
 export type FontId = 'modern' | 'soft' | 'serif'
-export type OrderStatus = 'submitted' | 'completed'
+export type OrderStatus = 'submitted' | 'preparing' | 'completed' | 'cancelled'
 export type SessionRole = 'visitor' | 'admin'
 
 export interface Member {
@@ -81,6 +81,7 @@ export interface ThemeOption {
   description: string
   navColor: string
   navBackground: string
+  swatch: string[]
 }
 
 export interface FontOption {
@@ -143,6 +144,7 @@ export const THEME_OPTIONS: ThemeOption[] = [
     description: '晨光奶油白，通透玻璃感的清爽餐桌。',
     navColor: '#17181C',
     navBackground: 'rgba(255,255,255,0.78)',
+    swatch: ['#F5D5B8', '#F7CDB9', '#F0DFC8'],
   },
   {
     id: 'olive',
@@ -150,6 +152,7 @@ export const THEME_OPTIONS: ThemeOption[] = [
     description: '苔绿与亚麻色的呼吸感，像雨后的香草园。',
     navColor: '#17181C',
     navBackground: 'rgba(255,255,255,0.78)',
+    swatch: ['#CFE0C4', '#C8DED8', '#E4E8D4'],
   },
   {
     id: 'ink',
@@ -157,6 +160,7 @@ export const THEME_OPTIONS: ThemeOption[] = [
     description: '暖橙辉光落在午夜黑玻璃上，深夜小酒馆。',
     navColor: '#F2F4F8',
     navBackground: 'rgba(30,32,38,0.72)',
+    swatch: ['#6B4128', '#5A3A22', '#8A5A36'],
   },
 ]
 

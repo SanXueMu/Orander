@@ -250,6 +250,7 @@ export interface PaginatedOrders {
 
 export interface BusinessStatus {
   open: boolean
+  chefName?: string
 }
 
 export interface OrderStats {

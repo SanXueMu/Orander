@@ -1,4 +1,9 @@
 <view class="orander-page {{themeClass}} {{fontClass}}">
+  <view class="aurora">
+    <view class="aurora-dot aurora-a"></view>
+    <view class="aurora-dot aurora-b"></view>
+    <view class="aurora-dot aurora-c"></view>
+  </view>
   <navigation-bar title="通用设置" color="{{navColor}}" background="{{navBackground}}"></navigation-bar>
 
   <scroll-view class="page-scroll" scroll-y>
@@ -48,8 +53,15 @@
             data-id="{{item.id}}"
             bindtap="pickTheme"
           >
-            <view class="settings-option-name">{{item.name}}</view>
-            <view class="settings-option-copy">{{item.description}}</view>
+            <view class="settings-option-swatch">
+              <view class="settings-swatch-dot" style="background: {{item.swatch[0]}}"></view>
+              <view class="settings-swatch-dot" style="background: {{item.swatch[1]}}"></view>
+              <view class="settings-swatch-dot" style="background: {{item.swatch[2]}}"></view>
+            </view>
+            <view class="settings-option-copy-col">
+              <view class="settings-option-name">{{item.name}}</view>
+              <view class="settings-option-copy">{{item.description}}</view>
+            </view>
           </view>
         </view>
       </view>

@@ -1,11 +1,17 @@
 <view class="orander-page {{themeClass}} {{fontClass}}">
+  <view class="aurora">
+    <view class="aurora-dot aurora-a"></view>
+    <view class="aurora-dot aurora-b"></view>
+    <view class="aurora-dot aurora-c"></view>
+  </view>
+
   <navigation-bar back="{{false}}" color="{{navColor}}" background="{{navBackground}}">
     <view slot="center" class="nav-title">我的</view>
   </navigation-bar>
 
   <scroll-view class="page-scroll" scroll-y>
     <view class="page-body with-tabbar profile-body">
-      <view class="surface profile-card">
+      <view class="surface glass-blur profile-card">
         <button class="profile-avatar-button" open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar">
           <block wx:if="{{showAvatarImage}}">
             <image class="profile-avatar-image" src="{{avatarUrl}}" mode="aspectFill"></image>
@@ -15,14 +21,28 @@
           </block>
         </button>
 
+        <view class="profile-nickname-row">
+          <view class="profile-theme-dot" style="{{themeDotStyle}}"></view>
+          <view class="profile-nickname">{{nickname || '访客'}}</view>
+        </view>
+
         <view class="field-block profile-field">
           <view class="field-label">名称</view>
           <input class="field-input {{nicknameFocused ? 'field-focused' : ''}}" type="nickname" placeholder="输入名称" bindfocus="onNicknameFocus" bindblur="onNicknameBlur" value="{{nickname}}" bindinput="onNicknameInput" />
         </view>
 
         <view hover-class="press-scale" hover-stay-time="60" class="button-primary profile-button" bindtap="saveProfile">保存</view>
-        <view hover-class="press-scale" hover-stay-time="60" class="button-ghost profile-button" bindtap="goSettings">通用设置</view>
-        <view hover-class="press-scale" hover-stay-time="60" class="button-ghost profile-button" bindtap="logout">退出登录</view>
+      </view>
+
+      <view class="profile-menu-list">
+        <view class="profile-menu-item" hover-class="press-dim" hover-stay-time="60" bindtap="goSettings">
+          <view class="profile-menu-label">通用设置</view>
+          <view class="profile-menu-arrow">›</view>
+        </view>
+        <view class="profile-menu-item" hover-class="press-dim" hover-stay-time="60" bindtap="logout">
+          <view class="profile-menu-label">退出登录</view>
+          <view class="profile-menu-arrow">›</view>
+        </view>
       </view>
     </view>
   </scroll-view>

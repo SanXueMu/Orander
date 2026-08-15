@@ -331,7 +331,8 @@ const actions = {
   },
 
   async updateOrderStatus(event) {
-    const nextStatus = event.status === 'completed' ? 'completed' : 'submitted'
+    const allowed = ['submitted', 'preparing', 'completed', 'cancelled']
+    const nextStatus = allowed.includes(event.status) ? event.status : 'submitted'
     await collections.orders.where({ id: event.orderId }).update({
       data: { status: nextStatus },
     })
@@ -345,24 +346,29 @@ const actions = {
   async getBusinessStatus() {
     const result = await collections.config.where({ key: BUSINESS_STATUS_KEY }).limit(1).get()
     if (result.data.length === 0) {
-      return { open: true }
+      return { open: true, chefName: '' }
     }
-    return { open: !!result.data[0].open }
+    return { open: !!result.data[0].open, chefName: result.data[0].chefName || '' }
   },
 
   async setBusinessStatus(event) {
     const open = !!event.open
+    const chefName = typeof event.chefName === 'string' ? event.chefName.trim() : undefined
     const existing = await collections.config.where({ key: BUSINESS_STATUS_KEY }).limit(1).get()
+    const payload = { open, updatedAt: new Date().toISOString() }
+    if (chefName !== undefined) {
+      payload.chefName = chefName
+    }
     if (existing.data.length === 0) {
       await collections.config.add({
-        data: { key: BUSINESS_STATUS_KEY, open, updatedAt: new Date().toISOString() },
+        data: { key: BUSINESS_STATUS_KEY, ...payload },
       })
     } else {
       await collections.config.where({ key: BUSINESS_STATUS_KEY }).update({
-        data: { open, updatedAt: new Date().toISOString() },
+        data: payload,
       })
     }
-    return { open }
+    return { open, chefName: chefName !== undefined ? chefName : existing.data[0].chefName || '' }
   },
 
   // --- 统计 ---

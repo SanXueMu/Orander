@@ -1,11 +1,13 @@
 .profile-body {
   display: flex;
+  flex-direction: column;
   align-items: flex-start;
 }
 
 .profile-card {
   width: 100%;
-  padding: 28rpx;
+  padding: 36rpx 28rpx 28rpx;
+  box-sizing: border-box;
 }
 
 .profile-avatar-button {
@@ -31,8 +33,28 @@
   justify-content: center;
   color: #fff;
   font-size: 46rpx;
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: 4rpx;
+}
+
+/* 昵称 800 + 成员色点 */
+.profile-nickname-row {
+  margin-top: 22rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14rpx;
+}
+
+.profile-theme-dot {
+  width: 18rpx;
+  height: 18rpx;
+  border-radius: 50%;
+}
+
+.profile-nickname {
+  font-size: 36rpx;
+  font-weight: 800;
 }
 
 .profile-field {
@@ -41,4 +63,35 @@
 
 .profile-button {
   margin-top: 18rpx;
+}
+
+/* 菜单项：无底色留白列表 + 箭头 */
+.profile-menu-list {
+  width: 100%;
+  margin-top: 28rpx;
+}
+
+.profile-menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 30rpx 12rpx;
+  border-bottom: 1rpx solid var(--line);
+}
+
+.profile-menu-item:last-child {
+  border-bottom: none;
+}
+
+.profile-menu-label {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.profile-menu-arrow {
+  font-size: 36rpx;
+  font-weight: 300;
+  color: var(--muted);
+  line-height: 1;
 }

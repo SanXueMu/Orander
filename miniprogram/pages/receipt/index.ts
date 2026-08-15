@@ -1,3 +1,4 @@
+import { getBusinessStatusCloud, initCloud } from '../../utils/cloud'
 import {
   formatMoney,
   formatShortDate,
@@ -20,11 +21,21 @@ Page({
     statusSteps: [] as Array<{ label: string; active: boolean }>,
     totalText: formatMoney(0),
     createdText: '',
+    chefName: 'Orander 私厨',
   },
 
   onLoad(options: Record<string, string>) {
     const orderId = options.id || getLastOrderId()
     this.loadOrder(orderId)
+
+    /* 掌勺署名：云端营业配置里的 chefName（管理员端可设），缺省品牌署名 */
+    if (initCloud()) {
+      getBusinessStatusCloud().then((status) => {
+        if (status && status.chefName) {
+          this.setData({ chefName: status.chefName })
+        }
+      })
+    }
   },
 
   loadOrder(orderId: string) {

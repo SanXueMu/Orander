@@ -10,6 +10,7 @@ import {
   getDishCoverStyle,
   getLastCategory,
   getMenuCategories,
+  getOrders,
   getSession,
   isVisitorSession,
   saveLastCategory,
@@ -22,7 +23,10 @@ import { eventBus } from '../../utils/event-bus'
 type MenuDishView = Dish & {
   quantity: number
   coverStyle: string
+  foodIcon: string
   priceText: string
+  priceValue: string
+  soldCount: number
 }
 
 const resolveDishId = (event: WechatMiniprogram.BaseEvent) => {
@@ -46,8 +50,23 @@ const classifyFoodIcon = (category: string) => {
   return 'bowl'
 }
 
+/* 本地订单统计每个菜品累计销量（"已售 N" 徽章） */
+const buildSoldCountMap = () => {
+  const map = new Map<string, number>()
+  getOrders().forEach((order) => {
+    if (order.status === 'cancelled') {
+      return
+    }
+    order.items.forEach((item) => {
+      map.set(item.dishId, (map.get(item.dishId) || 0) + item.quantity)
+    })
+  })
+  return map
+}
+
 const buildMenuDishes = (category: string, keyword: string) => {
   const cartMap = new Map(getCart().map((item) => [item.dishId, item.quantity]))
+  const soldMap = buildSoldCountMap()
   const search = keyword.trim().toLowerCase()
 
   return getDishes()
@@ -59,6 +78,8 @@ const buildMenuDishes = (category: string, keyword: string) => {
       coverStyle: getDishCoverStyle(dish.id),
       foodIcon: classifyFoodIcon(dish.category),
       priceText: formatMoney(dish.price),
+      priceValue: String(dish.price),
+      soldCount: soldMap.get(dish.id) || 0,
     }))
 }
 
@@ -93,6 +114,7 @@ Page({
     cartCount: 0,
     countBounce: false,
     cartTotalText: formatMoney(0),
+    loadedImages: {} as Record<string, boolean>,
   },
 
   async onShow() {
@@ -196,6 +218,18 @@ Page({
     this.setData({
       searchKeyword: '',
       dishes: buildMenuDishes(this.data.activeCategory, ''),
+    })
+  },
+
+  /* 图片 bindload 淡入：只更新 loadedImages 小对象，不动 dishes 数组 */
+  onDishImageLoad(event: WechatMiniprogram.BaseEvent) {
+    const dishId = event.currentTarget.dataset.id as string
+    if (!dishId || this.data.loadedImages[dishId]) {
+      return
+    }
+
+    this.setData({
+      [`loadedImages.${dishId}`]: true,
     })
   },
 

@@ -23,11 +23,22 @@
 }
 
 .detail-order-status {
-  padding: 12rpx 18rpx;
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 10rpx 18rpx;
   border-radius: 999rpx;
-  background: var(--accent-soft);
-  color: var(--accent);
+  background: var(--appetite-soft);
+  color: var(--appetite);
   font-size: 22rpx;
+  line-height: 1;
+}
+
+.detail-status-dot {
+  width: 10rpx;
+  height: 10rpx;
+  border-radius: 50%;
+  background: currentColor;
 }
 
 .detail-guest-row {
@@ -93,9 +104,9 @@
 }
 
 .review-rating-chip-active {
-  background: var(--ink);
-  border-color: var(--ink);
-  color: #fff;
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
 }
 
 .review-input {

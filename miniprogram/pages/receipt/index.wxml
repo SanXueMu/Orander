@@ -1,11 +1,17 @@
 <view class="orander-page {{themeClass}} {{fontClass}} waiting-page">
+  <view class="aurora">
+    <view class="aurora-dot aurora-a"></view>
+    <view class="aurora-dot aurora-b"></view>
+    <view class="aurora-dot aurora-c"></view>
+  </view>
+
   <navigation-bar color="{{navColor}}" background="{{navBackground}}">
     <view slot="center" class="nav-title">等候中</view>
   </navigation-bar>
 
   <scroll-view class="page-scroll" scroll-y>
     <view wx:if="{{order}}" class="page-body receipt-page-body list-gap fade-in-up">
-      <view class="surface waiting-card">
+      <view class="surface glass-blur waiting-card">
         <view class="waiting-ring">
           <view class="waiting-ring-core"></view>
         </view>
@@ -21,7 +27,7 @@
         </view>
       </view>
 
-      <view class="surface waiting-summary receipt-zigzag fade-in-up-late">
+      <view class="surface glass-blur waiting-summary fade-in-up-late">
         <view wx:for="{{order.lines}}" wx:key="dishId" class="waiting-line">
           <view>
             <view class="waiting-line-name">{{item.name}}</view>
@@ -32,8 +38,10 @@
 
         <view class="waiting-total-row">
           <view>合计</view>
-          <view>{{totalText}}</view>
+          <view class="num waiting-total-amount">{{totalText}}</view>
         </view>
+
+        <view class="receipt-signature text-thin">今日由 {{chefName}} 掌勺</view>
       </view>
 
       <view class="button-row receipt-buttons">

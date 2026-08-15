@@ -3,8 +3,16 @@
   padding: 28rpx;
 }
 
-.orders-list {
-  margin-top: 18rpx;
+/* 日期分组标题 */
+.orders-group {
+  margin-top: 28rpx;
+}
+
+.orders-group-label {
+  padding: 0 8rpx 14rpx;
+  font-size: 24rpx;
+  color: var(--muted);
+  letter-spacing: 2rpx;
 }
 
 .order-card-top,
@@ -27,12 +35,37 @@
   color: var(--muted);
 }
 
+/* 状态点语义色 pill */
 .order-card-status {
-  padding: 12rpx 18rpx;
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 10rpx 18rpx;
   border-radius: 999rpx;
-  background: var(--accent-soft);
-  color: var(--accent);
   font-size: 22rpx;
+  line-height: 1;
+}
+
+.order-status-dot {
+  width: 10rpx;
+  height: 10rpx;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.order-status-appetite {
+  background: var(--appetite-soft);
+  color: var(--appetite);
+}
+
+.order-status-success {
+  background: rgba(61, 139, 106, 0.14);
+  color: var(--success);
+}
+
+.order-status-muted {
+  background: var(--panel-soft);
+  color: var(--muted);
 }
 
 .order-card-preview {
@@ -47,7 +80,8 @@
 
 .order-card-total {
   font-size: 30rpx;
-  font-weight: 700;
+  font-weight: 800;
+  color: var(--appetite);
 }
 
 .empty-orders-button {

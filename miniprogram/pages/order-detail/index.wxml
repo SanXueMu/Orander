@@ -1,15 +1,24 @@
 <view class="orander-page {{themeClass}} {{fontClass}}">
+  <view class="aurora">
+    <view class="aurora-dot aurora-a"></view>
+    <view class="aurora-dot aurora-b"></view>
+    <view class="aurora-dot aurora-c"></view>
+  </view>
+
   <navigation-bar title="订单详情" color="{{navColor}}" background="{{navBackground}}"></navigation-bar>
 
   <scroll-view class="page-scroll" scroll-y>
     <view wx:if="{{order}}" class="page-body detail-page-body list-gap">
-      <view class="surface detail-summary-card">
+      <view class="surface glass-blur detail-summary-card">
         <view class="detail-summary-top">
           <view>
             <view class="detail-order-number">{{order.orderNumber}}</view>
             <view class="detail-order-date">{{order.receiptDate}}</view>
           </view>
-          <view class="detail-order-status">{{order.statusText}}</view>
+          <view class="detail-order-status">
+            <view class="detail-status-dot"></view>
+            <view>{{order.statusText}}</view>
+          </view>
         </view>
 
         <view class="detail-guest-row">
