@@ -7,8 +7,8 @@ export const pageLookBehavior = Behavior({
   data: {
     themeClass: 'theme-amber',
     fontClass: 'font-modern',
-    navColor: '#2b1d12',
-    navBackground: '#faf6f0',
+    navColor: '#17181C',
+    navBackground: 'rgba(255,255,255,0.78)',
   },
 })
 

@@ -139,24 +139,24 @@ export const RELATION_OPTIONS = [
 export const THEME_OPTIONS: ThemeOption[] = [
   {
     id: 'amber',
-    name: '焦糖奶油',
-    description: '焦糖暖光与奶油纸感，温暖家常。',
-    navColor: '#2b1d12',
-    navBackground: '#faf6f0',
+    name: '奶油白',
+    description: '晨光奶油白，通透玻璃感的清爽餐桌。',
+    navColor: '#17181C',
+    navBackground: 'rgba(255,255,255,0.78)',
   },
   {
     id: 'olive',
-    name: '罗勒暖绿',
-    description: '罗勒香草气息的清新餐桌。',
-    navColor: '#26301f',
-    navBackground: '#f4f6ea',
+    name: '鼠尾草',
+    description: '苔绿与亚麻色的呼吸感，像雨后的香草园。',
+    navColor: '#17181C',
+    navBackground: 'rgba(255,255,255,0.78)',
   },
   {
     id: 'ink',
-    name: '深夜食堂',
-    description: '深咖夜里的一盏暖橙灯。',
-    navColor: '#f5ede3',
-    navBackground: '#1a1411',
+    name: '午夜黑',
+    description: '暖橙辉光落在午夜黑玻璃上，深夜小酒馆。',
+    navColor: '#F2F4F8',
+    navBackground: 'rgba(30,32,38,0.72)',
   },
 ]
 
