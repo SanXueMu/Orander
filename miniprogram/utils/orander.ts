@@ -593,6 +593,15 @@ export const getAdminToken = () => {
   return session && session.role === 'admin' ? session.adminToken || '' : ''
 }
 
+/** 修改密码后同步云端返回的新 adminToken（= 新密码哈希），保持会话有效 */
+export const updateAdminToken = (adminToken: string) => {
+  const session = getSession()
+  if (!session || session.role !== 'admin') {
+    return
+  }
+  saveSession({ ...session, adminToken })
+}
+
 export const clearSession = (clearCurrentUser = false) => {
   removeStorage(STORAGE_KEYS.session)
   removeStorage(STORAGE_KEYS.lastOrderId)

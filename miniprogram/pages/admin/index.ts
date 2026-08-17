@@ -8,6 +8,9 @@ import {
   listAllOrdersCloud,
   publishLocalDishesToCloud,
   setBusinessStatusCloud,
+  changeAdminPasswordCloud,
+  getLastCloudError,
+  verifyAdminCloud,
 } from '../../utils/cloud'
 import type { OrderStats, PaginatedOrders } from '../../utils/cloud'
 import {
@@ -27,6 +30,7 @@ import {
   getOrders,
   getSession,
   isAdminSession,
+  updateAdminToken,
   updateDishAvailability,
 } from '../../utils/orander'
 import type { Order } from '../../utils/orander'
@@ -132,6 +136,11 @@ Page({
     chefName: '',
     chefEditing: false,
     chefInput: '',
+    pwdEditing: false,
+    pwdOld: '',
+    pwdNew: '',
+    pwdConfirm: '',
+    pwdSubmitting: false,
   },
 
   async onShow() {
@@ -400,6 +409,84 @@ Page({
 
   onChefInput(event: WechatMiniprogram.CustomEvent<{ value: string }>) {
     this.setData({ chefInput: event.detail.value })
+  },
+
+  /* ===== 修改管理员密码 ===== */
+  startPwdEdit() {
+    this.setData({ pwdEditing: true, pwdOld: '', pwdNew: '', pwdConfirm: '' })
+  },
+
+  cancelPwdEdit() {
+    this.setData({ pwdEditing: false })
+  },
+
+  onPwdOldInput(event: WechatMiniprogram.CustomEvent<{ value: string }>) {
+    this.setData({ pwdOld: event.detail.value })
+  },
+
+  onPwdNewInput(event: WechatMiniprogram.CustomEvent<{ value: string }>) {
+    this.setData({ pwdNew: event.detail.value })
+  },
+
+  onPwdConfirmInput(event: WechatMiniprogram.CustomEvent<{ value: string }>) {
+    this.setData({ pwdConfirm: event.detail.value })
+  },
+
+  async savePwd() {
+    if (this.data.pwdSubmitting) {
+      return
+    }
+    const oldPwd = this.data.pwdOld.trim()
+    const newPwd = this.data.pwdNew.trim()
+    const confirmPwd = this.data.pwdConfirm.trim()
+
+    if (!oldPwd || !newPwd || !confirmPwd) {
+      wx.showToast({ title: '请填写完整', icon: 'none' })
+      return
+    }
+    if (newPwd.length < 6) {
+      wx.showToast({ title: '新密码至少 6 位', icon: 'none' })
+      return
+    }
+    if (newPwd !== confirmPwd) {
+      wx.showToast({ title: '两次新密码不一致', icon: 'none' })
+      return
+    }
+    if (newPwd === oldPwd) {
+      wx.showToast({ title: '新密码不能与旧密码相同', icon: 'none' })
+      return
+    }
+    if (!initCloud()) {
+      wx.showToast({ title: '云服务不可用', icon: 'none' })
+      return
+    }
+
+    /* 先校验旧密码，避免误改 */
+    const verify = await verifyAdminCloud(oldPwd)
+    if (!verify) {
+      const reason = getLastCloudError()
+      if (reason && reason !== '密码错误') {
+        wx.showModal({ title: '无法校验密码', content: `${reason}。`, showCancel: false })
+        return
+      }
+      wx.showToast({ title: '旧密码错误', icon: 'none' })
+      return
+    }
+
+    this.setData({ pwdSubmitting: true })
+    try {
+      const result = await changeAdminPasswordCloud(getAdminToken(), newPwd)
+      if (result && result.adminToken) {
+        updateAdminToken(result.adminToken)
+        this.setData({ pwdEditing: false })
+        wx.showToast({ title: '密码已更新', icon: 'success' })
+      } else {
+        const reason = getLastCloudError()
+        wx.showModal({ title: '修改失败', content: `${reason || '云函数返回异常'}。若云端是旧版本，请先重新部署云函数。`, showCancel: false })
+      }
+    } finally {
+      this.setData({ pwdSubmitting: false })
+    }
   },
 
   async saveChefName() {

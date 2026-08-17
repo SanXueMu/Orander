@@ -42,6 +42,26 @@
         </view>
       </view>
 
+      <view class="surface glass admin-chef-card">
+        <view class="admin-chef-row">
+          <view class="admin-chef-info">
+            <view class="section-kicker">SECURITY</view>
+            <view class="admin-chef-name">管理员密码</view>
+            <view class="admin-card-copy">{{pwdEditing ? '输入旧密码并设置新密码（至少 6 位）' : '用于管理员登录，修改后立即生效'}}</view>
+          </view>
+          <view wx:if="{{!pwdEditing}}" hover-class="press-scale" hover-stay-time="60" class="button-ghost mini-action" bindtap="startPwdEdit">修改密码</view>
+        </view>
+        <view wx:if="{{pwdEditing}}" class="admin-chef-edit admin-pwd-edit">
+          <input class="field-input" password placeholder="旧密码" value="{{pwdOld}}" bindinput="onPwdOldInput" />
+          <input class="field-input" password placeholder="新密码（至少 6 位）" value="{{pwdNew}}" bindinput="onPwdNewInput" />
+          <input class="field-input" password placeholder="确认新密码" value="{{pwdConfirm}}" bindinput="onPwdConfirmInput" />
+          <view class="admin-chef-edit-actions">
+            <view hover-class="press-scale" hover-stay-time="60" class="button-ghost mini-action" bindtap="cancelPwdEdit">取消</view>
+            <view hover-class="press-scale" hover-stay-time="60" class="button-primary mini-action" bindtap="savePwd">{{pwdSubmitting ? '提交中…' : '确认修改'}}</view>
+          </view>
+        </view>
+      </view>
+
       <view class="admin-tabs">
         <view hover-class="press-dim" hover-stay-time="60" class="chip {{activePanel === 'menu' ? 'chip-active' : ''}}" data-panel="menu" bindtap="switchPanel">菜单管理</view>
         <view hover-class="press-dim" hover-stay-time="60" class="chip {{activePanel === 'orders' ? 'chip-active' : ''}}" data-panel="orders" bindtap="switchPanel">订单</view>
