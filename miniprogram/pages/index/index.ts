@@ -56,12 +56,16 @@ Page({
     busy: false,
     sessionHint: '',
     showDebugLogin: false,
+    canBack: false,
   },
 
   onLoad() {
     const systemInfo = wx.getSystemInfoSync()
+    const pages = getCurrentPages()
     this.setData({
       showDebugLogin: systemInfo.platform === 'devtools',
+      /* 从 profile/cart 导航进入时允许返回（游客先浏览后授权）；冷启动直达时无上级页面 */
+      canBack: pages.length > 1,
     })
   },
 

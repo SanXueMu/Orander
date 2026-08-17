@@ -6,7 +6,6 @@ import {
   getCurrentMember,
   getRelationLabel,
   getSession,
-  isVisitorSession,
   removeFromCart,
   setCartQuantity,
   clearCart,
@@ -39,13 +38,7 @@ Page({
   },
 
   onShow() {
-    if (!isVisitorSession()) {
-      wx.reLaunch({
-        url: '/pages/index/index',
-      })
-      return
-    }
-
+    /* 游客可查看购物车（本地数据），提交订单时才要求登录 */
     this.refreshPage()
   },
 
@@ -174,6 +167,20 @@ Page({
 
   submitOrder() {
     if (this.data.submitting) {
+      return
+    }
+
+    if (!getSession()) {
+      wx.showModal({
+        title: '登录后下单',
+        content: '提交订单需要先登录身份，购物车会为你保留。',
+        confirmText: '去登录',
+        success: (res) => {
+          if (res.confirm) {
+            wx.navigateTo({ url: '/pages/index/index' })
+          }
+        },
+      })
       return
     }
 

@@ -6,7 +6,6 @@ import {
   getCurrentMember,
   getMonogram,
   getSession,
-  isVisitorSession,
   saveCurrentMember,
   saveSession,
 } from '../../utils/orander'
@@ -33,21 +32,17 @@ Page({
   },
 
   onShow() {
-    if (!isVisitorSession()) {
-      wx.reLaunch({
-        url: '/pages/index/index',
-      })
-      return
-    }
-
+    /* 游客模式：未登录展示登录引导卡，不再强制踢回 */
     const member = getCurrentMember()
     const session = getSession()
+    const isGuest = !session
     applyPageLook(this, member)
     const nickname = member ? member.nickname : session ? session.nickname : '访客'
     const avatarUrl = member ? member.avatarUrl : session ? session.avatarUrl : ''
     const showAvatarImage = !!avatarUrl
 
     this.setData({
+      isGuest,
       nickname,
       avatarUrl,
       showAvatarImage,
@@ -55,6 +50,10 @@ Page({
       avatarStyle: getAvatarStyle(nickname),
       themeDotStyle: `background:${THEME_DOT[member ? member.themeId : 'amber']};`,
     })
+  },
+
+  goLogin() {
+    wx.navigateTo({ url: '/pages/index/index' })
   },
 
   onChooseAvatar(event: WechatMiniprogram.CustomEvent) {
@@ -141,8 +140,9 @@ Page({
   logout() {
     clearCart()
     clearSession(false)
+    /* 退出后回菜单首页，保持游客浏览（不再回登录页） */
     wx.reLaunch({
-      url: '/pages/index/index',
+      url: '/pages/dish/index',
     })
   },
 

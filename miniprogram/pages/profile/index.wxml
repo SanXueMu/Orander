@@ -11,6 +11,14 @@
 
   <scroll-view class="page-scroll" scroll-y>
     <view class="page-body with-tabbar profile-body">
+      <view wx:if="{{isGuest}}" class="surface glass-blur profile-card">
+        <view class="profile-guest-glyph">OR</view>
+        <view class="profile-guest-title">登录 Orander</view>
+        <view class="profile-guest-copy">浏览菜单无需登录。登录后可下单、查看订单历史、定制主题。</view>
+        <view hover-class="press-scale" hover-stay-time="60" class="button-primary profile-button" bindtap="goLogin">去登录</view>
+      </view>
+
+      <block wx:else>
       <view class="surface glass-blur profile-card">
         <button class="profile-avatar-button" open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar">
           <block wx:if="{{showAvatarImage}}">
@@ -44,6 +52,7 @@
           <view class="profile-menu-arrow">›</view>
         </view>
       </view>
+      </block>
     </view>
   </scroll-view>
 

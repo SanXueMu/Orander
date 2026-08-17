@@ -75,11 +75,18 @@ Page({
   },
 
   onShow() {
+    /* 游客点订单 Tab：引导登录而非强制跳转（先浏览后授权） */
     if (!isVisitorSession()) {
-      wx.reLaunch({
-        url: '/pages/index/index',
+      wx.showModal({
+        title: '登录后查看',
+        content: '订单历史属于个人信息，登录后即可查看。',
+        confirmText: '去登录',
+        success: (res) => {
+          if (res.confirm) {
+            wx.navigateTo({ url: '/pages/index/index' })
+          }
+        },
       })
-      return
     }
 
     const profile = getCurrentMember()

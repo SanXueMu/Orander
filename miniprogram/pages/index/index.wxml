@@ -5,7 +5,7 @@
     <view class="aurora-dot aurora-c"></view>
   </view>
 
-  <navigation-bar back="{{false}}" color="{{navColor}}" background="{{navBackground}}">
+  <navigation-bar back="{{canBack}}" color="{{navColor}}" background="{{navBackground}}">
     <view slot="center" class="nav-title">Orander</view>
   </navigation-bar>
 

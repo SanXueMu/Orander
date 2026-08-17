@@ -6,13 +6,12 @@ import {
   getCart,
   getCartStats,
   getCurrentMember,
-  getDishes,
   getDishCoverStyle,
+  getDishes,
   getLastCategory,
   getMenuCategories,
   getOrders,
   getSession,
-  isVisitorSession,
   saveLastCategory,
   setCartQuantity,
 } from '../../utils/orander'
@@ -118,13 +117,7 @@ Page({
   },
 
   async onShow() {
-    if (!isVisitorSession()) {
-      wx.reLaunch({
-        url: '/pages/index/index',
-      })
-      return
-    }
-
+    /* 游客模式：未登录也可自由浏览菜单（审核要求先体验后授权），结算时才引导登录 */
     this.setData(buildGreeting())
 
     if (initCloud()) {
@@ -273,6 +266,20 @@ Page({
       wx.showToast({
         title: '今日暂停营业，暂不能下单',
         icon: 'none',
+      })
+      return
+    }
+
+    if (!getSession()) {
+      wx.showModal({
+        title: '登录后下单',
+        content: '浏览菜单无需登录，提交订单需要先登录身份。',
+        confirmText: '去登录',
+        success: (res) => {
+          if (res.confirm) {
+            wx.navigateTo({ url: '/pages/index/index' })
+          }
+        },
       })
       return
     }
