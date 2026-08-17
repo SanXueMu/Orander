@@ -82,6 +82,114 @@
   border-radius: 24rpx;
 }
 
+/* ===== 菜品卡 — 横向布局：方形缩略图 + 信息列 ===== */
+.admin-dish-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 22rpx;
+}
+
+.admin-dish-thumb {
+  position: relative;
+  flex-shrink: 0;
+  width: 176rpx;
+  height: 176rpx;
+  border-radius: 20rpx;
+  overflow: hidden;
+}
+
+.admin-dish-thumb-image {
+  width: 100%;
+  height: 100%;
+}
+
+.admin-dish-thumb-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 30rpx;
+  font-weight: 700;
+  letter-spacing: 2rpx;
+}
+
+.admin-dish-thumb-mask {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(61, 42, 26, 0.5);
+  color: #fff;
+  font-size: 24rpx;
+  font-weight: 700;
+  letter-spacing: 4rpx;
+}
+
+.admin-dish-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.admin-dish-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+
+.admin-dish-head .admin-card-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-dish-price {
+  flex-shrink: 0;
+  font-size: 32rpx;
+  font-weight: 800;
+  color: var(--accent);
+}
+
+.admin-dish-category {
+  margin-top: 2rpx;
+  font-size: 22rpx;
+}
+
+.admin-dish-desc {
+  margin-top: 6rpx;
+  font-size: 22rpx;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.admin-dish-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12rpx;
+  margin-top: 12rpx;
+}
+
+.admin-dish-state.is-soldout {
+  color: var(--danger);
+}
+
+.admin-dish-foot switch {
+  transform: scale(0.8);
+}
+
+.admin-dish-edit {
+  min-width: 88rpx;
+  min-height: 64rpx;
+  border-radius: 14rpx;
+  font-size: 22rpx;
+}
+
 .admin-dish-image-fallback {
   display: flex;
   align-items: center;
@@ -315,6 +423,34 @@
 .admin-order-status.status-cancelled {
   color: var(--muted);
   border: 2rpx solid var(--muted);
+}
+
+/* ===== 管理页暖色系 — 后厨的食欲（不随访客主题切换） ===== */
+.admin-page {
+  --page-bg: #fbf2e8;
+  --glass: rgba(255, 251, 245, 0.74);
+  --glass-border: rgba(194, 96, 30, 0.10);
+  --ink: #3d2a1a;
+  --muted: #a08871;
+  --accent: #b85c1d;
+  --accent-deep: #96480f;
+  --accent-ink: #fff8ef;
+  --accent-soft: rgba(194, 96, 30, 0.12);
+  --line: rgba(139, 88, 43, 0.10);
+  --line-strong: rgba(139, 88, 43, 0.18);
+  --panel: rgba(255, 247, 237, 0.9);
+  --panel-soft: rgba(194, 96, 30, 0.05);
+  --blob-1: #f3c084;
+  --blob-2: #efa96e;
+  --blob-3: #f7dcb6;
+}
+
+.admin-page .surface {
+  box-shadow: 0 8rpx 32rpx rgba(150, 88, 30, 0.08), inset 0 1rpx 0 rgba(255, 255, 255, 0.6);
+}
+
+.admin-page .section-kicker {
+  color: var(--accent);
 }
 
 /* ===== 菜单工具栏 — 分类横滑 + 全宽新增 ===== */

@@ -447,6 +447,13 @@ Page({
     })
   },
 
+  previewDishImage(event: WechatMiniprogram.BaseEvent) {
+    const image = event.currentTarget.dataset.image as string
+    if (image) {
+      wx.previewImage({ urls: [image] })
+    }
+  },
+
   async toggleDishAvailability(event: WechatMiniprogram.CustomEvent) {
     const dishId = event.currentTarget.dataset.id as string
     const detail = event.detail as { value?: boolean }

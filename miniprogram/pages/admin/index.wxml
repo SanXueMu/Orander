@@ -174,27 +174,29 @@
         <view class="list-gap">
           <view wx:for="{{dishes}}" wx:key="id" class="swipe-shell" data-id="{{item.id}}" bindtouchstart="onDishTouchStart" bindtouchend="onDishTouchEnd">
             <view class="swipe-delete" data-id="{{item.id}}" bindtap="removeDish">删除</view>
-            <view class="surface admin-card swipe-content {{swipedDishId === item.id ? 'swipe-open' : ''}}" bindtap="closeSwipe">
-              <block wx:if="{{item.image}}">
-                <image class="admin-dish-image" src="{{item.image}}" mode="aspectFill"></image>
-              </block>
-              <block wx:else>
-                <view class="admin-dish-image-fallback" style="{{item.coverStyle}}">{{item.imageLabel}}</view>
-              </block>
-
-              <view class="admin-card-top">
-                <view>
-                  <view class="admin-card-title">{{item.name}}</view>
-                  <view class="admin-card-copy">{{item.category}} · {{item.priceText}}</view>
-                </view>
-                <view class="admin-card-actions">
-                  <view hover-class="press-scale" hover-stay-time="60" class="button-ghost mini-action" data-id="{{item.id}}" bindtap="goEditDish">编辑</view>
-                </view>
+            <view class="surface admin-card admin-dish-card swipe-content {{swipedDishId === item.id ? 'swipe-open' : ''}}" bindtap="closeSwipe">
+              <view class="admin-dish-thumb" data-image="{{item.image}}" catchtap="previewDishImage">
+                <block wx:if="{{item.image}}">
+                  <image class="admin-dish-thumb-image" src="{{item.image}}" mode="aspectFill"></image>
+                </block>
+                <block wx:else>
+                  <view class="admin-dish-thumb-fallback" style="{{item.coverStyle}}">{{item.imageLabel}}</view>
+                </block>
+                <view wx:if="{{item.soldOut}}" class="admin-dish-thumb-mask">售罄</view>
               </view>
-              <view class="admin-card-copy">{{item.description}}</view>
-              <view class="admin-switch-row">
-                <view class="admin-card-copy">{{item.soldOutLabel}}</view>
-                <switch color="#1D1F24" checked="{{item.availableChecked}}" data-id="{{item.id}}" bindchange="toggleDishAvailability"></switch>
+
+              <view class="admin-dish-main">
+                <view class="admin-dish-head">
+                  <view class="admin-card-title">{{item.name}}</view>
+                  <view class="num admin-dish-price">{{item.priceText}}</view>
+                </view>
+                <view class="admin-card-copy admin-dish-category">{{item.category}}</view>
+                <view class="admin-card-copy admin-dish-desc">{{item.description}}</view>
+                <view class="admin-dish-foot">
+                  <view class="admin-card-copy admin-dish-state {{item.soldOut ? 'is-soldout' : ''}}">{{item.soldOutLabel}}</view>
+                  <switch color="#B85C1D" checked="{{item.availableChecked}}" data-id="{{item.id}}" bindchange="toggleDishAvailability"></switch>
+                  <view hover-class="press-scale" hover-stay-time="60" class="button-ghost mini-action admin-dish-edit" data-id="{{item.id}}" bindtap="goEditDish">编辑</view>
+                </view>
               </view>
             </view>
           </view>
