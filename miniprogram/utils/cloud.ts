@@ -54,7 +54,8 @@ export const initCloud = (force = false) => {
   try {
     wx.cloud.init({
       traceUser: true,
-      env: 'DYNAMIC_CURRENT_ENV',
+      /* 小程序端必须用真实环境 ID（DYNAMIC_CURRENT_ENV 仅云函数端有效） */
+      env: 'cloud1-d7guohsipf7e4d5a5',
     })
     cloudReady = true
   } catch (error) {
