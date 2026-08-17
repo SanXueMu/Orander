@@ -14,6 +14,23 @@ const collections = {
   config: db.collection('config'),
 }
 
+/* 新环境集合自动初始化：首次调用时建表，已存在则忽略 */
+let collectionsReady = false
+const ensureCollections = async () => {
+  if (collectionsReady) {
+    return
+  }
+  for (const name of ['dishes', 'members', 'orders', 'config']) {
+    try {
+      await db.createCollection(name)
+      log('init', `collection created: ${name}`)
+    } catch (error) {
+      /* 已存在（-501001/duplicate）直接跳过 */
+    }
+  }
+  collectionsReady = true
+}
+
 // ============================
 // 常量
 // ============================
@@ -469,6 +486,7 @@ exports.main = async (event = {}) => {
   }
 
   try {
+    await ensureCollections()
     if (ADMIN_ONLY.has(action)) {
       const expectedToken = await ensureAdminConfig()
       if ((event.adminToken || '') !== expectedToken) {
