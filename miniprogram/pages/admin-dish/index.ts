@@ -1,4 +1,5 @@
-import { deleteDish, getDishCoverStyle, getDishes, getMonogram, isAdminSession, saveDish } from '../../utils/orander'
+import { deleteDish, getAdminToken, getDishCoverStyle, getDishes, getMonogram, isAdminSession, saveDish } from '../../utils/orander'
+import { fetchCloudDishes, initCloud, publishSingleDish } from '../../utils/cloud'
 import { pageLookBehavior } from '../../behaviors/page-look'
 
 const DEFAULT_DISH_IMAGE = ''
@@ -19,6 +20,7 @@ Page({
     dishImageStyle: getDishCoverStyle('dish'),
     dishAvailable: true,
     editing: false,
+    publishing: false,
   },
 
   onLoad(options: Record<string, string>) {
@@ -162,10 +164,29 @@ Page({
 
     saveDish(nextDish)
 
-    wx.showToast({
-      title: '已保存',
-      icon: 'success',
-    })
+    /* 云可用时直接发布，一步到位；不可用则仅本地保存 */
+    if (initCloud()) {
+      this.setData({ publishing: true })
+      wx.showLoading({ title: '发布中' })
+      try {
+        const saved = await publishSingleDish(nextDish, getAdminToken())
+        wx.hideLoading()
+        if (saved) {
+          await fetchCloudDishes()
+          wx.showToast({ title: '已发布', icon: 'success' })
+        } else {
+          wx.showToast({ title: '本地已存，云端发布失败', icon: 'none' })
+        }
+      } finally {
+        this.setData({ publishing: false })
+      }
+    } else {
+      wx.showToast({
+        title: '已保存到本机',
+        icon: 'success',
+      })
+    }
+
     setTimeout(() => {
       wx.navigateBack({ delta: 1 })
     }, 300)

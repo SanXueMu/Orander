@@ -9,6 +9,7 @@
     "pages/cart/index",
     "pages/receipt/index",
     "pages/admin/index",
+    "pages/admin-settings/index",
     "pages/admin-dish/index",
     "pages/admin-user/index"
   ],

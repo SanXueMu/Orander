@@ -57,7 +57,7 @@
 
         <view class="button-row admin-dish-buttons">
           <view hover-class="press-scale" hover-stay-time="60" class="button-ghost admin-dish-button" bindtap="removeDishDraft">{{editing ? '删除' : '返回'}}</view>
-          <view hover-class="press-scale" hover-stay-time="60" class="button-primary admin-dish-button" bindtap="saveDishDraft">保存</view>
+          <view hover-class="press-scale" hover-stay-time="60" class="button-primary admin-dish-button" bindtap="saveDishDraft">{{publishing ? '发布中…' : (editing ? '保存并发布' : '发布菜品')}}</view>
         </view>
       </view>
     </view>

@@ -1,0 +1,69 @@
+<view class="orander-page {{themeClass}} {{fontClass}} admin-settings-page">
+  <view class="aurora">
+    <view class="aurora-dot aurora-a"></view>
+    <view class="aurora-dot aurora-b"></view>
+    <view class="aurora-dot aurora-c"></view>
+  </view>
+  <navigation-bar back color="{{navColor}}" background="{{navBackground}}">
+    <view slot="center" class="nav-title">设置</view>
+  </navigation-bar>
+
+  <scroll-view class="page-scroll" scroll-y>
+    <view class="page-body admin-page-body list-gap">
+
+      <view class="surface glass admin-settings-card">
+        <view class="admin-settings-head">
+          <view class="section-kicker">SHOP</view>
+        </view>
+
+        <view class="admin-setting-row" hover-class="press-scale" hover-stay-time="60" bindtap="toggleChefEdit">
+          <view class="admin-setting-main">
+            <view class="admin-setting-label">掌勺署名</view>
+            <view class="admin-setting-value {{chefName ? '' : 'is-empty'}}">{{chefName || '未设置'}}</view>
+          </view>
+          <view class="admin-setting-action">{{chefEditing ? '收起' : '修改'}}</view>
+        </view>
+        <view wx:if="{{chefEditing}}" class="admin-setting-expand">
+          <input class="field-input" placeholder="例如：张师傅 / 妈妈" value="{{chefInput}}" maxlength="12" bindinput="onChefInput" />
+          <view class="admin-setting-expand-actions">
+            <view hover-class="press-scale" hover-stay-time="60" class="button-ghost mini-action" bindtap="cancelChefEdit">取消</view>
+            <view hover-class="press-scale" hover-stay-time="60" class="button-primary mini-action" bindtap="saveChefName">保存</view>
+          </view>
+          <view class="admin-setting-note">收据页将展示「今日由 {{chefName || '掌勺人'}} 掌勺」</view>
+        </view>
+
+        <view class="admin-setting-row" hover-class="press-scale" hover-stay-time="60" bindtap="publishMenuToCloud">
+          <view class="admin-setting-main">
+            <view class="admin-setting-label">菜单全量发布</view>
+            <view class="admin-setting-value is-empty">{{publishingCloud ? '发布中…' : '将本地菜品同步到云端'}}</view>
+          </view>
+          <view class="admin-setting-action">{{publishingCloud ? '…' : '发布'}}</view>
+        </view>
+      </view>
+
+      <view class="surface glass admin-settings-card">
+        <view class="admin-settings-head">
+          <view class="section-kicker">SECURITY</view>
+        </view>
+
+        <view class="admin-setting-row" hover-class="press-scale" hover-stay-time="60" bindtap="togglePwdEdit">
+          <view class="admin-setting-main">
+            <view class="admin-setting-label">管理员密码</view>
+            <view class="admin-setting-value is-empty">{{pwdEditing ? '填写中…' : '••••••'}}</view>
+          </view>
+          <view class="admin-setting-action">{{pwdEditing ? '收起' : '修改'}}</view>
+        </view>
+        <view wx:if="{{pwdEditing}}" class="admin-setting-expand admin-pwd-edit">
+          <input class="field-input" password placeholder="旧密码" value="{{pwdOld}}" bindinput="onPwdOldInput" />
+          <input class="field-input" password placeholder="新密码（至少 6 位）" value="{{pwdNew}}" bindinput="onPwdNewInput" />
+          <input class="field-input" password placeholder="确认新密码" value="{{pwdConfirm}}" bindinput="onPwdConfirmInput" />
+          <view class="admin-setting-expand-actions">
+            <view hover-class="press-scale" hover-stay-time="60" class="button-ghost mini-action" bindtap="cancelPwdEdit">取消</view>
+            <view hover-class="press-scale" hover-stay-time="60" class="button-primary mini-action" bindtap="savePwd">{{pwdSubmitting ? '提交中…' : '确认修改'}}</view>
+          </view>
+        </view>
+      </view>
+
+    </view>
+  </scroll-view>
+</view>

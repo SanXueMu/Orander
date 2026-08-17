@@ -51,12 +51,6 @@
   gap: 16rpx;
 }
 
-.admin-side-actions {
-  display: flex;
-  gap: 12rpx;
-  justify-content: flex-end;
-}
-
 .admin-category-strip {
   width: 100%;
   white-space: nowrap;
@@ -66,14 +60,6 @@
   display: inline-flex;
   gap: 12rpx;
   padding-right: 12rpx;
-}
-
-.add-dish-button {
-  min-width: 124rpx;
-}
-
-.publish-dish-button {
-  min-width: 124rpx;
 }
 
 .admin-card-top,
@@ -331,58 +317,27 @@
   border: 2rpx solid var(--muted);
 }
 
-/* ===== 店铺设置紧凑卡（署名/密码合并，行式布局） ===== */
-.admin-settings-card {
-  padding: 20rpx 28rpx 8rpx;
+/* ===== 菜单工具栏 — 分类横滑 + 全宽新增 ===== */
+.admin-menu-toolbar {
+  padding: 20rpx 24rpx 24rpx;
 }
 
-.admin-settings-head {
-  padding-bottom: 4rpx;
+.admin-category-strip {
+  width: 100%;
+  white-space: nowrap;
 }
 
-.admin-setting-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20rpx;
-  padding: 20rpx 0;
-  border-bottom: 2rpx solid var(--line);
+.admin-category-row {
+  display: inline-flex;
+  gap: 14rpx;
 }
 
-.admin-setting-row:last-of-type {
-  border-bottom: none;
-}
-
-.admin-setting-label {
-  font-size: 24rpx;
-  color: var(--muted);
-  margin-bottom: 4rpx;
-}
-
-.admin-setting-value {
-  font-size: 30rpx;
+.admin-add-dish-button {
+  margin-top: 20rpx;
+  min-height: 88rpx;
+  border-radius: 20rpx;
+  font-size: 28rpx;
   font-weight: 700;
-  color: var(--ink);
-}
-
-.admin-setting-value.is-empty {
-  color: var(--muted);
-  font-weight: 500;
-  letter-spacing: 2rpx;
-}
-
-.admin-setting-action {
-  font-size: 24rpx;
-  font-weight: 600;
-  color: var(--accent);
-  padding: 10rpx 4rpx 10rpx 24rpx;
-}
-
-.admin-setting-note {
-  margin-top: 14rpx;
-  font-size: 22rpx;
-  line-height: 1.6;
-  color: var(--muted);
 }
 
 .admin-chef-edit {

@@ -159,6 +159,21 @@ export const saveDishCloud = async (dish: Dish, adminToken: string) => {
   return callOrander<Dish>('saveDish', { dish, adminToken })
 }
 
+/* 单菜品发布：本地图先传云存储，再 upsert 云端（admin-dish 保存即发布） */
+export const publishSingleDish = async (dish: Dish, adminToken: string) => {
+  if (!canUseCloud()) {
+    return null
+  }
+
+  const cloudImage = await resolveCloudImagePath(dish)
+  const nextDish = cloudImage === dish.image ? dish : { ...dish, image: cloudImage }
+  const savedDish = await saveDishCloud(nextDish, adminToken)
+  if (savedDish) {
+    saveDishLocalImage(dish.id, cloudImage)
+  }
+  return savedDish
+}
+
 const resolveCloudImagePath = async (dish: Dish) => {
   const image = dish.image || ''
   if (!image || image.indexOf('cloud://') === 0 || !canUseCloud()) {
@@ -173,6 +188,17 @@ const resolveCloudImagePath = async (dish: Dish) => {
   }) as { fileID?: string }
 
   return result.fileID || image
+}
+
+/* 云存储 fileID 回写本地菜品缓存（避免每次发布重复上传） */
+const saveDishLocalImage = (dishId: string, cloudImage: string) => {
+  if (!cloudImage || cloudImage.indexOf('cloud://') !== 0) {
+    return
+  }
+  const localDish = getDishes().find((item) => item.id === dishId)
+  if (localDish && localDish.image !== cloudImage) {
+    saveDish({ ...localDish, image: cloudImage })
+  }
 }
 
 export const publishLocalDishesToCloud = async (adminToken: string) => {

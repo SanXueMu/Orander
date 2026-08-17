@@ -20,46 +20,8 @@
             <view class="admin-business-dot"></view>
             <view class="admin-business-label">{{businessOpen ? '营业中' : '已暂停'}}</view>
           </view>
+          <view hover-class="press-scale" hover-stay-time="60" class="menu-mini-action" bindtap="goSettings">设置</view>
           <view hover-class="press-scale" hover-stay-time="60" class="menu-mini-action" bindtap="logout">退出</view>
-        </view>
-      </view>
-
-      <view class="surface glass admin-settings-card">
-        <view class="admin-settings-head">
-          <view class="section-kicker">SETTINGS</view>
-        </view>
-
-        <view class="admin-setting-row" hover-class="press-scale" hover-stay-time="60" bindtap="toggleChefEdit">
-          <view class="admin-setting-main">
-            <view class="admin-setting-label">掌勺署名</view>
-            <view class="admin-setting-value {{chefName ? '' : 'is-empty'}}">{{chefName || '未设置'}}</view>
-          </view>
-          <view class="admin-setting-action">{{chefEditing ? '收起' : '修改'}}</view>
-        </view>
-        <view wx:if="{{chefEditing}}" class="admin-chef-edit">
-          <input class="field-input" placeholder="例如：张师傅 / 妈妈" value="{{chefInput}}" maxlength="12" bindinput="onChefInput" />
-          <view class="admin-chef-edit-actions">
-            <view hover-class="press-scale" hover-stay-time="60" class="button-ghost mini-action" bindtap="cancelChefEdit">取消</view>
-            <view hover-class="press-scale" hover-stay-time="60" class="button-primary mini-action" bindtap="saveChefName">保存</view>
-          </view>
-          <view class="admin-setting-note">收据页将展示「今日由 {{chefName || '掌勺人'}} 掌勺」</view>
-        </view>
-
-        <view class="admin-setting-row" hover-class="press-scale" hover-stay-time="60" bindtap="togglePwdEdit">
-          <view class="admin-setting-main">
-            <view class="admin-setting-label">管理员密码</view>
-            <view class="admin-setting-value is-empty">{{pwdEditing ? '填写中…' : '••••••'}}</view>
-          </view>
-          <view class="admin-setting-action">{{pwdEditing ? '收起' : '修改'}}</view>
-        </view>
-        <view wx:if="{{pwdEditing}}" class="admin-chef-edit admin-pwd-edit">
-          <input class="field-input" password placeholder="旧密码" value="{{pwdOld}}" bindinput="onPwdOldInput" />
-          <input class="field-input" password placeholder="新密码（至少 6 位）" value="{{pwdNew}}" bindinput="onPwdNewInput" />
-          <input class="field-input" password placeholder="确认新密码" value="{{pwdConfirm}}" bindinput="onPwdConfirmInput" />
-          <view class="admin-chef-edit-actions">
-            <view hover-class="press-scale" hover-stay-time="60" class="button-ghost mini-action" bindtap="cancelPwdEdit">取消</view>
-            <view hover-class="press-scale" hover-stay-time="60" class="button-primary mini-action" bindtap="savePwd">{{pwdSubmitting ? '提交中…' : '确认修改'}}</view>
-          </view>
         </view>
       </view>
 
@@ -192,7 +154,7 @@
       </block>
 
       <block wx:elif="{{activePanel === 'menu'}}">
-        <view class="surface action-card admin-action-row">
+        <view class="surface admin-menu-toolbar">
           <scroll-view class="admin-category-strip" scroll-x enable-flex>
             <view class="admin-category-row">
               <view
@@ -206,10 +168,7 @@
               </view>
             </view>
           </scroll-view>
-          <view class="admin-side-actions">
-            <view hover-class="press-scale" hover-stay-time="60" class="button-secondary add-dish-button" bindtap="goCreateDish">新增</view>
-            <view hover-class="press-scale" hover-stay-time="60" class="button-secondary publish-dish-button" bindtap="publishMenuToCloud">发布</view>
-          </view>
+          <view hover-class="press-scale" hover-stay-time="60" class="button-primary admin-add-dish-button" bindtap="goCreateDish">＋ 新增菜品</view>
         </view>
 
         <view class="list-gap">
