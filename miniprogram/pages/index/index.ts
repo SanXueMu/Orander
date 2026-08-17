@@ -1,4 +1,4 @@
-import { initCloud, syncVisitorMemberCloud, verifyAdminCloud } from '../../utils/cloud'
+import { getLastCloudError, initCloud, syncVisitorMemberCloud, verifyAdminCloud } from '../../utils/cloud'
 import {
   clearCart,
   clearSession,
@@ -225,6 +225,16 @@ Page({
 
         const result = await verifyAdminCloud(this.data.adminPassword)
         if (!result) {
+          const cloudReason = getLastCloudError()
+          if (cloudReason && cloudReason !== '密码错误') {
+            /* 调用失败 ≠ 密码错误（如云端仍是旧版云函数），如实提示且不计入锁定 */
+            wx.showModal({
+              title: '无法校验密码',
+              content: `${cloudReason}。请在微信开发者工具重新上传并部署云函数 orander。`,
+              showCancel: false,
+            })
+            return
+          }
           const failState = recordAdminFailure()
           wx.showToast({
             title: failState.locked

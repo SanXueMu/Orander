@@ -37,6 +37,10 @@ interface CloudEnvelope<T> {
 export const CLOUD_SYNC_ENABLED = true
 
 let cloudReady = false
+let lastCloudError = ''
+
+/** 最近一次云函数调用失败的原因（区分"密码错误"与"调用失败"，如云函数未部署新版本） */
+export const getLastCloudError = () => lastCloudError
 
 export const initCloud = (force = false) => {
   if (!force && !CLOUD_SYNC_ENABLED) {
@@ -66,7 +70,9 @@ export const canUseCloud = () => {
 }
 
 const callOrander = async <T>(action: OranderAction, payload: Record<string, unknown> = {}) => {
+  lastCloudError = ''
   if (!canUseCloud()) {
+    lastCloudError = '云能力未初始化'
     return null
   }
 
@@ -82,12 +88,14 @@ const callOrander = async <T>(action: OranderAction, payload: Record<string, unk
     const envelope = result.result as CloudEnvelope<T>
     if (!envelope || !envelope.ok) {
       const message = envelope ? envelope.message : ''
+      lastCloudError = message || '云函数返回异常（可能云端仍是旧版本，请在开发者工具重新部署）'
       console.warn('cloud function failed', action, message)
       return null
     }
 
     return envelope.data
   } catch (error) {
+    lastCloudError = '云函数调用失败（可能未部署或网络异常）'
     console.warn('cloud call error', action, error)
     return null
   }
