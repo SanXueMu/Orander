@@ -331,28 +331,64 @@
   border: 2rpx solid var(--muted);
 }
 
-.admin-chef-card {
-  padding: 26rpx 28rpx;
+/* ===== 店铺设置紧凑卡（署名/密码合并，行式布局） ===== */
+.admin-settings-card {
+  padding: 20rpx 28rpx 8rpx;
 }
 
-.admin-chef-row {
+.admin-settings-head {
+  padding-bottom: 4rpx;
+}
+
+.admin-setting-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 20rpx;
+  padding: 20rpx 0;
+  border-bottom: 2rpx solid var(--line);
 }
 
-.admin-chef-name {
-  font-size: 32rpx;
-  font-weight: 800;
+.admin-setting-row:last-of-type {
+  border-bottom: none;
+}
+
+.admin-setting-label {
+  font-size: 24rpx;
+  color: var(--muted);
+  margin-bottom: 4rpx;
+}
+
+.admin-setting-value {
+  font-size: 30rpx;
+  font-weight: 700;
   color: var(--ink);
-  margin: 6rpx 0 8rpx;
+}
+
+.admin-setting-value.is-empty {
+  color: var(--muted);
+  font-weight: 500;
+  letter-spacing: 2rpx;
+}
+
+.admin-setting-action {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: var(--accent);
+  padding: 10rpx 4rpx 10rpx 24rpx;
+}
+
+.admin-setting-note {
+  margin-top: 14rpx;
+  font-size: 22rpx;
+  line-height: 1.6;
+  color: var(--muted);
 }
 
 .admin-chef-edit {
-  margin-top: 20rpx;
+  margin-top: 4rpx;
   border-top: 2rpx dashed var(--line-strong);
-  padding-top: 20rpx;
+  padding: 20rpx 0 24rpx;
 }
 
 .admin-chef-edit-actions {

@@ -399,8 +399,8 @@ Page({
     }
   },
 
-  startChefEdit() {
-    this.setData({ chefEditing: true, chefInput: this.data.chefName })
+  toggleChefEdit() {
+    this.setData({ chefEditing: !this.data.chefEditing, chefInput: this.data.chefName })
   },
 
   cancelChefEdit() {
@@ -412,8 +412,8 @@ Page({
   },
 
   /* ===== 修改管理员密码 ===== */
-  startPwdEdit() {
-    this.setData({ pwdEditing: true, pwdOld: '', pwdNew: '', pwdConfirm: '' })
+  togglePwdEdit() {
+    this.setData({ pwdEditing: !this.data.pwdEditing, pwdOld: '', pwdNew: '', pwdConfirm: '' })
   },
 
   cancelPwdEdit() {

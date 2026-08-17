@@ -11,10 +11,6 @@
 
   <view class="login-shell">
     <view class="surface glass-blur login-card">
-      <view class="login-brand-row">
-        <view class="login-brand">OR</view>
-        <view class="login-brand-glyph"></view>
-      </view>
       <view class="login-title">Orander</view>
       <view class="login-tagline">家常菜 · 今日点 · 明日尝</view>
 
@@ -34,7 +30,7 @@
         <input class="field-input" password placeholder="管理员密码" value="{{adminPassword}}" bindinput="onPasswordInput" />
       </view>
 
-      <view hover-class="press-scale" hover-stay-time="60" class="button-primary login-button" bindtap="login">微信登录</view>
+      <view hover-class="press-scale" hover-stay-time="60" class="button-primary login-button" bindtap="login">{{activeRole === 'admin' ? '登录' : '微信登录'}}</view>
       <view wx:if="{{showDebugLogin}}" hover-class="press-scale" hover-stay-time="60" class="button-ghost debug-button" bindtap="debugLogin">调试进入</view>
 
       <view wx:if="{{sessionHint}}" class="session-actions">
