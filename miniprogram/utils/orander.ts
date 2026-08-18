@@ -384,10 +384,10 @@ const hashString = (value: string) => {
 }
 
 const AVATAR_BACKGROUNDS = [
-  'linear-gradient(135deg, #111111 0%, #2f2f2f 100%)',
-  'linear-gradient(135deg, #262626 0%, #545454 100%)',
-  'linear-gradient(135deg, #1a1a1a 0%, #747474 100%)',
-  'linear-gradient(135deg, #3b3b3b 0%, #101010 100%)',
+  'linear-gradient(135deg, #f2ab39 0%, #c9781a 100%)',
+  'linear-gradient(135deg, #e4b660 0%, #69491a 100%)',
+  'linear-gradient(135deg, #e88f6a 0%, #b85c3f 100%)',
+  'linear-gradient(135deg, #9dbd8f 0%, #5f8a56 100%)',
 ]
 
 const DISH_BACKGROUNDS = [

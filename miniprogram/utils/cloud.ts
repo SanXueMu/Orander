@@ -297,6 +297,8 @@ export interface OrderStats {
     orders: number
     revenue: number
     submitted: number
+    visitors?: number
+    dishes?: number
   }
   daily?: Array<{
     date: string

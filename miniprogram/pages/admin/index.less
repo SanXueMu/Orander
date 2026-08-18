@@ -212,9 +212,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
+  color: #fff8ec;
   font-size: 26rpx;
-  font-weight: 700;
+  font-weight: 800;
+  text-shadow: 0 2rpx 8rpx rgba(90, 61, 14, 0.35);
   letter-spacing: 2rpx;
 }
 
@@ -449,6 +450,14 @@
   --blob-3: #e4b660;
 }
 
+.admin-page .swipe-shell {
+  box-shadow: 0 4rpx 18rpx rgba(105, 73, 26, 0.06);
+}
+
+.admin-page .swipe-shell .surface {
+  box-shadow: none;
+}
+
 .admin-page .surface {
   box-shadow: 0 8rpx 32rpx rgba(105, 73, 26, 0.08), inset 0 1rpx 0 rgba(255, 255, 255, 0.65);
 }
@@ -679,6 +688,32 @@
 
 .admin-board-title {
   margin-top: 12rpx;
+  font-size: 24rpx;
+  color: var(--muted);
+}
+
+.admin-board-value-row {
+  display: flex;
+  align-items: baseline;
+  gap: 16rpx;
+}
+
+.admin-board-unit {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.admin-board-empty {
+  margin-top: 10rpx;
+  font-size: 44rpx;
+  font-weight: 800;
+  color: var(--ink);
+  line-height: 1.3;
+}
+
+.admin-board-empty-sub {
+  margin-top: 8rpx;
   font-size: 24rpx;
   color: var(--muted);
 }

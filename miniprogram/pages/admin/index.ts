@@ -42,6 +42,8 @@ const buildTodayFromOrders = (orders: Order[]) => {
     orders: todayOrders.length,
     revenue: Number(todayOrders.reduce((sum, order) => sum + order.total, 0).toFixed(2)),
     submitted: todayOrders.filter((order) => order.status === 'submitted').length,
+    visitors: new Set(todayOrders.map((order) => order.memberId)).size,
+    dishes: todayOrders.reduce((sum, order) => sum + order.items.reduce((total, item) => total + item.quantity, 0), 0),
   }
 }
 
@@ -86,9 +88,9 @@ const mapOrderRows = (orders: Order[]) => {
     ...order,
     totalText: formatMoney(order.total),
     createdText: formatShortDate(order.createdAt),
-    statusText: order.status === 'completed' ? '已完成' : '已提交',
+    statusText: order.status === 'completed' ? '已完成' : order.status === 'preparing' ? '准备中' : order.status === 'cancelled' ? '已取消' : '待准备',
     previewText: order.items.slice(0, 3).map((item) => item.name).join(' · '),
-    canComplete: order.status !== 'completed',
+    canComplete: order.status === 'submitted' || order.status === 'preparing',
   }))
 }
 
@@ -112,7 +114,7 @@ Page({
     adminName: 'Admin',
     activePanel: 'home',
     greeting: '你好',
-    statsToday: { revenue: 0, orders: 0, submitted: 0 },
+    statsToday: { visitors: 0, orders: 0, dishes: 0, submitted: 0 },
     statsDaily: [] as OrderStats['daily'],
     statsTopDishes: [] as OrderStats['topDishes'],
     categories: ['全部'],
@@ -311,12 +313,19 @@ Page({
 
   applyStats(base: OrderStats) {
     const localOrders = getOrders()
-    const today = base.today || buildTodayFromOrders(localOrders)
+    const fallbackToday = buildTodayFromOrders(localOrders)
+    const rawToday: Partial<NonNullable<OrderStats['today']>> = base.today || {}
+    const today = {
+      orders: rawToday.orders ?? fallbackToday.orders,
+      submitted: rawToday.submitted ?? fallbackToday.submitted,
+      visitors: rawToday.visitors ?? fallbackToday.visitors,
+      dishes: rawToday.dishes ?? fallbackToday.dishes,
+    }
     const daily = base.daily && base.daily.length ? base.daily : buildDailyFromOrders(localOrders)
-    const maxRevenue = Math.max(...daily.map((day) => day.revenue), 0)
+    const maxOrders = Math.max(...daily.map((day) => day.orders), 0)
     const chartDaily = daily.map((day) => ({
       ...day,
-      percent: maxRevenue > 0 ? Math.max(4, Math.round((day.revenue / maxRevenue) * 100)) : 0,
+      percent: maxOrders > 0 ? Math.max(4, Math.round((day.orders / maxOrders) * 100)) : 0,
     }))
 
     const topDishes = base.topDishes || []
@@ -330,13 +339,12 @@ Page({
       stats: base,
       statsRevenueText: formatMoney(base.revenue),
       statsToday: today,
-      statsTodayRevenueText: formatMoney(today.revenue),
       statsDaily: chartDaily,
       statsTopDishes: chartTopDishes,
     })
 
     this.animateCountUp({
-      revenue: today.revenue || 0,
+      visitors: today.visitors || 0,
       orders: today.orders || 0,
       submitted: today.submitted || 0,
     })
@@ -345,26 +353,24 @@ Page({
   /* 今日速览数字滚动（约 450ms / 9 帧） */
   countUpTimer: undefined as ReturnType<typeof setInterval> | undefined,
 
-  animateCountUp(target: { revenue: number; orders: number; submitted: number }) {
+  animateCountUp(target: { visitors: number; orders: number; submitted: number }) {
     if (this.countUpTimer) {
       clearInterval(this.countUpTimer)
     }
 
     const steps = 9
     let step = 0
-    const from = { revenue: 0, orders: 0, submitted: 0 }
 
     this.countUpTimer = setInterval(() => {
       step += 1
       const progress = step / steps
       const ease = 1 - Math.pow(1 - progress, 2)
-      const revenue = Math.round(from.revenue + (target.revenue - from.revenue) * ease)
-      const orders = Math.round(from.orders + (target.orders - from.orders) * ease)
-      const submitted = Math.round(from.submitted + (target.submitted - from.submitted) * ease)
+      const visitors = Math.round(target.visitors * ease)
+      const orders = Math.round(target.orders * ease)
+      const submitted = Math.round(target.submitted * ease)
 
       this.setData({
-        statsTodayRevenueText: formatMoney(revenue),
-        statsToday: { revenue, orders, submitted },
+        statsToday: { visitors, orders, dishes: this.data.statsToday.dishes, submitted },
       })
 
       if (step >= steps) {
@@ -373,8 +379,7 @@ Page({
         }
         this.countUpTimer = undefined
         this.setData({
-          statsTodayRevenueText: formatMoney(target.revenue),
-          statsToday: { revenue: target.revenue, orders: target.orders, submitted: target.submitted },
+          statsToday: { visitors: target.visitors, orders: target.orders, dishes: this.data.statsToday.dishes, submitted: target.submitted },
         })
       }
     }, 50)

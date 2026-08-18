@@ -426,6 +426,8 @@ const actions = {
       orders: todayOrders.length,
       revenue: Number(todayOrders.reduce((sum, order) => sum + order.total, 0).toFixed(2)),
       submitted: todayOrders.filter((order) => order.status === 'submitted').length,
+      visitors: new Set(todayOrders.map((order) => order.memberId)).size,
+      dishes: todayOrders.reduce((sum, order) => sum + order.items.reduce((total, item) => total + item.quantity, 0), 0),
     }
 
     const daily = []
