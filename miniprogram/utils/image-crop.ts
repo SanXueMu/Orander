@@ -18,7 +18,7 @@ export const cropImageToSquare = (src: string): Promise<string> => {
         }
 
         try {
-          const canvas: any = wx.createOffscreenCanvas({ type: '2d', width: outSide, height: outSide } as any)
+          const canvas: any = (wx.createOffscreenCanvas as any)({ type: '2d', width: outSide, height: outSide })
           canvas.width = outSide
           canvas.height = outSide
 
