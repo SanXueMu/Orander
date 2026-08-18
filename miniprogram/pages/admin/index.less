@@ -164,9 +164,25 @@
 .admin-dish-foot {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 12rpx;
-  margin-top: 12rpx;
+  margin-top: 14rpx;
+  padding: 12rpx 14rpx;
+  border-radius: 18rpx;
+  background: var(--panel-soft);
+}
+
+.admin-dish-foot .admin-dish-state {
+  flex: 1;
+}
+
+.admin-dish-foot .admin-dish-edit {
+  background: rgba(242, 171, 57, 0.16);
+  color: var(--accent-deep);
+  border: none;
+  min-width: 96rpx;
+  min-height: 64rpx;
+  border-radius: 999rpx;
+  font-weight: 700;
 }
 
 .admin-dish-state.is-soldout {
