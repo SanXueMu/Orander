@@ -110,7 +110,11 @@ Page({
 
   data: {
     adminName: 'Admin',
-    activePanel: 'menu',
+    activePanel: 'home',
+    greeting: '你好',
+    statsToday: { revenue: 0, orders: 0, submitted: 0 },
+    statsDaily: [] as OrderStats['daily'],
+    statsTopDishes: [] as OrderStats['topDishes'],
     categories: ['全部'],
     activeCategory: '全部',
     dishes: [] as Array<ReturnType<typeof mapDishCards>[number]>,
@@ -137,6 +141,9 @@ Page({
   },
 
   async onShow() {
+    const hour = new Date().getHours()
+    const greeting = hour < 5 ? '夜深了' : hour < 11 ? '早上好' : hour < 14 ? '中午好' : hour < 18 ? '下午好' : '晚上好'
+    this.setData({ greeting })
     if (!isAdminSession()) {
       wx.reLaunch({
         url: '/pages/index/index',
@@ -175,6 +182,11 @@ Page({
       members,
       dishes: mapDishCards(activeCategory),
     })
+  },
+
+  backHome() {
+    this.setData({ activePanel: 'home', swipedDishId: '' })
+    this.loadStats()
   },
 
   switchPanel(event: WechatMiniprogram.BaseEvent) {

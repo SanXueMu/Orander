@@ -10,29 +10,82 @@
 
   <scroll-view class="page-scroll" scroll-y>
     <view class="page-body admin-page-body list-gap">
-      <view class="admin-hero surface glass-blur">
-        <view>
-          <view class="section-kicker">ADMIN</view>
-          <view class="section-title admin-title">{{adminName}}</view>
-        </view>
-        <view class="admin-hero-actions">
+      <block wx:if="{{activePanel === 'home'}}">
+        <view class="admin-statusbar">
           <view class="admin-business-toggle {{businessOpen ? 'business-open' : 'business-closed'}}" bindtap="toggleBusinessStatus">
             <view class="admin-business-dot"></view>
             <view class="admin-business-label">{{businessOpen ? '营业中' : '已暂停'}}</view>
           </view>
-          <view hover-class="press-scale" hover-stay-time="60" class="menu-mini-action" bindtap="goSettings">设置</view>
-          <view hover-class="press-scale" hover-stay-time="60" class="menu-mini-action" bindtap="logout">退出</view>
+          <view class="admin-statusbar-side">
+            <view hover-class="press-scale" hover-stay-time="60" class="menu-mini-action" bindtap="goSettings">设置</view>
+            <view hover-class="press-scale" hover-stay-time="60" class="menu-mini-action" bindtap="logout">退出</view>
+          </view>
         </view>
-      </view>
 
-      <view class="admin-tabs">
-        <view hover-class="press-dim" hover-stay-time="60" class="chip {{activePanel === 'menu' ? 'chip-active' : ''}}" data-panel="menu" bindtap="switchPanel">菜单管理</view>
-        <view hover-class="press-dim" hover-stay-time="60" class="chip {{activePanel === 'orders' ? 'chip-active' : ''}}" data-panel="orders" bindtap="switchPanel">订单</view>
-        <view hover-class="press-dim" hover-stay-time="60" class="chip {{activePanel === 'stats' ? 'chip-active' : ''}}" data-panel="stats" bindtap="switchPanel">统计</view>
-        <view hover-class="press-dim" hover-stay-time="60" class="chip {{activePanel === 'users' ? 'chip-active' : ''}}" data-panel="users" bindtap="switchPanel">用户管理</view>
-      </view>
+        <view class="surface glass-blur admin-board stagger-in" style="--stagger-index: 0">
+          <view class="section-kicker">{{greeting}} · {{adminName}}</view>
+          <view class="admin-board-title">今日营收</view>
+          <view class="num admin-board-value">{{statsTodayRevenueText}}</view>
+          <view class="admin-board-metrics">
+            <view class="admin-board-metric">
+              <view class="num admin-board-metric-value">{{statsToday.orders}}</view>
+              <view class="admin-board-metric-label">今日订单</view>
+            </view>
+            <view class="admin-board-metric">
+              <view class="num admin-board-metric-value {{statsToday.submitted > 0 ? 'admin-board-metric-hot' : ''}}">{{statsToday.submitted}}</view>
+              <view class="admin-board-metric-label">待完成</view>
+            </view>
+            <view class="admin-board-metric">
+              <view class="num admin-board-metric-value">{{stats.totalOrders || 0}}</view>
+              <view class="admin-board-metric-label">累计订单</view>
+            </view>
+          </view>
+        </view>
 
-      <block wx:if="{{activePanel === 'orders'}}">
+        <view wx:if="{{statsToday.submitted > 0}}" class="admin-reminder stagger-in" style="--stagger-index: 1" hover-class="press-dim" hover-stay-time="60" data-panel="orders" bindtap="switchPanel">
+          <view class="admin-reminder-dot"></view>
+          <view class="admin-reminder-copy">{{statsToday.submitted}} 笔订单待完成</view>
+          <view class="admin-reminder-go">去处理 ›</view>
+        </view>
+
+        <view class="admin-grid stagger-in" style="--stagger-index: 2">
+          <view class="surface admin-grid-cell" hover-class="press-scale" hover-stay-time="60" data-panel="menu" bindtap="switchPanel">
+            <view class="admin-grid-badge badge-menu">菜</view>
+            <view class="admin-grid-text">
+              <view class="admin-grid-title">菜品管理</view>
+              <view class="admin-grid-sub">新增 · 上下架 · 编辑</view>
+            </view>
+          </view>
+          <view class="surface admin-grid-cell" hover-class="press-scale" hover-stay-time="60" data-panel="orders" bindtap="switchPanel">
+            <view class="admin-grid-badge badge-orders">单</view>
+            <view class="admin-grid-text">
+              <view class="admin-grid-title">订单处理</view>
+              <view class="admin-grid-sub">接单 · 标记完成</view>
+            </view>
+          </view>
+          <view class="surface admin-grid-cell" hover-class="press-scale" hover-stay-time="60" data-panel="stats" bindtap="switchPanel">
+            <view class="admin-grid-badge badge-stats">数</view>
+            <view class="admin-grid-text">
+              <view class="admin-grid-title">经营数据</view>
+              <view class="admin-grid-sub">营收 · 销量榜</view>
+            </view>
+          </view>
+          <view class="surface admin-grid-cell" hover-class="press-scale" hover-stay-time="60" data-panel="users" bindtap="switchPanel">
+            <view class="admin-grid-badge badge-users">客</view>
+            <view class="admin-grid-text">
+              <view class="admin-grid-title">顾客</view>
+              <view class="admin-grid-sub">成员 · 下单记录</view>
+            </view>
+          </view>
+        </view>
+      </block>
+
+      <block wx:elif="{{activePanel === 'orders'}}">
+        <view class="admin-backbar" hover-class="press-dim" hover-stay-time="60" bindtap="backHome">
+          <view class="admin-backbar-arrow">‹</view>
+          <view class="admin-backbar-title">工作台</view>
+          <view class="admin-backbar-current">订单处理</view>
+        </view>
         <view wx:if="{{cloudDegraded}}" class="cloud-degraded">
           <view class="cloud-degraded-copy">
             <view class="cloud-degraded-copy-label">云端数据加载失败</view>
@@ -73,6 +126,12 @@
       </block>
 
       <block wx:elif="{{activePanel === 'stats'}}">
+        <view class="admin-backbar" hover-class="press-dim" hover-stay-time="60" bindtap="backHome">
+          <view class="admin-backbar-arrow">‹</view>
+          <view class="admin-backbar-title">工作台</view>
+          <view class="admin-backbar-current">经营数据</view>
+        </view>
+
         <view wx:if="{{cloudDegraded}}" class="cloud-degraded">
           <view class="cloud-degraded-copy">
             <view class="cloud-degraded-copy-label">云端统计加载失败</view>
@@ -82,27 +141,8 @@
         </view>
         <view wx:if="{{!stats}}" class="surface admin-empty">暂无统计数据</view>
         <view wx:else class="list-gap">
-          <view class="surface admin-card admin-today-card stagger-in" style="--stagger-index: 0">
-            <view class="section-kicker">TODAY</view>
-            <view class="section-title">今日速览</view>
-            <view class="admin-today-grid">
-              <view class="admin-today-item">
-                <view class="num admin-today-value">{{statsTodayRevenueText}}</view>
-                <view class="admin-today-label">今日营收</view>
-              </view>
-              <view class="admin-today-item">
-                <view class="num admin-today-value">{{statsToday.orders}}</view>
-                <view class="admin-today-label">今日订单</view>
-              </view>
-              <view class="admin-today-item">
-                <view class="num admin-today-value {{statsToday.submitted > 0 ? 'admin-today-pending' : ''}}">{{statsToday.submitted}}</view>
-                <view class="admin-today-label">待完成</view>
-              </view>
-            </view>
-          </view>
-
-          <view class="surface admin-card stagger-in" style="--stagger-index: 1">
-            <view class="section-kicker">LAST 7 DAYS</view>
+          <view class="surface admin-card stagger-in" style="--stagger-index: 0">
+            <view class="section-kicker">近 7 日</view>
             <view class="section-title">近 7 日营收</view>
             <view class="chart-row">
               <view wx:for="{{statsDaily}}" wx:key="date" class="chart-col">
@@ -114,7 +154,7 @@
             </view>
           </view>
 
-          <view class="surface admin-stats-grid stagger-in" style="--stagger-index: 2">
+          <view class="surface admin-stats-grid stagger-in" style="--stagger-index: 1">
             <view class="admin-stats-item">
               <view class="num admin-stats-value">{{statsRevenueText}}</view>
               <view class="admin-stats-label">累计营收</view>
@@ -133,8 +173,8 @@
             </view>
           </view>
 
-          <view class="surface admin-card stagger-in" style="--stagger-index: 3">
-            <view class="section-kicker">TOP DISHES</view>
+          <view class="surface admin-card stagger-in" style="--stagger-index: 2">
+            <view class="section-kicker">销量榜</view>
             <view class="section-title">菜品销量榜</view>
             <view wx:for="{{statsTopDishes}}" wx:key="dishId" class="admin-rank-row">
               <view class="admin-rank-index">{{index + 1}}</view>
@@ -154,6 +194,12 @@
       </block>
 
       <block wx:elif="{{activePanel === 'menu'}}">
+        <view class="admin-backbar" hover-class="press-dim" hover-stay-time="60" bindtap="backHome">
+          <view class="admin-backbar-arrow">‹</view>
+          <view class="admin-backbar-title">工作台</view>
+          <view class="admin-backbar-current">菜品管理</view>
+        </view>
+
         <view class="surface admin-menu-toolbar">
           <scroll-view class="admin-category-strip" scroll-x enable-flex>
             <view class="admin-category-row">
@@ -204,6 +250,12 @@
       </block>
 
       <block wx:else>
+        <view class="admin-backbar" hover-class="press-dim" hover-stay-time="60" bindtap="backHome">
+          <view class="admin-backbar-arrow">‹</view>
+          <view class="admin-backbar-title">工作台</view>
+          <view class="admin-backbar-current">顾客</view>
+        </view>
+
         <view class="list-gap">
           <view wx:for="{{members}}" wx:key="id" class="surface admin-card">
             <view class="admin-card-top">

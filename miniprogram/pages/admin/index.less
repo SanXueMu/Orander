@@ -38,12 +38,6 @@
   margin-top: 8rpx;
 }
 
-.admin-tabs {
-  display: flex;
-  gap: 14rpx;
-  flex-wrap: wrap;
-}
-
 .admin-action-row {
   display: flex;
   flex-direction: column;
@@ -268,23 +262,33 @@
 }
 
 .admin-business-toggle.business-open {
-  border-color: #3bb093;
+  border-color: rgba(63, 157, 110, 0.35);
+  background: rgba(63, 157, 110, 0.10);
+}
+
+.admin-business-toggle.business-open .admin-business-label {
+  color: #2f7d57;
+  font-weight: 700;
 }
 
 .admin-business-toggle.business-closed {
-  border-color: #c0563f;
-  opacity: 0.85;
+  border-color: var(--line-strong, rgba(105, 73, 26, 0.2));
+  background: rgba(105, 73, 26, 0.06);
 }
 
 .admin-business-dot {
   width: 14rpx;
   height: 14rpx;
   border-radius: 50%;
-  background: #3bb093;
+  background: #3f9d6e;
 }
 
 .business-closed .admin-business-dot {
-  background: #c0563f;
+  background: #a08d74;
+}
+
+.business-closed .admin-business-label {
+  color: var(--muted);
 }
 
 .admin-business-label {
@@ -473,16 +477,6 @@
 }
 
 /* 营业中呼吸光圈 */
-@keyframes admin-dot-pulse {
-  0%,
-  100% {
-    box-shadow: 0 0 0 0 rgba(242, 171, 57, 0.45);
-  }
-  50% {
-    box-shadow: 0 0 0 10rpx rgba(242, 171, 57, 0);
-  }
-}
-
 .admin-page .chart-bar {
   background: linear-gradient(180deg, #ffd954 0%, #f2ab39 100%);
   animation: admin-bar-grow 0.5s ease both;
@@ -493,9 +487,6 @@
   animation: admin-fill-x 0.6s ease both;
 }
 
-.admin-page .business-open .admin-business-dot {
-  animation: admin-dot-pulse 2s ease-in-out infinite;
-}
 
 /* ===== 菜单工具栏 — 分类横滑 + 全宽新增 ===== */
 .admin-menu-toolbar {
@@ -667,4 +658,180 @@
 /* ===== 修改密码卡 ===== */
 .admin-pwd-edit .field-input {
   margin-bottom: 16rpx;
+}
+
+/* ===== 工作台（状态区 → 今日看板 → 待办 → 宫格） ===== */
+.admin-statusbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4rpx 8rpx;
+}
+
+.admin-statusbar-side {
+  display: flex;
+  gap: 8rpx;
+}
+
+.admin-board {
+  padding: 32rpx 28rpx 26rpx;
+}
+
+.admin-board-title {
+  margin-top: 12rpx;
+  font-size: 24rpx;
+  color: var(--muted);
+}
+
+.admin-board-value {
+  font-size: 76rpx;
+  font-weight: 800;
+  color: var(--ink);
+  letter-spacing: 2rpx;
+  line-height: 1.25;
+}
+
+.admin-board-metrics {
+  display: flex;
+  margin-top: 26rpx;
+  padding-top: 22rpx;
+  border-top: 2rpx solid var(--line);
+}
+
+.admin-board-metric {
+  flex: 1;
+  text-align: center;
+}
+
+.admin-board-metric-value {
+  font-size: 36rpx;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.admin-board-metric-hot {
+  color: var(--accent-deep);
+}
+
+.admin-board-metric-label {
+  margin-top: 4rpx;
+  font-size: 22rpx;
+  color: var(--muted);
+}
+
+.admin-reminder {
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+  padding: 22rpx 26rpx;
+  border-radius: 24rpx;
+  background: rgba(242, 171, 57, 0.16);
+  border: 2rpx solid rgba(242, 171, 57, 0.35);
+}
+
+.admin-reminder-dot {
+  width: 14rpx;
+  height: 14rpx;
+  border-radius: 50%;
+  background: #f2ab39;
+}
+
+.admin-reminder-copy {
+  flex: 1;
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #7a5410;
+}
+
+.admin-reminder-go {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #b87d14;
+}
+
+.admin-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18rpx;
+}
+
+.admin-grid-cell {
+  width: calc(50% - 9rpx);
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 18rpx;
+  padding: 26rpx 24rpx;
+  border-radius: 28rpx;
+}
+
+.admin-grid-badge {
+  flex-shrink: 0;
+  width: 84rpx;
+  height: 84rpx;
+  border-radius: 26rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 34rpx;
+  font-weight: 800;
+}
+
+.badge-menu {
+  background: linear-gradient(135deg, #ffd954, #f2ab39);
+  color: #5a3d0e;
+}
+
+.badge-orders {
+  background: linear-gradient(135deg, #e4b660, #d98e1f);
+  color: #fff8ec;
+}
+
+.badge-stats {
+  background: linear-gradient(135deg, #f2ab39, #c9781a);
+  color: #fff8ec;
+}
+
+.badge-users {
+  background: linear-gradient(135deg, #69491a, #8a6224);
+  color: #ffe9b8;
+}
+
+.admin-grid-title {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.admin-grid-sub {
+  margin-top: 2rpx;
+  font-size: 21rpx;
+  color: var(--muted);
+}
+
+.admin-backbar {
+  display: flex;
+  align-items: center;
+  gap: 4rpx;
+  padding: 6rpx 8rpx 2rpx;
+}
+
+.admin-backbar-arrow {
+  font-size: 40rpx;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1;
+  padding-right: 8rpx;
+}
+
+.admin-backbar-title {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.admin-backbar-current {
+  margin-left: auto;
+  font-size: 22rpx;
+  color: var(--muted);
 }
