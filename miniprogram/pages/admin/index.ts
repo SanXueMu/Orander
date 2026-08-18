@@ -356,7 +356,9 @@ Page({
       })
 
       if (step >= steps) {
-        clearInterval(this.countUpTimer)
+        if (this.countUpTimer) {
+          clearInterval(this.countUpTimer)
+        }
         this.countUpTimer = undefined
         this.setData({
           statsTodayRevenueText: formatMoney(target.revenue),
