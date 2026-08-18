@@ -425,32 +425,76 @@
   border: 2rpx solid var(--muted);
 }
 
-/* ===== 管理页暖色系 — 后厨的食欲（不随访客主题切换） ===== */
+/* ===== 管理页蜜金暖色系（#FFD954 / #E4B660 / #F2AB39 / #69491A，不随访客主题切换） ===== */
 .admin-page {
-  --page-bg: #fbf2e8;
-  --glass: rgba(255, 251, 245, 0.74);
-  --glass-border: rgba(194, 96, 30, 0.10);
-  --ink: #3d2a1a;
-  --muted: #a08871;
-  --accent: #b85c1d;
-  --accent-deep: #96480f;
-  --accent-ink: #fff8ef;
-  --accent-soft: rgba(194, 96, 30, 0.12);
-  --line: rgba(139, 88, 43, 0.10);
-  --line-strong: rgba(139, 88, 43, 0.18);
-  --panel: rgba(255, 247, 237, 0.9);
-  --panel-soft: rgba(194, 96, 30, 0.05);
-  --blob-1: #f3c084;
-  --blob-2: #efa96e;
-  --blob-3: #f7dcb6;
+  --page-bg: #fcf6e6;
+  --glass: rgba(255, 251, 240, 0.78);
+  --glass-border: rgba(242, 171, 57, 0.16);
+  --ink: #69491a;
+  --muted: #9c7f55;
+  --accent: #f2ab39;
+  --accent-deep: #d98e1f;
+  --accent-ink: #4a3410;
+  --accent-soft: rgba(242, 171, 57, 0.15);
+  --line: rgba(105, 73, 26, 0.10);
+  --line-strong: rgba(105, 73, 26, 0.20);
+  --panel: rgba(255, 248, 232, 0.92);
+  --panel-soft: rgba(105, 73, 26, 0.05);
+  --blob-1: #ffd954;
+  --blob-2: #f2ab39;
+  --blob-3: #e4b660;
 }
 
 .admin-page .surface {
-  box-shadow: 0 8rpx 32rpx rgba(150, 88, 30, 0.08), inset 0 1rpx 0 rgba(255, 255, 255, 0.6);
+  box-shadow: 0 8rpx 32rpx rgba(105, 73, 26, 0.08), inset 0 1rpx 0 rgba(255, 255, 255, 0.65);
 }
 
 .admin-page .section-kicker {
-  color: var(--accent);
+  color: var(--accent-deep);
+}
+
+.admin-page .swipe-delete {
+  background: #69491a;
+}
+
+/* ===== 管理页动效 ===== */
+/* 图表条从底生长 */
+@keyframes admin-bar-grow {
+  from {
+    height: 0;
+  }
+}
+
+/* 销量榜进度条横向充填 */
+@keyframes admin-fill-x {
+  from {
+    width: 0;
+  }
+}
+
+/* 营业中呼吸光圈 */
+@keyframes admin-dot-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(242, 171, 57, 0.45);
+  }
+  50% {
+    box-shadow: 0 0 0 10rpx rgba(242, 171, 57, 0);
+  }
+}
+
+.admin-page .chart-bar {
+  background: linear-gradient(180deg, #ffd954 0%, #f2ab39 100%);
+  animation: admin-bar-grow 0.5s ease both;
+}
+
+.admin-page .admin-rank-progress-fill {
+  background: linear-gradient(90deg, #e4b660, #f2ab39);
+  animation: admin-fill-x 0.6s ease both;
+}
+
+.admin-page .business-open .admin-business-dot {
+  animation: admin-dot-pulse 2s ease-in-out infinite;
 }
 
 /* ===== 菜单工具栏 — 分类横滑 + 全宽新增 ===== */

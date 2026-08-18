@@ -129,6 +129,13 @@ Page({
     businessSyncing: false,
   },
 
+  onHide() {
+    if (this.countUpTimer) {
+      clearInterval(this.countUpTimer)
+      this.countUpTimer = undefined
+    }
+  },
+
   async onShow() {
     if (!isAdminSession()) {
       wx.reLaunch({
@@ -315,6 +322,48 @@ Page({
       statsDaily: chartDaily,
       statsTopDishes: chartTopDishes,
     })
+
+    this.animateCountUp({
+      revenue: today.revenue || 0,
+      orders: today.orders || 0,
+      submitted: today.submitted || 0,
+    })
+  },
+
+  /* 今日速览数字滚动（约 450ms / 9 帧） */
+  countUpTimer: undefined as ReturnType<typeof setInterval> | undefined,
+
+  animateCountUp(target: { revenue: number; orders: number; submitted: number }) {
+    if (this.countUpTimer) {
+      clearInterval(this.countUpTimer)
+    }
+
+    const steps = 9
+    let step = 0
+    const from = { revenue: 0, orders: 0, submitted: 0 }
+
+    this.countUpTimer = setInterval(() => {
+      step += 1
+      const progress = step / steps
+      const ease = 1 - Math.pow(1 - progress, 2)
+      const revenue = Math.round(from.revenue + (target.revenue - from.revenue) * ease)
+      const orders = Math.round(from.orders + (target.orders - from.orders) * ease)
+      const submitted = Math.round(from.submitted + (target.submitted - from.submitted) * ease)
+
+      this.setData({
+        statsTodayRevenueText: formatMoney(revenue),
+        statsToday: { revenue, orders, submitted },
+      })
+
+      if (step >= steps) {
+        clearInterval(this.countUpTimer)
+        this.countUpTimer = undefined
+        this.setData({
+          statsTodayRevenueText: formatMoney(target.revenue),
+          statsToday: { revenue: target.revenue, orders: target.orders, submitted: target.submitted },
+        })
+      }
+    }, 50)
   },
 
   loadLocalStats() {

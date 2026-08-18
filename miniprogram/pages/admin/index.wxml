@@ -44,7 +44,7 @@
         <view wx:if="{{ordersLoading}}" class="surface admin-empty">加载中…</view>
         <view wx:elif="{{!orders.length}}" class="surface admin-empty">还没有订单</view>
         <view wx:else class="list-gap">
-          <view wx:for="{{orders}}" wx:key="id" class="surface admin-card admin-order-card">
+          <view wx:for="{{orders}}" wx:key="id" class="surface admin-card admin-order-card stagger-in" style="--stagger-index: {{index > 7 ? 7 : index}}">
             <view class="admin-order-colorbar colorbar-{{item.status}}"></view>
             <view class="admin-card-top">
               <view>
@@ -82,7 +82,7 @@
         </view>
         <view wx:if="{{!stats}}" class="surface admin-empty">暂无统计数据</view>
         <view wx:else class="list-gap">
-          <view class="surface admin-card admin-today-card">
+          <view class="surface admin-card admin-today-card stagger-in" style="--stagger-index: 0">
             <view class="section-kicker">TODAY</view>
             <view class="section-title">今日速览</view>
             <view class="admin-today-grid">
@@ -101,20 +101,20 @@
             </view>
           </view>
 
-          <view class="surface admin-card">
+          <view class="surface admin-card stagger-in" style="--stagger-index: 1">
             <view class="section-kicker">LAST 7 DAYS</view>
             <view class="section-title">近 7 日营收</view>
             <view class="chart-row">
               <view wx:for="{{statsDaily}}" wx:key="date" class="chart-col">
                 <view class="chart-bar-wrap">
-                  <view class="chart-bar {{item.revenue === 0 ? 'chart-bar-empty' : ''}}" style="height: {{item.percent}}%"></view>
+                  <view class="chart-bar {{item.revenue === 0 ? 'chart-bar-empty' : ''}}" style="height: {{item.percent}}%; animation-delay: {{index * 60}}ms"></view>
                 </view>
                 <view class="chart-label">{{item.date}}</view>
               </view>
             </view>
           </view>
 
-          <view class="surface admin-stats-grid">
+          <view class="surface admin-stats-grid stagger-in" style="--stagger-index: 2">
             <view class="admin-stats-item">
               <view class="num admin-stats-value">{{statsRevenueText}}</view>
               <view class="admin-stats-label">累计营收</view>
@@ -133,7 +133,7 @@
             </view>
           </view>
 
-          <view class="surface admin-card">
+          <view class="surface admin-card stagger-in" style="--stagger-index: 3">
             <view class="section-kicker">TOP DISHES</view>
             <view class="section-title">菜品销量榜</view>
             <view wx:for="{{statsTopDishes}}" wx:key="dishId" class="admin-rank-row">
@@ -144,7 +144,7 @@
                   <view class="admin-card-copy">售出 {{item.quantity}} 份</view>
                 </view>
                 <view class="admin-rank-progress">
-                  <view class="admin-rank-progress-fill" style="width: {{item.percent}}%"></view>
+                  <view class="admin-rank-progress-fill" style="width: {{item.percent}}%; animation-delay: {{index * 80}}ms"></view>
                 </view>
               </view>
             </view>
@@ -174,7 +174,7 @@
         <view class="list-gap">
           <view wx:for="{{dishes}}" wx:key="id" class="swipe-shell" data-id="{{item.id}}" bindtouchstart="onDishTouchStart" bindtouchend="onDishTouchEnd">
             <view class="swipe-delete" data-id="{{item.id}}" bindtap="removeDish">删除</view>
-            <view class="surface admin-card admin-dish-card swipe-content {{swipedDishId === item.id ? 'swipe-open' : ''}}" bindtap="closeSwipe">
+            <view class="surface admin-card admin-dish-card swipe-content stagger-in {{swipedDishId === item.id ? 'swipe-open' : ''}}" style="--stagger-index: {{index > 7 ? 7 : index}}" bindtap="closeSwipe">
               <view class="admin-dish-thumb" data-image="{{item.image}}" catchtap="previewDishImage">
                 <block wx:if="{{item.image}}">
                   <image class="admin-dish-thumb-image" src="{{item.image}}" mode="aspectFill"></image>
@@ -194,7 +194,7 @@
                 <view class="admin-card-copy admin-dish-desc">{{item.description}}</view>
                 <view class="admin-dish-foot">
                   <view class="admin-card-copy admin-dish-state {{item.soldOut ? 'is-soldout' : ''}}">{{item.soldOutLabel}}</view>
-                  <switch color="#B85C1D" checked="{{item.availableChecked}}" data-id="{{item.id}}" bindchange="toggleDishAvailability"></switch>
+                  <switch color="#F2AB39" checked="{{item.availableChecked}}" data-id="{{item.id}}" bindchange="toggleDishAvailability"></switch>
                   <view hover-class="press-scale" hover-stay-time="60" class="button-ghost mini-action admin-dish-edit" data-id="{{item.id}}" bindtap="goEditDish">编辑</view>
                 </view>
               </view>
