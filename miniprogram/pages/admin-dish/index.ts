@@ -1,5 +1,6 @@
 import { deleteDish, getAdminToken, getDishCoverStyle, getDishes, getMonogram, isAdminSession, saveDish } from '../../utils/orander'
 import { fetchCloudDishes, initCloud, publishSingleDish } from '../../utils/cloud'
+import { cropImageToSquare } from '../../utils/image-crop'
 import { pageLookBehavior } from '../../behaviors/page-look'
 
 const DEFAULT_DISH_IMAGE = ''
@@ -108,12 +109,24 @@ Page({
       count: 1,
       sizeType: ['compressed'],
       sourceType: ['album', 'camera'],
-      success: (result) => {
-        const dishImage = result.tempFilePaths[0] || ''
+      success: async (result) => {
+        const original = result.tempFilePaths[0] || ''
+        if (!original) {
+          return
+        }
+
+        wx.showLoading({ title: '处理图片' })
+        const squareImage = await cropImageToSquare(original)
+        wx.hideLoading()
+
         this.setData({
-          dishImage,
-          showDishImage: !!dishImage,
+          dishImage: squareImage,
+          showDishImage: true,
         })
+
+        if (squareImage !== original) {
+          wx.showToast({ title: '已方形裁切', icon: 'none' })
+        }
       },
     })
   },
