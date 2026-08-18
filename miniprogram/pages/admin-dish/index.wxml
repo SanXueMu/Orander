@@ -1,4 +1,4 @@
-<view class="orander-page {{themeClass}} {{fontClass}}">
+<view class="orander-page {{themeClass}} {{fontClass}} admin-dish-page">
   <view class="aurora">
     <view class="aurora-dot aurora-a"></view>
     <view class="aurora-dot aurora-b"></view>
@@ -62,4 +62,29 @@
       </view>
     </view>
   </scroll-view>
+
+  <view wx:if="{{cropVisible}}" class="crop-mask" catchtouchmove="noop">
+    <view class="crop-sheet">
+      <view class="crop-head">
+        <view class="crop-title">调整封面</view>
+        <view class="crop-sub">拖动定位 · 双指缩放</view>
+      </view>
+      <view class="crop-stage">
+        <movable-area class="crop-area" scale-area>
+          <movable-view class="crop-movable" direction="all" out-of-bounds="{{false}}" scale scale-min="1" scale-max="3" scale-value="{{cropScaleInit}}" x="{{cropXInit}}" y="{{cropYInit}}" style="width: {{cropViewW}}rpx; height: {{cropViewH}}rpx" bindchange="onCropChange" bindscale="onCropScale">
+            <image class="crop-img" src="{{cropSrc}}" mode="scaleToFill"></image>
+          </movable-view>
+          <view class="crop-grid crop-grid-h"></view>
+          <view class="crop-grid crop-grid-v"></view>
+        </movable-area>
+      </view>
+      <view class="crop-actions">
+        <view hover-class="press-dim" hover-stay-time="60" class="crop-action-ghost" bindtap="closeCrop">取消</view>
+        <view hover-class="press-dim" hover-stay-time="60" class="crop-action-ghost" bindtap="useOriginalImage">使用原图</view>
+        <view hover-class="press-scale" hover-stay-time="60" class="crop-action-primary" bindtap="confirmCrop">完成</view>
+      </view>
+    </view>
+  </view>
+
+  <canvas type="2d" id="cropCanvas" class="crop-canvas"></canvas>
 </view>

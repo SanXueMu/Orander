@@ -1,6 +1,5 @@
 import { deleteDish, getAdminToken, getDishCoverStyle, getDishes, getMonogram, isAdminSession, saveDish } from '../../utils/orander'
 import { fetchCloudDishes, initCloud, publishSingleDish } from '../../utils/cloud'
-import { cropImageToSquare } from '../../utils/image-crop'
 import { pageLookBehavior } from '../../behaviors/page-look'
 
 const DEFAULT_DISH_IMAGE = ''
@@ -22,7 +21,22 @@ Page({
     dishAvailable: true,
     editing: false,
     publishing: false,
+    cropVisible: false,
+    cropSrc: '',
+    cropViewW: 560,
+    cropViewH: 560,
+    cropXInit: 0,
+    cropYInit: 0,
+    cropScaleInit: 1,
   },
+
+  /* 裁切过程中的手势态（不进 data，避免渲染抖动） */
+  cropImgW: 0,
+  cropImgH: 0,
+  cropPos: { x: 0, y: 0 },
+  cropScaleVal: 1,
+  viewportSideRpx: 560,
+  pxPerRpx: 0.5,
 
   onLoad(options: Record<string, string>) {
     if (!isAdminSession()) {
@@ -105,30 +119,151 @@ Page({
   },
 
   chooseDishImage() {
-    wx.chooseImage({
+    wx.chooseMedia({
       count: 1,
-      sizeType: ['compressed'],
+      mediaType: ['image'],
       sourceType: ['album', 'camera'],
-      success: async (result) => {
-        const original = result.tempFilePaths[0] || ''
+      sizeType: ['compressed'],
+      success: (result) => {
+        const original = result.tempFiles[0] && result.tempFiles[0].tempFilePath
         if (!original) {
           return
         }
-
-        wx.showLoading({ title: '处理图片' })
-        const squareImage = await cropImageToSquare(original)
-        wx.hideLoading()
-
-        this.setData({
-          dishImage: squareImage,
-          showDishImage: true,
-        })
-
-        if (squareImage !== original) {
-          wx.showToast({ title: '已方形裁切', icon: 'none' })
-        }
+        this.openCropModal(original)
       },
     })
+  },
+
+  /* 打开裁切取景框：图片以 cover 方式铺满正方形取景框，初始居中 */
+  openCropModal(src: string) {
+    wx.getImageInfo({
+      src,
+      success: (info) => {
+        const side = this.viewportSideRpx
+        const ratio = info.width / info.height
+        const viewW = ratio >= 1 ? Math.round(side * ratio) : side
+        const viewH = ratio >= 1 ? side : Math.round(side / ratio)
+
+        this.cropImgW = info.width
+        this.cropImgH = info.height
+        this.cropPos = { x: 0, y: 0 }
+        this.cropScaleVal = 1
+
+        this.setData({
+          cropSrc: src,
+          cropVisible: true,
+          cropViewW: viewW,
+          cropViewH: viewH,
+          cropXInit: (side - viewW) / 2,
+          cropYInit: (side - viewH) / 2,
+          cropScaleInit: 1,
+        })
+      },
+      fail: () => {
+        /* 读不出尺寸就不裁切，直接用原图 */
+        this.setData({ dishImage: src, showDishImage: true, cropVisible: false })
+      },
+    })
+  },
+
+  noop() {},
+
+  onCropChange(event: WechatMiniprogram.CustomEvent) {
+    this.cropPos = { x: event.detail.x, y: event.detail.y }
+  },
+
+  onCropScale(event: WechatMiniprogram.CustomEvent) {
+    const detail = event.detail as { x: number; y: number; scale: number }
+    this.cropScaleVal = detail.scale
+    this.cropPos = { x: detail.x, y: detail.y }
+  },
+
+  closeCrop() {
+    this.setData({ cropVisible: false })
+  },
+
+  useOriginalImage() {
+    this.setData({
+      dishImage: this.data.cropSrc,
+      showDishImage: true,
+      cropVisible: false,
+    })
+  },
+
+  /* 确认裁切：按当前平移/缩放反推源图上的正方形区域，页面内 canvas 绘制导出 */
+  async confirmCrop() {
+    const windowInfo = (wx as unknown as { getWindowInfo?: () => { windowWidth: number } }).getWindowInfo
+      ? (wx as unknown as { getWindowInfo: () => { windowWidth: number } }).getWindowInfo()
+      : { windowWidth: 375 }
+    const pxPerRpx = windowInfo.windowWidth / 750
+
+    const imgW = this.cropImgW
+    const imgH = this.cropImgH
+    if (!imgW || !imgH) {
+      this.useOriginalImage()
+      return
+    }
+
+    const sideRpx = this.viewportSideRpx
+    const ratio = imgW / imgH
+    const baseW = ratio >= 1 ? sideRpx * ratio : sideRpx
+    const scale = this.cropScaleVal
+    const viewWpx = baseW * pxPerRpx * scale
+    const viewHpx = (baseW / ratio) * pxPerRpx * scale
+
+    let sx = (-this.cropPos.x / viewWpx) * imgW
+    let sy = (-this.cropPos.y / viewHpx) * imgH
+    let side = (sideRpx * pxPerRpx / viewWpx) * imgW
+    side = Math.min(side, imgW, imgH)
+    sx = Math.max(0, Math.min(sx, imgW - side))
+    sy = Math.max(0, Math.min(sy, imgH - side))
+
+    const outSide = Math.max(1, Math.min(1080, Math.round(side)))
+
+    wx.showLoading({ title: '裁切中' })
+    wx.createSelectorQuery()
+      .select('#cropCanvas')
+      .fields({ node: true, size: true })
+      .exec((res) => {
+        const canvas = res && res[0] && (res[0] as { node?: unknown }).node
+        if (!canvas) {
+          wx.hideLoading()
+          this.useOriginalImage()
+          return
+        }
+
+        const target = canvas as unknown as { width: number; height: number; getContext: (t: string) => any; createImage: () => any }
+        target.width = outSide
+        target.height = outSide
+        const ctx = target.getContext('2d')
+        const img = target.createImage()
+
+        img.onload = () => {
+          ctx.drawImage(img, sx, sy, side, side, 0, 0, outSide, outSide)
+          wx.canvasToTempFilePath({
+            canvas: target,
+            fileType: 'jpg',
+            quality: 0.9,
+            success: (result) => {
+              wx.hideLoading()
+              this.setData({
+                dishImage: result.tempFilePath,
+                showDishImage: true,
+                cropVisible: false,
+              })
+            },
+            fail: () => {
+              wx.hideLoading()
+              this.useOriginalImage()
+            },
+          })
+        }
+        img.onerror = () => {
+          wx.hideLoading()
+          this.useOriginalImage()
+        }
+        img.src = this.data.cropSrc
+      })
   },
 
   clearDishImage() {
