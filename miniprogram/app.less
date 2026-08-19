@@ -1,12 +1,12 @@
 /* ==========================================================================
-   Orander 设计系统 Token 3.0 ——「白瓷 · 琉璃」
-   玻璃拟态体系：近白底 + 弥散光斑 + 分级模糊 + 墨黑/琥珀双强调
+   Orander 设计系统 Token 4.0 ——「茶事」
+   实色品牌风：米脂白底 + 春茶绿品牌色 + 茶汤金点缀（类名沿用玻璃时代）
    ========================================================================== */
 
 page {
   min-height: 100%;
-  background: #f7f8fa;
-  color: #17181c;
+  background: #f5f1e6;
+  color: #2b2b26;
 }
 
 button::after {
@@ -46,81 +46,33 @@ button::after {
    </view>
    ========================================================================== */
 
+/* Token 4.0：光斑退役，实色品牌风不再需要弥散底光 */
 .aurora {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  overflow: hidden;
-  z-index: 0;
-  pointer-events: none;
-}
-
-.aurora-dot {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(90rpx);
-  opacity: 0.5;
-}
-
-.aurora-a {
-  width: 520rpx;
-  height: 520rpx;
-  top: -120rpx;
-  left: -140rpx;
-  background: radial-gradient(circle, var(--blob-1) 0%, transparent 70%);
-}
-
-.aurora-b {
-  width: 620rpx;
-  height: 620rpx;
-  top: 30%;
-  right: -220rpx;
-  background: radial-gradient(circle, var(--blob-2) 0%, transparent 70%);
-}
-
-.aurora-c {
-  width: 480rpx;
-  height: 480rpx;
-  bottom: -160rpx;
-  left: 18%;
-  background: radial-gradient(circle, var(--blob-3) 0%, transparent 70%);
+  display: none;
 }
 
 /* ==========================================================================
-   玻璃配方 —— 分级模糊（性能关键设计）
-   L0 .surface   静态层：列表卡、表单卡 —— 无 blur，省实时采样
-   L1 .glass-blur 入场层：hero、徽章 —— blur 24rpx（增量类，叠加 .surface 使用）
-   L2 .glass-dock  悬浮层：导航/吸顶/吸底/tab dock —— blur 40rpx
+   卡面配方 —— Token 4.0 实色（类名沿用玻璃时代，值已实色化）
+   .surface     静态卡：白卡 + 米色描边 + 轻投影
+   .glass-blur  兼容占位（历史类名，无效果）
+   .glass-dock  悬浮层：导航/吸顶/吸底/tab dock —— 近实色白 + 加重投影
    ========================================================================== */
 
 .surface {
   background: var(--glass);
   border: 1px solid var(--glass-border);
   border-radius: 32rpx;
-  box-shadow: 0 8rpx 32rpx rgba(23, 24, 28, 0.05), inset 0 1rpx 0 var(--glass-hi);
+  box-shadow: 0 6rpx 24rpx rgba(43, 43, 38, 0.05);
 }
 
 .glass-blur {
-  backdrop-filter: blur(24rpx) saturate(160%);
-  -webkit-backdrop-filter: blur(24rpx) saturate(160%);
+  /* Token 4.0：分级模糊退役 */
 }
 
 .glass-dock {
   background: var(--glass-strong);
-  backdrop-filter: blur(40rpx) saturate(180%);
-  -webkit-backdrop-filter: blur(40rpx) saturate(180%);
   border: 1px solid var(--glass-border);
-  box-shadow: 0 12rpx 40rpx rgba(23, 24, 28, 0.1), inset 0 1rpx 0 var(--glass-hi-strong);
-}
-
-/* 安卓老 WebView 兜底：不支持 backdrop-filter 时退化为近实色 */
-@supports not (backdrop-filter: blur(1px)) {
-  .glass-blur,
-  .glass-dock {
-    background: var(--glass-fallback);
-  }
+  box-shadow: 0 12rpx 36rpx rgba(43, 43, 38, 0.12);
 }
 
 .soft-surface {
@@ -662,93 +614,112 @@ button::after {
 }
 
 /* ==========================================================================
-   主题 Token —— 玻璃不变，光斑变
+   主题 Token —— 实色不变，氛围变（米脂白 / 春茶绿 / 夜幕茶褐）
+   新增品牌 token：--brand 春茶绿 / --gold 茶汤金（各主题可用性等价换算）
    ========================================================================== */
 
-/* 奶油白 cream（id 保留 amber，存量数据零迁移） */
+/* 米脂白（id 保留 amber，存量数据零迁移）—— 默认主题 */
 .theme-amber {
-  --page-bg: #f7f8fa;
-  --glass: rgba(255, 255, 255, 0.6);
-  --glass-strong: rgba(255, 255, 255, 0.78);
-  --glass-border: rgba(255, 255, 255, 0.55);
-  --glass-hi: rgba(255, 255, 255, 0.6);
-  --glass-hi-strong: rgba(255, 255, 255, 0.7);
-  --glass-fallback: rgba(255, 255, 255, 0.92);
-  --ink: #17181c;
-  --muted: #8a8f9a;
-  --accent: #1d1f24;
-  --accent-deep: #000000;
+  --page-bg: #f5f1e6;
+  --glass: #ffffff;
+  --glass-strong: #fdfcf8;
+  --glass-border: #e8e2d4;
+  --glass-hi: transparent;
+  --glass-hi-strong: transparent;
+  --glass-fallback: #ffffff;
+  --ink: #2b2b26;
+  --muted: #8c8577;
+  --accent: #1f5b43;
+  --accent-deep: #173f30;
   --accent-ink: #ffffff;
-  --accent-soft: rgba(29, 31, 36, 0.08);
-  --appetite: #c87d2f;
-  --appetite-soft: rgba(200, 125, 47, 0.12);
-  --line: rgba(23, 24, 28, 0.08);
-  --line-strong: rgba(23, 24, 28, 0.16);
-  --panel: rgba(255, 255, 255, 0.85);
-  --panel-soft: rgba(23, 24, 28, 0.04);
-  --blob-1: #f5d5b8;
-  --blob-2: #f7cdb9;
-  --blob-3: #f0dfc8;
+  --accent-soft: #e8f0e9;
+  --appetite: #a8842f;
+  --appetite-soft: #f7efd9;
+  --brand: #1f5b43;
+  --brand-deep: #173f30;
+  --brand-soft: #e8f0e9;
+  --gold: #c9a24f;
+  --gold-deep: #a8842f;
+  --gold-soft: #f7efd9;
+  --line: rgba(43, 43, 38, 0.08);
+  --line-strong: rgba(43, 43, 38, 0.16);
+  --panel: #ffffff;
+  --panel-soft: #f1ede0;
+  --blob-1: #f7efd9;
+  --blob-2: #e8f0e9;
+  --blob-3: #efe9d8;
   --success: #3d8b6a;
-  --warning: #cf9440;
+  --warning: #c9a24f;
   --danger: #c85a54;
 }
 
-/* 鼠尾草 sage（id 保留 olive） */
+/* 春茶绿（id 保留 olive）—— 绿调更浓的清新版 */
 .theme-olive {
-  --page-bg: #f6f8f4;
-  --glass: rgba(255, 255, 255, 0.6);
-  --glass-strong: rgba(255, 255, 255, 0.78);
-  --glass-border: rgba(255, 255, 255, 0.55);
-  --glass-hi: rgba(255, 255, 255, 0.6);
-  --glass-hi-strong: rgba(255, 255, 255, 0.7);
-  --glass-fallback: rgba(255, 255, 255, 0.92);
-  --ink: #17181c;
-  --muted: #8a8f9a;
-  --accent: #1d1f24;
-  --accent-deep: #000000;
+  --page-bg: #edf2ec;
+  --glass: #ffffff;
+  --glass-strong: #fbfdfb;
+  --glass-border: #dce5dc;
+  --glass-hi: transparent;
+  --glass-hi-strong: transparent;
+  --glass-fallback: #ffffff;
+  --ink: #24312a;
+  --muted: #7a8377;
+  --accent: #1f5b43;
+  --accent-deep: #173f30;
   --accent-ink: #ffffff;
-  --accent-soft: rgba(29, 31, 36, 0.08);
-  --appetite: #c87d2f;
-  --appetite-soft: rgba(200, 125, 47, 0.12);
-  --line: rgba(23, 24, 28, 0.08);
-  --line-strong: rgba(23, 24, 28, 0.16);
-  --panel: rgba(255, 255, 255, 0.85);
-  --panel-soft: rgba(23, 24, 28, 0.04);
-  --blob-1: #cfe0c4;
-  --blob-2: #c8ded8;
-  --blob-3: #e4e8d4;
+  --accent-soft: #e2eee6;
+  --appetite: #a8842f;
+  --appetite-soft: #f7efd9;
+  --brand: #1f5b43;
+  --brand-deep: #173f30;
+  --brand-soft: #e2eee6;
+  --gold: #c9a24f;
+  --gold-deep: #a8842f;
+  --gold-soft: #f7efd9;
+  --line: rgba(36, 49, 42, 0.08);
+  --line-strong: rgba(36, 49, 42, 0.16);
+  --panel: #ffffff;
+  --panel-soft: #e7ede5;
+  --blob-1: #e2eee6;
+  --blob-2: #f7efd9;
+  --blob-3: #dce5dc;
   --success: #3d8b6a;
-  --warning: #cf9440;
+  --warning: #c9a24f;
   --danger: #c85a54;
 }
 
-/* 午夜黑 midnight（id 保留 ink）—— 暖橙辉光 + 深玻璃 */
+/* 夜幕茶褐（id 保留 ink）—— 墨绿黑底 + 金强调 */
 .theme-ink {
-  --page-bg: #141519;
-  --glass: rgba(30, 32, 38, 0.55);
-  --glass-strong: rgba(30, 32, 38, 0.72);
-  --glass-border: rgba(255, 255, 255, 0.14);
-  --glass-hi: rgba(255, 255, 255, 0.08);
-  --glass-hi-strong: rgba(255, 255, 255, 0.12);
-  --glass-fallback: rgba(30, 32, 38, 0.94);
-  --ink: #f2f4f8;
-  --muted: #9aa0ac;
-  --accent: #f2f4f8;
-  --accent-deep: #ffffff;
-  --accent-ink: #17181c;
-  --accent-soft: rgba(242, 244, 248, 0.12);
-  --appetite: #e09a4c;
-  --appetite-soft: rgba(224, 154, 76, 0.16);
-  --line: rgba(242, 244, 248, 0.1);
-  --line-strong: rgba(242, 244, 248, 0.2);
-  --panel: rgba(30, 32, 38, 0.8);
-  --panel-soft: rgba(242, 244, 248, 0.06);
-  --blob-1: #5a3a22;
-  --blob-2: #6b4128;
-  --blob-3: #4a2e1c;
+  --page-bg: #1c221e;
+  --glass: #262d28;
+  --glass-strong: #2a322c;
+  --glass-border: rgba(240, 237, 228, 0.1);
+  --glass-hi: transparent;
+  --glass-hi-strong: transparent;
+  --glass-fallback: #262d28;
+  --ink: #f0ede4;
+  --muted: #9ba69d;
+  --accent: #d9be7a;
+  --accent-deep: #e8d9a8;
+  --accent-ink: #1c221e;
+  --accent-soft: rgba(217, 190, 122, 0.14);
+  --appetite: #d9be7a;
+  --appetite-soft: rgba(217, 190, 122, 0.16);
+  --brand: #6fa98c;
+  --brand-deep: #8cc2a6;
+  --brand-soft: rgba(111, 169, 140, 0.16);
+  --gold: #d9be7a;
+  --gold-deep: #e8d9a8;
+  --gold-soft: rgba(217, 190, 122, 0.16);
+  --line: rgba(240, 237, 228, 0.1);
+  --line-strong: rgba(240, 237, 228, 0.2);
+  --panel: #262d28;
+  --panel-soft: rgba(240, 237, 228, 0.06);
+  --blob-1: #26302a;
+  --blob-2: #2e2a20;
+  --blob-3: #232e26;
   --success: #8ed0ae;
-  --warning: #e3b465;
+  --warning: #e3c878;
   --danger: #e08580;
 }
 

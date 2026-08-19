@@ -16,7 +16,7 @@
   z-index: 10;
 }
 
-/* 玻璃导航：background 由页面传入(玻璃色)，此处叠加 L2 级模糊 */
+/* 品牌导航：background 由页面传入（Token 4.0 春茶绿实色），无模糊 */
 .weui-navigation-bar__inner {
   position: relative;
   top: 0;
@@ -29,10 +29,6 @@
   padding-top: env(safe-area-inset-top);
   width: 100%;
   box-sizing: border-box;
-  backdrop-filter: blur(40rpx) saturate(180%);
-  -webkit-backdrop-filter: blur(40rpx) saturate(180%);
-  /* 去深色下边框线，改白色高光线 */
-  border-bottom: 1rpx solid var(--glass-border, rgba(255, 255, 255, 0.55));
 }
 
 .weui-navigation-bar__left {
