@@ -63,23 +63,40 @@ const buildSoldCountMap = () => {
   return map
 }
 
-const buildMenuDishes = (category: string, keyword: string) => {
+type MenuFlowGroup = {
+  key: string
+  name: string
+  items: MenuDishView[]
+}
+
+const decorateDishes = (dishes: Dish[]) => {
   const cartMap = new Map(getCart().map((item) => [item.dishId, item.quantity]))
   const soldMap = buildSoldCountMap()
-  const search = keyword.trim().toLowerCase()
+  return dishes.map((dish) => ({
+    ...dish,
+    quantity: cartMap.get(dish.id) || 0,
+    coverStyle: getDishCoverStyle(dish.id),
+    foodIcon: classifyFoodIcon(dish.category),
+    priceText: formatMoney(dish.price),
+    priceValue: String(dish.price),
+    soldCount: soldMap.get(dish.id) || 0,
+  }))
+}
 
-  return getDishes()
-    .filter((dish) => category === '全部' || dish.category === category)
-    .filter((dish) => !search || dish.name.toLowerCase().includes(search) || dish.description.toLowerCase().includes(search) || dish.tags.some((tag) => tag.toLowerCase().includes(search)))
-    .map((dish) => ({
-      ...dish,
-      quantity: cartMap.get(dish.id) || 0,
-      coverStyle: getDishCoverStyle(dish.id),
-      foodIcon: classifyFoodIcon(dish.category),
-      priceText: formatMoney(dish.price),
-      priceValue: String(dish.price),
-      soldCount: soldMap.get(dish.id) || 0,
-    }))
+/* S2 左右分栏：搜索时空组分退化为「搜索结果」单组，平时按分类全量分组（锚点跳转而非过滤） */
+const buildFlowState = (keyword: string) => {
+  const search = keyword.trim().toLowerCase()
+  const matches = (dish: Dish) => !search || dish.name.toLowerCase().includes(search) || dish.description.toLowerCase().includes(search) || dish.tags.some((tag) => tag.toLowerCase().includes(search))
+
+  if (search) {
+    const items = decorateDishes(getDishes().filter(matches))
+    return { groups: [{ key: 'search', name: '搜索结果', items }] as MenuFlowGroup[], total: items.length }
+  }
+
+  const groups = getMenuCategories()
+    .map((name, index) => ({ key: String(index), name, items: decorateDishes(getDishes().filter((dish) => dish.category === name && matches(dish))) }))
+    .filter((group) => group.items.length > 0)
+  return { groups, total: groups.reduce((sum, group) => sum + group.items.length, 0) }
 }
 
 const WEEKDAYS = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
@@ -99,6 +116,12 @@ Page({
 
   orderCreatedHandler: null as (() => void) | null,
 
+  /* S2 滚动同步：右侧滚动位置 → 左侧分类高亮 */
+  _flowScrollTop: 0,
+  _anchorOffsets: [] as Array<{ top: number; name: string }>,
+  _lastScrollSync: 0,
+  _didInitialAnchor: false,
+
   data: {
     nickname: '访客',
     menuLoading: true,
@@ -107,9 +130,12 @@ Page({
     businessOpen: true,
     businessLoaded: false,
     categories: ['全部'],
-    activeCategory: '全部',
+    railActive: '全部',
     searchKeyword: '',
-    dishes: [] as MenuDishView[],
+    flowGroups: [] as MenuFlowGroup[],
+    flowTotal: 0,
+    flowInto: '',
+    flowTop: 0,
     cartCount: 0,
     countBounce: false,
     cartTotalText: formatMoney(0),
@@ -174,44 +200,127 @@ Page({
     applyPageLook(this, getCurrentMember())
     const categories = ['全部', ...getMenuCategories()]
     const remembered = getLastCategory()
-    const activeCategory = categories.includes(this.data.activeCategory) && this.data.activeCategory !== '全部'
-      ? this.data.activeCategory
-      : categories.includes(remembered) ? remembered : '全部'
+    const railActive = categories.includes(this.data.railActive) && this.data.railActive !== '全部'
+      ? this.data.railActive
+      : categories.includes(remembered) && remembered !== '全部' ? remembered : '全部'
     const stats = getCartStats()
+    const flow = buildFlowState(this.data.searchKeyword)
 
     this.setData({
       nickname: session ? session.nickname : '访客',
       categories,
-      activeCategory,
-      dishes: buildMenuDishes(activeCategory, this.data.searchKeyword),
+      railActive,
+      flowGroups: flow.groups,
+      flowTotal: flow.total,
       cartCount: stats.count,
       cartTotalText: formatMoney(stats.total),
     })
+    this.scheduleAnchorWork()
   },
 
-  switchCategory(event: WechatMiniprogram.BaseEvent) {
+  /* 数据/渲染就绪后：量锚点位置 + 首次按记忆分类定位 */
+  scheduleAnchorWork() {
+    wx.nextTick(() => {
+      this.measureAnchors()
+      if (!this._didInitialAnchor) {
+        this._didInitialAnchor = true
+        const remembered = this.data.railActive
+        if (remembered !== '全部') {
+          const group = this.data.flowGroups.find((item) => item.name === remembered)
+          if (group) {
+            this.setData({ flowInto: `anchor-${group.key}` })
+          }
+        }
+      }
+    })
+  },
+
+  measureAnchors() {
+    const query = this.createSelectorQuery()
+    query.selectAll('.flow-cat-anchor').boundingClientRect()
+    query.select('.menu-flow').boundingClientRect()
+    query.exec((rects) => {
+      const anchors = (rects[0] || []) as WechatMiniprogram.BoundingClientRectResult[]
+      const flow = rects[1] as WechatMiniprogram.BoundingClientRectResult | null
+      if (!flow || !anchors.length) {
+        return
+      }
+      this._anchorOffsets = anchors.map((rect) => ({
+        top: rect.top - flow.top + this._flowScrollTop,
+        name: '',
+      }))
+      this._anchorOffsets.forEach((offset, index) => {
+        const group = this.data.flowGroups[index]
+        if (group) {
+          offset.name = group.name
+        }
+      })
+    })
+  },
+
+  /* 点左侧分类 → 右侧锚点滚动（不做过滤，茶饮菜单范式） */
+  tapRailCategory(event: WechatMiniprogram.BaseEvent) {
     const category = event.currentTarget.dataset.category as string
     saveLastCategory(category)
+    if (category === '全部') {
+      this.setData({
+        railActive: category,
+        flowInto: '',
+        flowTop: this._flowScrollTop > 0 ? 0 : 0.1,
+      })
+      return
+    }
+    const group = this.data.flowGroups.find((item) => item.name === category)
     this.setData({
-      activeCategory: category,
-      dishes: buildMenuDishes(category, this.data.searchKeyword),
+      railActive: category,
+      flowInto: group ? `anchor-${group.key}` : '',
     })
+  },
+
+  onFlowScroll(event: WechatMiniprogram.CustomEvent) {
+    const detail = event.detail as { scrollTop: number }
+    this._flowScrollTop = detail.scrollTop || 0
+    const now = Date.now()
+    if (now - this._lastScrollSync < 160 || !this._anchorOffsets.length) {
+      return
+    }
+    this._lastScrollSync = now
+    let active = '全部'
+    for (let i = this._anchorOffsets.length - 1; i >= 0; i -= 1) {
+      if (this._anchorOffsets[i].top <= this._flowScrollTop + 140) {
+        active = this._anchorOffsets[i].name
+        break
+      }
+    }
+    if (active && active !== this.data.railActive) {
+      this.setData({ railActive: active })
+    }
   },
 
   onSearchInput(event: WechatMiniprogram.CustomEvent) {
     const detail = event.detail as { value?: string }
     const searchKeyword = detail.value || ''
+    const flow = buildFlowState(searchKeyword)
     this.setData({
       searchKeyword,
-      dishes: buildMenuDishes(this.data.activeCategory, searchKeyword),
+      flowGroups: flow.groups,
+      flowTotal: flow.total,
+      railActive: '全部',
+      flowInto: '',
     })
+    this.scheduleAnchorWork()
   },
 
   clearSearch() {
+    const flow = buildFlowState('')
     this.setData({
       searchKeyword: '',
-      dishes: buildMenuDishes(this.data.activeCategory, ''),
+      flowGroups: flow.groups,
+      flowTotal: flow.total,
+      railActive: '全部',
+      flowInto: '',
     })
+    this.scheduleAnchorWork()
   },
 
   /* 图片 bindload 淡入：只更新 loadedImages 小对象，不动 dishes 数组 */

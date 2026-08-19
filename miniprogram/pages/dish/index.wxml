@@ -1,12 +1,6 @@
 <view class="orander-page {{themeClass}} {{fontClass}} menu-page">
-  <view class="aurora">
-    <view class="aurora-dot aurora-a"></view>
-    <view class="aurora-dot aurora-b"></view>
-    <view class="aurora-dot aurora-c"></view>
-  </view>
-
   <navigation-bar back="{{false}}" color="{{navColor}}" background="{{navBackground}}">
-    <view slot="center" class="nav-title">菜单</view>
+    <view slot="center" class="nav-title">Orander</view>
     <view slot="right" class="nav-orders-entry" hover-class="press-dim" hover-stay-time="60" bindtap="goOrders">
       <view class="nav-orders-icon">
         <view class="nav-orders-line"></view>
@@ -16,115 +10,129 @@
     </view>
   </navigation-bar>
 
-  <scroll-view class="page-scroll" scroll-y>
-    <view class="page-body with-tabbar menu-body">
-      <view wx:if="{{businessLoaded && !businessOpen}}" class="business-banner">
-        <view class="business-badge-dot"></view>
-        <view>今日暂停营业，暂时无法下单，欢迎明天再来。</view>
+  <view class="menu-banner">
+    <view class="menu-banner-top">
+      <view class="menu-banner-intro">
+        <view class="menu-banner-greeting">{{greetingText}}，{{nickname}}</view>
+        <view class="menu-banner-date">{{dateText}}</view>
       </view>
-
-      <view class="surface glass-blur menu-hero">
-        <view>
-          <view class="menu-hero-greeting">{{greetingText}}，{{nickname}}</view>
-          <view class="menu-hero-date text-thin">{{dateText}}</view>
-        </view>
-        <view wx:if="{{businessLoaded}}" class="business-badge {{businessOpen ? '' : 'business-badge-closed'}}">
-          <view class="business-badge-dot"></view>
-          <view>{{businessOpen ? '营业中' : '已暂停'}}</view>
-        </view>
-      </view>
-
-      <view class="surface menu-search-card">
-        <input class="menu-search-input" placeholder="搜索菜名、标签或口味" value="{{searchKeyword}}" confirm-type="search" bindinput="onSearchInput" />
-        <view wx:if="{{searchKeyword}}" class="menu-search-clear" bindtap="clearSearch">清除</view>
-      </view>
-
-      <scroll-view class="menu-category-strip glass-dock" scroll-x enable-flex>
-        <view class="menu-category-row">
-          <view
-            wx:for="{{categories}}"
-            wx:key="*this"
-            hover-class="press-dim" hover-stay-time="60" class="chip {{item === activeCategory ? 'chip-active' : ''}}"
-            data-category="{{item}}"
-            bindtap="switchCategory"
-          >
-            {{item}}
-          </view>
-        </view>
-      </scroll-view>
-
-      <view wx:if="{{menuLoading && !dishes.length}}" class="list-gap">
-        <view wx:for="{{[1, 2, 3]}}" wx:key="*this" class="surface skeleton-card">
-          <view class="skeleton-line" style="width: 40%"></view>
-          <view class="skeleton-line" style="width: 88%; margin-top: 18rpx"></view>
-          <view class="skeleton-line" style="width: 64%; margin-top: 14rpx"></view>
-        </view>
-      </view>
-
-      <view class="menu-grid">
-        <view wx:for="{{dishes}}" wx:key="id" class="surface menu-card {{index < 8 ? 'stagger-in' : ''}}" style="--stagger-index: {{index}}">
-          <block wx:if="{{item.image}}">
-            <image class="menu-cover-image {{loadedImages[item.id] ? 'img-loaded' : ''}}" src="{{item.image}}" mode="aspectFill" data-id="{{item.id}}" bindload="onDishImageLoad"></image>
-          </block>
-          <block wx:else>
-            <view class="menu-cover" style="{{item.coverStyle}}">
-              <view class="food-icon">
-                <block wx:if="{{item.foodIcon === 'cup'}}">
-                  <view class="food-cup"></view>
-                  <view class="food-cup-handle"></view>
-                  <view class="food-cup-saucer"></view>
-                </block>
-                <block wx:elif="{{item.foodIcon === 'plate'}}">
-                  <view class="food-plate-ring"></view>
-                  <view class="food-plate-core"></view>
-                </block>
-                <block wx:else>
-                  <view class="food-steam">
-                    <view class="food-steam-line"></view>
-                    <view class="food-steam-line"></view>
-                  </view>
-                  <view class="food-bowl"></view>
-                  <view class="food-bowl-foot"></view>
-                </block>
-              </view>
-              <view class="menu-cover-name">{{item.name}}</view>
-            </view>
-          </block>
-
-          <view wx:if="{{item.soldOut}}" class="menu-soldout-mask">
-            <view class="menu-soldout-tag">售罄</view>
-          </view>
-
-          <view class="menu-content">
-            <view class="menu-line-top">
-              <view class="menu-dish-name">{{item.name}}</view>
-              <view class="num menu-dish-price">
-                <text class="price-symbol">¥</text>
-                <text class="price-value">{{item.priceValue}}</text>
-              </view>
-            </view>
-            <view class="menu-dish-meta">
-              <view class="menu-dish-category">{{item.category}}</view>
-              <view wx:if="{{item.soldCount > 0}}" class="menu-sold-badge">已售 {{item.soldCount}}</view>
-            </view>
-            <view class="menu-dish-description">{{item.description}}</view>
-
-            <view class="menu-line-bottom menu-card-footer">
-              <dish-stepper wx:if="{{!item.soldOut}}" variant="menu" quantity="{{item.quantity}}" dish-id="{{item.id}}" bind:minus="decreaseDish" bind:plus="increaseDish" />
-            </view>
-          </view>
-        </view>
-      </view>
-      <view wx:if="{{!dishes.length && !menuLoading}}" class="surface empty-state menu-empty">
-        <view class="empty-plate"><view class="empty-plate-inner"></view></view>
-        <view class="section-title">没有找到相关菜品</view>
-        <view class="section-copy">换个关键词，或清除搜索看看全部菜品。</view>
-        <view hover-class="press-scale" hover-stay-time="60" class="button-primary menu-empty-button" bindtap="clearSearch">清除搜索</view>
+      <view wx:if="{{businessLoaded}}" class="menu-banner-badge {{businessOpen ? '' : 'menu-banner-badge-closed'}}">
+        <view class="menu-banner-badge-dot"></view>
+        <view>{{businessOpen ? '营业中' : '已暂停'}}</view>
       </view>
     </view>
-  </scroll-view>
+    <view class="menu-banner-search">
+      <view class="menu-search-glass"></view>
+      <input class="menu-banner-input" placeholder="搜索菜名、标签或口味" placeholder-class="menu-banner-input-ph" value="{{searchKeyword}}" confirm-type="search" bindinput="onSearchInput" />
+      <view wx:if="{{searchKeyword}}" class="menu-search-clear" hover-class="press-dim" hover-stay-time="60" bindtap="clearSearch">清除</view>
+    </view>
+  </view>
 
-  <view wx:if="{{cartCount > 0}}" class="settle-bar glass-dock" hover-class="press-deep" hover-stay-time="60" bindtap="tapSettle">
+  <view wx:if="{{businessLoaded && !businessOpen}}" class="business-banner menu-business-banner">
+    <view class="business-badge-dot"></view>
+    <view>今日暂停营业，暂时无法下单，欢迎明天再来。</view>
+  </view>
+
+  <view class="menu-layout">
+    <scroll-view class="menu-rail" scroll-y enhanced show-scrollbar="{{false}}">
+      <view
+        wx:for="{{categories}}"
+        wx:key="*this"
+        class="rail-item {{railActive === item ? 'rail-item-active' : ''}}"
+        hover-class="press-dim"
+        hover-stay-time="60"
+        data-category="{{item}}"
+        bindtap="tapRailCategory"
+      >
+        <view class="rail-item-bar"></view>
+        <view class="rail-item-text">{{item}}</view>
+      </view>
+    </scroll-view>
+
+    <scroll-view class="menu-flow" scroll-y enhanced show-scrollbar="{{false}}" scroll-with-animation scroll-into-view="{{flowInto}}" scroll-top="{{flowTop}}" bindscroll="onFlowScroll">
+      <view wx:if="{{menuLoading && !flowTotal}}" class="flow-pad">
+        <view wx:for="{{[1, 2, 3]}}" wx:key="*this" class="surface flow-card flow-skeleton">
+          <view class="skeleton-thumb"></view>
+          <view class="flow-skeleton-lines">
+            <view class="skeleton-line" style="width: 46%"></view>
+            <view class="skeleton-line" style="width: 82%; margin-top: 16rpx"></view>
+            <view class="skeleton-line" style="width: 34%; margin-top: 16rpx"></view>
+          </view>
+        </view>
+      </view>
+
+      <block wx:if="{{!menuLoading || flowTotal}}">
+        <block wx:for="{{flowGroups}}" wx:key="name" wx:for-item="group" wx:for-index="groupIndex">
+          <view id="anchor-{{group.key}}" class="flow-cat-anchor"></view>
+          <view class="flow-cat-title">{{group.name}}</view>
+          <view
+            wx:for="{{group.items}}"
+            wx:key="id"
+            class="surface flow-card {{groupIndex === 0 && index < 8 ? 'stagger-in' : ''}}"
+            style="--stagger-index: {{index}}"
+          >
+            <view class="flow-thumb-wrap">
+              <block wx:if="{{item.image}}">
+                <image class="flow-thumb-image {{loadedImages[item.id] ? 'img-loaded' : ''}}" src="{{item.image}}" mode="aspectFill" data-id="{{item.id}}" bindload="onDishImageLoad"></image>
+              </block>
+              <block wx:else>
+                <view class="menu-cover" style="{{item.coverStyle}}">
+                  <view class="food-icon">
+                    <block wx:if="{{item.foodIcon === 'cup'}}">
+                      <view class="food-cup"></view>
+                      <view class="food-cup-handle"></view>
+                      <view class="food-cup-saucer"></view>
+                    </block>
+                    <block wx:elif="{{item.foodIcon === 'plate'}}">
+                      <view class="food-plate-ring"></view>
+                      <view class="food-plate-core"></view>
+                    </block>
+                    <block wx:else>
+                      <view class="food-steam">
+                        <view class="food-steam-line"></view>
+                        <view class="food-steam-line"></view>
+                      </view>
+                      <view class="food-bowl"></view>
+                      <view class="food-bowl-foot"></view>
+                    </block>
+                  </view>
+                </view>
+              </block>
+              <view wx:if="{{item.soldOut}}" class="menu-soldout-mask">
+                <view class="menu-soldout-tag">售罄</view>
+              </view>
+            </view>
+
+            <view class="flow-info">
+              <view class="menu-dish-name">{{item.name}}</view>
+              <view wx:if="{{item.description}}" class="menu-dish-description">{{item.description}}</view>
+              <view class="menu-dish-meta">
+                <view wx:if="{{item.soldCount > 0}}" class="menu-sold-badge">已售 {{item.soldCount}}</view>
+              </view>
+              <view class="flow-line-bottom">
+                <view class="num menu-dish-price">
+                  <text class="price-symbol">¥</text>
+                  <text class="price-value">{{item.priceValue}}</text>
+                </view>
+                <dish-stepper wx:if="{{!item.soldOut}}" variant="menu" quantity="{{item.quantity}}" dish-id="{{item.id}}" bind:minus="decreaseDish" bind:plus="increaseDish" />
+              </view>
+            </view>
+          </view>
+        </block>
+
+        <view wx:if="{{!flowTotal && !menuLoading}}" class="surface empty-state menu-empty">
+          <view class="empty-plate"><view class="empty-plate-inner"></view></view>
+          <view class="section-title">没有找到相关菜品</view>
+          <view class="section-copy">换个关键词，或清除搜索看看全部菜品。</view>
+          <view hover-class="press-scale" hover-stay-time="60" class="button-primary menu-empty-button" bindtap="clearSearch">清除搜索</view>
+        </view>
+      </block>
+
+      <view class="flow-bottom-pad"></view>
+    </scroll-view>
+  </view>
+
+  <view wx:if="{{cartCount > 0}}" class="settle-bar" hover-class="press-deep" hover-stay-time="60" bindtap="tapSettle">
     <view class="settle-total">
       <view class="settle-total-label">合计</view>
       <view class="settle-total-amount num">{{cartTotalText}}</view>
