@@ -115,7 +115,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(61, 42, 26, 0.5);
+  background: rgba(23, 63, 48, 0.52);
   color: #fff;
   font-size: 24rpx;
   font-weight: 700;
@@ -168,7 +168,7 @@
   margin-top: 14rpx;
   padding: 12rpx 14rpx;
   border-radius: 18rpx;
-  background: rgba(105, 73, 26, 0.1);
+  background: var(--panel-soft);
 }
 
 .admin-dish-foot .admin-dish-state {
@@ -176,8 +176,8 @@
 }
 
 .admin-dish-foot .admin-dish-edit {
-  background: rgba(242, 171, 57, 0.16);
-  color: var(--accent-deep);
+  background: rgba(31, 91, 67, 0.10);
+  color: var(--brand);
   border: none;
   min-width: 96rpx;
   min-height: 64rpx;
@@ -279,29 +279,29 @@
 }
 
 .admin-business-toggle.business-open {
-  border-color: rgba(63, 157, 110, 0.35);
-  background: rgba(63, 157, 110, 0.10);
+  border-color: rgba(31, 91, 67, 0.35);
+  background: rgba(31, 91, 67, 0.10);
 }
 
 .admin-business-toggle.business-open .admin-business-label {
-  color: #2f7d57;
+  color: var(--brand);
   font-weight: 700;
 }
 
 .admin-business-toggle.business-closed {
-  border-color: var(--line-strong, rgba(105, 73, 26, 0.2));
-  background: rgba(105, 73, 26, 0.06);
+  border-color: var(--line-strong, rgba(43, 43, 38, 0.2));
+  background: rgba(43, 43, 38, 0.05);
 }
 
 .admin-business-dot {
   width: 14rpx;
   height: 14rpx;
   border-radius: 50%;
-  background: #3f9d6e;
+  background: var(--brand);
 }
 
 .business-closed .admin-business-dot {
-  background: #a08d74;
+  background: #b8b2a4;
 }
 
 .business-closed .admin-business-label {
@@ -326,13 +326,13 @@
 }
 
 .admin-order-status.status-completed {
-  color: #3bb093;
-  border: 2rpx solid #3bb093;
+  color: var(--brand);
+  border: 2rpx solid var(--brand);
 }
 
 .admin-order-status.status-submitted {
-  color: #c0863f;
-  border: 2rpx solid #c0863f;
+  color: var(--accent-deep);
+  border: 2rpx solid var(--accent-deep);
 }
 
 .admin-order-note {
@@ -446,28 +446,35 @@
   border: 2rpx solid var(--muted);
 }
 
-/* ===== 管理页蜜金暖色系（#FFD954 / #E4B660 / #F2AB39 / #69491A，不随访客主题切换） ===== */
+/* ===== 管理页茶系覆盖层（米脂白+春茶绿主色+茶汤金点缀，不随访客主题切换） ===== */
 .admin-page {
-  --page-bg: #fcf6e6;
-  --glass: rgba(255, 251, 240, 0.78);
-  --glass-border: rgba(242, 171, 57, 0.16);
-  --ink: #69491a;
-  --muted: #9c7f55;
-  --accent: #f2ab39;
-  --accent-deep: #d98e1f;
-  --accent-ink: #4a3410;
-  --accent-soft: rgba(242, 171, 57, 0.15);
-  --line: rgba(105, 73, 26, 0.10);
-  --line-strong: rgba(105, 73, 26, 0.20);
-  --panel: rgba(255, 248, 232, 0.92);
-  --panel-soft: rgba(105, 73, 26, 0.05);
-  --blob-1: #ffd954;
-  --blob-2: #f2ab39;
-  --blob-3: #e4b660;
+  --page-bg: #f5f1e6;
+  --glass: rgba(255, 255, 255, 0.92);
+  --glass-border: #e8e2d4;
+  --ink: #2b2b26;
+  --muted: #8a8578;
+  --accent: #c9a24f;
+  --accent-deep: #a8842f;
+  --accent-ink: #6e5717;
+  --accent-soft: rgba(201, 162, 79, 0.15);
+  --brand: #1f5b43;
+  --brand-deep: #173f30;
+  --brand-soft: #e8f0e9;
+  --gold: #c9a24f;
+  --gold-deep: #a8842f;
+  --gold-soft: #f7efd9;
+  --danger: #c85a54;
+  --line: rgba(43, 43, 38, 0.10);
+  --line-strong: rgba(43, 43, 38, 0.20);
+  --panel: #ffffff;
+  --panel-soft: rgba(43, 43, 38, 0.05);
+  --blob-1: #e8f0e9;
+  --blob-2: #f7efd9;
+  --blob-3: #d8e6dc;
 }
 
 .admin-page .swipe-shell {
-  box-shadow: 0 4rpx 18rpx rgba(105, 73, 26, 0.06);
+  box-shadow: 0 4rpx 18rpx rgba(43, 43, 38, 0.05);
 }
 
 .admin-page .swipe-shell .surface {
@@ -475,7 +482,7 @@
 }
 
 .admin-page .surface {
-  box-shadow: 0 8rpx 32rpx rgba(105, 73, 26, 0.08), inset 0 1rpx 0 rgba(255, 255, 255, 0.65);
+  box-shadow: 0 8rpx 32rpx rgba(43, 43, 38, 0.06);
 }
 
 .admin-page .section-kicker {
@@ -483,14 +490,14 @@
 }
 
 .admin-page .swipe-delete {
-  background: #69491a;
+  background: var(--danger);
 }
 
-/* 菜品卡：整卡一块暖色底，不用白玻璃+阴影 */
+/* 菜品卡：白卡 + 绿浅底操作区 + 金价格点缀 */
 .admin-page .admin-dish-card {
-  background: linear-gradient(150deg, #faf0d9 0%, #f3e3bf 100%);
+  background: #ffffff;
   box-shadow: none;
-  border: none;
+  border: 2rpx solid var(--glass-border);
 }
 
 /* ===== 管理页动效 ===== */
@@ -510,12 +517,12 @@
 
 /* 营业中呼吸光圈 */
 .admin-page .chart-bar {
-  background: linear-gradient(180deg, #ffd954 0%, #f2ab39 100%);
+  background: linear-gradient(180deg, #c9a24f 0%, #a8842f 100%);
   animation: admin-bar-grow 0.5s ease both;
 }
 
 .admin-page .admin-rank-progress-fill {
-  background: linear-gradient(90deg, #e4b660, #f2ab39);
+  background: linear-gradient(90deg, #a8842f, #c9a24f);
   animation: admin-fill-x 0.6s ease both;
 }
 
@@ -562,8 +569,8 @@
   margin-left: 12rpx;
   padding: 4rpx 14rpx;
   border-radius: 999rpx;
-  background: rgba(201, 138, 45, 0.16);
-  color: var(--warning);
+  background: var(--accent-soft);
+  color: var(--accent-deep);
   font-size: 20rpx;
   font-weight: 600;
   line-height: 1.4;
@@ -577,7 +584,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 20rpx;
-  background: var(--accent);
+  background: var(--brand);
   color: #fff;
   font-size: 26rpx;
   font-weight: 700;
@@ -783,28 +790,28 @@
   gap: 14rpx;
   padding: 22rpx 26rpx;
   border-radius: 24rpx;
-  background: rgba(242, 171, 57, 0.16);
-  border: 2rpx solid rgba(242, 171, 57, 0.35);
+  background: var(--accent-soft);
+  border: 2rpx solid rgba(201, 162, 79, 0.45);
 }
 
 .admin-reminder-dot {
   width: 14rpx;
   height: 14rpx;
   border-radius: 50%;
-  background: #f2ab39;
+  background: var(--accent);
 }
 
 .admin-reminder-copy {
   flex: 1;
   font-size: 26rpx;
   font-weight: 700;
-  color: #7a5410;
+  color: #7d611f;
 }
 
 .admin-reminder-go {
   font-size: 24rpx;
   font-weight: 600;
-  color: #b87d14;
+  color: var(--accent-deep);
 }
 
 .admin-grid {
@@ -836,23 +843,23 @@
 }
 
 .badge-menu {
-  background: linear-gradient(135deg, #ffd954, #f2ab39);
-  color: #5a3d0e;
+  background: linear-gradient(135deg, #2a7458, #173f30);
+  color: #f0ede4;
 }
 
 .badge-orders {
-  background: linear-gradient(135deg, #e4b660, #d98e1f);
+  background: linear-gradient(135deg, #c9a24f, #a8842f);
   color: #fff8ec;
 }
 
 .badge-stats {
-  background: linear-gradient(135deg, #f2ab39, #c9781a);
-  color: #fff8ec;
+  background: linear-gradient(135deg, #6fa98c, #1f5b43);
+  color: #f0ede4;
 }
 
 .badge-users {
-  background: linear-gradient(135deg, #69491a, #8a6224);
-  color: #ffe9b8;
+  background: linear-gradient(135deg, #173f30, #2b2b26);
+  color: #e8d9a8;
 }
 
 .admin-grid-title {

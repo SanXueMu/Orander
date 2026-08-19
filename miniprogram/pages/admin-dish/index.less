@@ -1,29 +1,36 @@
 
-/* ===== 暖色工作台同款 token（与管理页一致） ===== */
+/* ===== 茶系工作台同款 token（与管理页一致） ===== */
 .admin-dish-page {
-  --page-bg: #fcf6e6;
-  --glass: rgba(255, 251, 240, 0.78);
-  --glass-border: rgba(242, 171, 57, 0.16);
-  --ink: #69491a;
-  --muted: #9c7f55;
-  --accent: #f2ab39;
-  --accent-deep: #d98e1f;
-  --accent-ink: #4a3410;
-  --accent-soft: rgba(242, 171, 57, 0.15);
-  --appetite: #f2ab39;
-  --appetite-soft: rgba(242, 171, 57, 0.18);
-  --line: rgba(105, 73, 26, 0.10);
-  --line-strong: rgba(105, 73, 26, 0.20);
-  --panel: rgba(255, 248, 232, 0.92);
-  --panel-soft: rgba(105, 73, 26, 0.05);
-  --blob-1: #ffd954;
-  --blob-2: #f2ab39;
-  --blob-3: #e4b660;
+  --page-bg: #f5f1e6;
+  --glass: rgba(255, 255, 255, 0.92);
+  --glass-border: #e8e2d4;
+  --ink: #2b2b26;
+  --muted: #8a8578;
+  --accent: #c9a24f;
+  --accent-deep: #a8842f;
+  --accent-ink: #6e5717;
+  --accent-soft: rgba(201, 162, 79, 0.15);
+  --brand: #1f5b43;
+  --brand-deep: #173f30;
+  --brand-soft: #e8f0e9;
+  --gold: #c9a24f;
+  --gold-deep: #a8842f;
+  --gold-soft: #f7efd9;
+  --danger: #c85a54;
+  --appetite: #c9a24f;
+  --appetite-soft: rgba(201, 162, 79, 0.18);
+  --line: rgba(43, 43, 38, 0.10);
+  --line-strong: rgba(43, 43, 38, 0.20);
+  --panel: #ffffff;
+  --panel-soft: rgba(43, 43, 38, 0.05);
+  --blob-1: #e8f0e9;
+  --blob-2: #f7efd9;
+  --blob-3: #d8e6dc;
   background: var(--page-bg);
 }
 
 .admin-dish-page .surface {
-  box-shadow: 0 8rpx 32rpx rgba(105, 73, 26, 0.08), inset 0 1rpx 0 rgba(255, 255, 255, 0.65);
+  box-shadow: 0 8rpx 32rpx rgba(43, 43, 38, 0.06);
 }
 
 .admin-dish-page .field-label {
@@ -39,13 +46,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(41, 30, 8, 0.66);
+  background: rgba(23, 63, 48, 0.62);
 }
 
 .crop-sheet {
   width: 640rpx;
   border-radius: 36rpx;
-  background: rgba(255, 250, 238, 0.96);
+  background: rgba(255, 255, 255, 0.97);
   padding: 30rpx 30rpx 26rpx;
   box-sizing: border-box;
 }
@@ -80,7 +87,7 @@
   height: 560rpx;
   border-radius: 20rpx;
   overflow: hidden;
-  background: #efe4cd;
+  background: #e8e2d4;
 }
 
 .crop-movable {
@@ -142,8 +149,8 @@
   font-size: 26rpx;
   font-weight: 800;
   color: #fff;
-  background: linear-gradient(135deg, #f2ab39, #d98e1f);
-  box-shadow: 0 8rpx 24rpx rgba(217, 142, 31, 0.35);
+  background: var(--brand, #1f5b43);
+  box-shadow: 0 8rpx 24rpx rgba(31, 91, 67, 0.30);
 }
 
 /* 页面外隐藏的导出画布 */
