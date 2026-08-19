@@ -1,5 +1,5 @@
 <view class="stepper stepper-{{variant}}">
-  <view hover-class="press-dim" hover-stay-time="60" class="stepper-button" catchtap="onMinus">-</view>
+  <view hover-class="press-dim" hover-stay-time="60" class="stepper-button stepper-minus" catchtap="onMinus">-</view>
   <view class="stepper-value">{{quantity}}</view>
-  <view hover-class="press-dim" hover-stay-time="60" class="stepper-button" catchtap="onPlus">+</view>
+  <view hover-class="press-dim" hover-stay-time="60" class="stepper-button stepper-plus" catchtap="onPlus">+</view>
 </view>

@@ -1,4 +1,4 @@
-/* 玻璃 dock 胶囊：玻璃材质由 app 级 .glass-dock 提供（apply-shared 透入），此处只管布局 */
+/* 实色胶囊 dock：底由 app 级 .glass-dock 提供（Token 4.0 实色白 + 投影），active 春茶绿胶囊 */
 .visitor-tabbar {
   position: fixed;
   left: 24rpx;
@@ -14,7 +14,7 @@
   z-index: 30;
 }
 
-/* 图标在上、文字居中、墨点下标 */
+/* 图标在上、文字居中；active = 整颗春茶绿胶囊 */
 .visitor-tab {
   flex: 1;
   height: 96rpx;
@@ -25,27 +25,13 @@
   justify-content: center;
   gap: 4rpx;
   color: var(--muted);
-  transition: color 0.2s ease, transform 0.2s ease;
+  transition: color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
 }
 
 .visitor-tab-active {
-  color: var(--ink);
-}
-
-/* 墨点下标：默认隐藏，active 时显现 */
-.visitor-tab-dot {
-  width: 10rpx;
-  height: 10rpx;
-  border-radius: 50%;
-  background: var(--accent);
-  opacity: 0;
-  transform: scale(0.4);
-  transition: opacity 0.2s ease, transform 0.2s ease;
-}
-
-.visitor-tab-active .visitor-tab-dot {
-  opacity: 1;
-  transform: scale(1);
+  color: var(--on-brand);
+  background: var(--brand);
+  box-shadow: 0 6rpx 16rpx rgba(31, 91, 67, 0.24);
 }
 
 .visitor-tab-label {
@@ -54,7 +40,7 @@
   line-height: 1.2;
 }
 
-/* CSS 线稿图标 — currentColor 自适应墨色/灰态 */
+/* CSS 线稿图标 — currentColor 自适应（inactive 灰 / active 白） */
 .tab-icon {
   width: 30rpx;
   height: 30rpx;

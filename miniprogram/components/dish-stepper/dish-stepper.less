@@ -1,13 +1,11 @@
-/* 玻璃胶囊步进器：与卡片同材质 */
+/* 实色步进器：茶金软底胶囊 + 圆形按钮（减 = 白底金边圆，加 = 春茶绿实心圆） */
 .stepper {
   display: flex;
   align-items: center;
   gap: 8rpx;
   padding: 6rpx;
   border-radius: 999rpx;
-  background: var(--glass);
-  border: 1rpx solid var(--glass-border);
-  box-shadow: inset 0 1rpx 0 var(--glass-hi);
+  background: var(--gold-soft);
   box-sizing: border-box;
 }
 
@@ -19,9 +17,21 @@
   align-items: center;
   justify-content: center;
   font-size: 30rpx;
-  font-weight: 600;
-  color: var(--ink);
-  transition: opacity 0.15s ease, background 0.15s ease;
+  font-weight: 700;
+  box-sizing: border-box;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.stepper-minus {
+  color: var(--gold-deep);
+  background: var(--glass);
+  border: 2rpx solid var(--gold);
+}
+
+.stepper-plus {
+  color: var(--on-brand);
+  background: var(--brand);
+  box-shadow: 0 4rpx 12rpx rgba(31, 91, 67, 0.22);
 }
 
 .stepper-value {
@@ -31,11 +41,6 @@
   font-weight: 800;
   color: var(--ink);
   font-variant-numeric: tabular-nums;
-}
-
-/* menu 变体 — 菜单卡片内 */
-.stepper-menu .stepper-button {
-  background: var(--panel-soft);
 }
 
 /* line 变体 — 账单行内，整体小一号 */
@@ -48,7 +53,6 @@
   width: 52rpx;
   height: 52rpx;
   font-size: 26rpx;
-  background: var(--panel-soft);
 }
 
 .stepper-line .stepper-value {

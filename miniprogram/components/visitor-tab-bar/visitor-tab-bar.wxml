@@ -6,7 +6,6 @@
       <view class="icon-menu-line icon-menu-line-short"></view>
     </view>
     <view class="visitor-tab-label">菜单</view>
-    <view class="visitor-tab-dot"></view>
   </view>
   <view class="visitor-tab {{active === 'orders' ? 'visitor-tab-active' : ''}}" hover-class="press-dim" hover-stay-time="60" bindtap="goOrders">
     <view class="tab-icon icon-receipt">
@@ -15,7 +14,6 @@
       <view class="icon-receipt-line icon-receipt-line-short"></view>
     </view>
     <view class="visitor-tab-label">订单</view>
-    <view class="visitor-tab-dot"></view>
   </view>
   <view class="visitor-tab {{active === 'mine' ? 'visitor-tab-active' : ''}}" hover-class="press-dim" hover-stay-time="60" bindtap="goProfile">
     <view class="tab-icon icon-person">
@@ -23,6 +21,5 @@
       <view class="icon-person-body"></view>
     </view>
     <view class="visitor-tab-label">我的</view>
-    <view class="visitor-tab-dot"></view>
   </view>
 </view>
