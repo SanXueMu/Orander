@@ -1,128 +1,186 @@
-.profile-body {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+.profile-page-body {
+  padding-bottom: 200rpx;
 }
 
-.profile-card {
-  width: 100%;
-  padding: 36rpx 28rpx 28rpx;
-  box-sizing: border-box;
-}
-
-.profile-avatar-button {
-  width: 180rpx;
-  height: 180rpx;
-  padding: 0;
-  margin: 0 auto;
-  border-radius: 50%;
-  overflow: hidden;
-  background: transparent;
-}
-
-.profile-avatar-image,
-.profile-avatar-fallback {
-  width: 180rpx;
-  height: 180rpx;
-  border-radius: 50%;
-}
-
-.profile-avatar-fallback {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  font-size: 46rpx;
-  font-weight: 800;
-  letter-spacing: 4rpx;
-}
-
-/* 昵称 800 + 成员色点 */
-.profile-nickname-row {
-  margin-top: 22rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 14rpx;
-}
-
-.profile-theme-dot {
-  width: 18rpx;
-  height: 18rpx;
-  border-radius: 50%;
-}
-
-.profile-nickname {
-  font-size: 36rpx;
-  font-weight: 800;
-}
-
-.profile-field {
-  margin-top: 30rpx;
-}
-
-.profile-button {
-  margin-top: 18rpx;
-}
-
-/* 菜单项：无底色留白列表 + 箭头 */
-.profile-menu-list {
-  width: 100%;
-  margin-top: 28rpx;
-}
-
-.profile-menu-item {
+/* ===== 未登录引导卡 ===== */
+.profile-login-card {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 30rpx 12rpx;
-  border-bottom: 1rpx solid var(--line);
+  gap: 20rpx;
+  padding: 40rpx 34rpx;
 }
 
-.profile-menu-item:last-child {
-  border-bottom: none;
-}
-
-.profile-menu-label {
-  font-size: 28rpx;
+.profile-login-cta {
+  padding: 16rpx 32rpx;
+  border-radius: 999rpx;
+  background: var(--brand);
+  color: #fff;
+  font-size: 26rpx;
   font-weight: 600;
-  color: var(--ink);
+  flex-shrink: 0;
 }
 
-.profile-menu-arrow {
-  font-size: 36rpx;
-  font-weight: 300;
-  color: var(--muted);
-  line-height: 1;
+/* ===== 身份卡 ===== */
+.member-card {
+  padding: 36rpx 30rpx;
 }
 
-/* ===== 游客登录引导（审核整改：先浏览后授权） ===== */
-.profile-guest-glyph {
-  width: 112rpx;
-  height: 112rpx;
-  border-radius: 36rpx;
-  background: var(--accent);
-  color: #FFFFFF;
-  font-size: 36rpx;
-  font-weight: 800;
-  letter-spacing: 2rpx;
+.member-card-top {
+  display: flex;
+  align-items: center;
+  gap: 22rpx;
+}
+
+.member-avatar,
+.member-avatar-img {
+  width: 110rpx;
+  height: 110rpx;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.member-avatar {
+  background: var(--brand);
+  color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 32rpx auto 24rpx;
+  font-size: 44rpx;
+  font-weight: 700;
 }
 
-.profile-guest-title {
-  text-align: center;
-  font-size: 34rpx;
+.member-id-copy {
+  flex: 1;
+  min-width: 0;
+}
+
+.member-nickname {
+  font-size: 36rpx;
   font-weight: 800;
-  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.profile-guest-copy {
-  margin-top: 16rpx;
-  text-align: center;
-  font-size: 26rpx;
-  line-height: 1.7;
+.member-level-pill {
+  margin-top: 10rpx;
+  display: inline-block;
+  padding: 6rpx 18rpx;
+  border-radius: 999rpx;
+  background: linear-gradient(135deg, #c9a24f, #a8842f);
+  color: #fff;
+  font-size: 20rpx;
+  font-weight: 600;
+}
+
+/* 会员码占位 */
+.member-qr {
+  width: 120rpx;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+  font-size: 18rpx;
   color: var(--muted);
+}
+
+.member-qr-grid {
+  width: 88rpx;
+  height: 88rpx;
+  border: 1px solid var(--line-strong, #ddd);
+  border-radius: 12rpx;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6rpx;
+  padding: 8rpx;
+  box-sizing: border-box;
+}
+
+.qr-cell {
+  background: var(--panel-soft);
+  border-radius: 4rpx;
+}
+
+.qr-on {
+  background: var(--ink);
+}
+
+/* 成长值 */
+.member-growth {
+  margin-top: 28rpx;
+}
+
+.member-growth-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 20rpx;
+  color: var(--muted);
+}
+
+.member-growth-bar {
+  margin-top: 10rpx;
+  height: 14rpx;
+  border-radius: 999rpx;
+  background: var(--panel-soft);
+  overflow: hidden;
+}
+
+.member-growth-fill {
+  height: 100%;
+  border-radius: 999rpx;
+  background: linear-gradient(90deg, var(--brand), #c9a24f);
+  transition: width 400ms ease;
+}
+
+/* ===== 资产宫格 ===== */
+.asset-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8rpx;
+  padding: 30rpx 12rpx;
+}
+
+.asset-cell {
+  text-align: center;
+  padding: 8rpx 0;
+}
+
+.asset-num {
+  font-size: 30rpx;
+  font-weight: 800;
+}
+
+.gold-text {
+  color: #a8842f;
+}
+
+.asset-label {
+  margin-top: 8rpx;
+  font-size: 22rpx;
+  color: var(--muted);
+}
+
+/* ===== 功能菜单 ===== */
+.menu-panel {
+  padding: 8rpx 28rpx;
+}
+
+.menu-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 26rpx 4rpx;
+  font-size: 28rpx;
+  border-bottom: 1px solid var(--line);
+}
+
+.menu-row-last {
+  border-bottom: none;
+}
+
+.menu-arrow {
+  color: var(--muted);
+  font-size: 32rpx;
 }

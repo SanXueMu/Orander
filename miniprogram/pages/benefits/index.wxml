@@ -1,0 +1,37 @@
+<view class="orander-page {{themeClass}} {{fontClass}}">
+  <navigation-bar title="会员福利" color="{{navColor}}" background="{{navBackground}}"></navigation-bar>
+
+  <scroll-view class="page-scroll" scroll-y>
+    <view class="page-body benefits-page-body list-gap">
+      <view class="surface benefits-hero">
+        <view class="section-kicker">MEMBER PERKS</view>
+        <view class="section-title">成长值越高，惊喜越多</view>
+        <view class="section-copy">点开卡片了解权益详情，登录后即可一键领取。</view>
+      </view>
+
+      <block wx:if="{{benefits.length}}">
+        <view
+          wx:for="{{benefits}}"
+          wx:key="code"
+          class="surface benefit-card benefit-{{item.tone}}"
+          hover-class="press-dim"
+          hover-stay-time="60"
+          data-code="{{item.code}}"
+          bindtap="openDetail"
+        >
+          <view class="benefit-main">
+            <view class="benefit-name">{{item.name}}</view>
+            <view class="benefit-tagline">{{item.tagline}}</view>
+            <view wx:if="{{item.claimed}}" class="benefit-claimed">已领取 ✓</view>
+            <view wx:else class="benefit-open">查看详情 ›</view>
+          </view>
+          <view class="benefit-medal">{{item.name.length > 4 ? item.tone === 'gold' ? '金' : '礼' : item.name.slice(0, 2)}}</view>
+        </view>
+      </block>
+
+      <view wx:else class="surface empty-state">
+        <view class="section-copy">{{loading ? '加载中…' : '福利即将上架'}}</view>
+      </view>
+    </view>
+  </scroll-view>
+</view>

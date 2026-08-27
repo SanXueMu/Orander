@@ -1,0 +1,42 @@
+<view class="orander-page {{themeClass}} {{fontClass}}">
+  <navigation-bar title="兑换中心" color="{{navColor}}" background="{{navBackground}}"></navigation-bar>
+
+  <scroll-view class="page-scroll" scroll-y>
+    <view class="page-body redeem-page-body list-gap">
+      <!-- 资产速览 -->
+      <view class="surface redeem-balance">
+        <view>
+          <view class="section-kicker">ASSETS</view>
+          <view class="redeem-balance-row">
+            <text>余额 {{walletText}}</text>
+            <text>积分 {{points}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- Tab -->
+      <view class="redeem-tabs">
+        <view class="redeem-tab {{activeTab === 'code' ? 'redeem-tab-active' : ''}}" data-tab="code" bindtap="switchTab">兑换码</view>
+        <view class="redeem-tab {{activeTab === 'card' ? 'redeem-tab-active' : ''}}" data-tab="card" bindtap="switchTab">金喜卡激活</view>
+      </view>
+
+      <!-- 兑换码 -->
+      <view wx:if="{{activeTab === 'code'}}" class="surface redeem-panel">
+        <view class="section-title">输入兑换码</view>
+        <view class="section-copy">格式 CODE-XXXXXX，可兑换积分 / 余额 / 优惠券。</view>
+        <input class="field-input redeem-input" placeholder="例如 CODE-8F2K1A" value="{{codeInput}}" maxlength="20" bindinput="onCodeInput" />
+        <view hover-class="press-scale" hover-stay-time="60" class="button-primary redeem-submit {{busy ? 'redeem-busy' : ''}}" bindtap="submitCode">{{busy ? '处理中…' : '立即兑换'}}</view>
+      </view>
+
+      <!-- 金喜卡 -->
+      <view wx:else class="surface redeem-panel">
+        <view class="section-title">金喜卡激活</view>
+        <view class="section-copy">购买实体卡后，输入卡面卡号与激活码完成绑定。</view>
+        <input class="field-input redeem-input" placeholder="卡号（如 GOLD-2025-000001）" value="{{cardNoInput}}" maxlength="30" bindinput="onCardNoInput" />
+        <input class="field-input redeem-input" placeholder="激活码（卡背涂层内）" value="{{activeCodeInput}}" maxlength="20" bindinput="onActiveCodeInput" />
+        <view hover-class="press-scale" hover-stay-time="60" class="button-primary redeem-submit redeem-gold {{busy ? 'redeem-busy' : ''}}" bindtap="submitCard">{{busy ? '处理中…' : '立即激活'}}</view>
+        <view class="section-copy redeem-note">已有电子金喜卡的用户下单时自动享 8.8 折，无需重复激活。</view>
+      </view>
+    </view>
+  </scroll-view>
+</view>

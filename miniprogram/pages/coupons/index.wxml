@@ -1,0 +1,51 @@
+<view class="orander-page {{themeClass}} {{fontClass}}">
+  <navigation-bar title="券包" color="{{navColor}}" background="{{navBackground}}"></navigation-bar>
+
+  <scroll-view class="page-scroll" scroll-y>
+    <view class="page-body coupon-page-body list-gap">
+      <!-- 领券区 -->
+      <view wx:if="{{templates.length}}" class="coupon-tpl-strip">
+        <view wx:for="{{templates}}" wx:key="id" class="coupon-tpl" hover-class="press-dim" hover-stay-time="60" data-id="{{item.id}}" bindtap="receive">
+          <view class="coupon-tpl-value num">{{item.valueText}}</view>
+          <view class="coupon-tpl-name">{{item.name}}</view>
+          <view class="coupon-tpl-threshold">{{item.thresholdText}}</view>
+          <view class="coupon-tpl-cta">领取</view>
+        </view>
+      </view>
+
+      <!-- Tab -->
+      <view class="coupon-tabs">
+        <view class="coupon-tab {{activeTab === 'usable' ? 'coupon-tab-active' : ''}}" data-tab="usable" bindtap="switchTab">可用</view>
+        <view class="coupon-tab {{activeTab === 'used' ? 'coupon-tab-active' : ''}}" data-tab="used" bindtap="switchTab">已用 / 过期</view>
+      </view>
+
+      <!-- 券列表 -->
+      <block wx:if="{{!loading && coupons.length}}">
+        <view wx:for="{{coupons}}" wx:key="id" class="surface coupon-card {{item.usable ? '' : 'coupon-card-disabled'}}">
+          <view class="coupon-left">
+            <view class="num coupon-value">{{item.valueText}}</view>
+            <view class="coupon-threshold">{{item.thresholdText}}</view>
+          </view>
+          <view class="coupon-divider"></view>
+          <view class="coupon-body">
+            <view class="coupon-name">{{item.name}}</view>
+            <view class="coupon-expired">{{item.expiredText}}</view>
+          </view>
+          <view wx:if="{{item.usable}}" class="coupon-use" hover-class="press-scale" hover-stay-time="60" catchtap="useCoupon">去使用</view>
+          <view wx:else class="coupon-state">{{item.statusText}}</view>
+        </view>
+      </block>
+
+      <view wx:elif="{{loading}}" class="surface empty-state">
+        <view class="section-copy">加载中…</view>
+      </view>
+
+      <view wx:else class="surface empty-state">
+        <view class="empty-icon empty-ticket"><view class="empty-ticket-line"></view><view class="empty-ticket-line"></view></view>
+        <view class="section-title">这里空空如也</view>
+        <view class="section-copy">去领券区拿一张，下单时自动抵扣。</view>
+        <view hover-class="press-scale" hover-stay-time="60" class="button-primary empty-coupon-button" bindtap="goDish">去点单</view>
+      </view>
+    </view>
+  </scroll-view>
+</view>

@@ -356,10 +356,6 @@ export const fetchStoresCloud = async (params: { latitude?: number; longitude?: 
   return callOrander<{ stores: StoreInfo[] }>('getStores', params)
 }
 
-export const getMemberProfileCloud = async () => {
-  return callOrander<Record<string, unknown>>('getMemberProfile')
-}
-
 export interface PreviewPayload {
   storeId: string
   mode: FulfillMode
@@ -404,3 +400,83 @@ export const refundApplyCloud = async (orderId: string, reason: string) => {
 export const getMyOrdersV2Cloud = async (page = 1, pageSize = 20) => {
   return callOrander<PaginatedOrders>('getMyOrders', { page, pageSize })
 }
+
+/* ============ R3 会员 / 营销域（promotion + member） ============ */
+
+export interface LevelCard {
+  level: string
+  name: string
+  threshold: number
+  perk: string
+}
+
+export interface MemberProfile {
+  id?: string
+  nickname?: string
+  avatarUrl?: string
+  growthValue?: number
+  levelName?: string
+  levelPerk?: string
+  nextLevel?: string | null
+  nextGap?: number
+  levels?: LevelCard[]
+}
+
+export const getMemberProfileCloud = () =>
+  callOrander<MemberProfile>('getMemberProfile', {})
+
+export const getLevelCardsCloud = () => callOrander<{ items?: LevelCard[] } | LevelCard[]>('getLevelCards', {})
+
+export interface AssetCoupon {
+  id: string
+  name: string
+  type?: string
+  value?: number
+  threshold?: number
+  status: 'UNUSED' | 'USED' | 'EXPIRED' | string
+  expiresAt?: string
+  issuedAt?: string
+}
+
+export interface MemberAssets {
+  coupons: AssetCoupon[]
+  cards: Array<Record<string, unknown>>
+  wallet: number
+  points: number
+}
+
+export const listAssetsCloud = () => callOrander<MemberAssets>('listAssets', {})
+
+export const listCouponTemplatesCloud = () =>
+  callOrander<{ items: Array<{ id: string; name: string; type?: string; value?: number; threshold?: number; status?: string }> }>('listCouponTemplates', {})
+
+export const receiveCouponCloud = (templateId: string) =>
+  callOrander<AssetCoupon>('receiveCoupon', { templateId })
+
+export const redeemCodeCloud = (code: string) =>
+  callOrander<{ rewardType: string; rewardValue: unknown }>('redeemCode', { code })
+
+export const redeemCardCloud = (cardNo: string, activeCode: string) =>
+  callOrander<{ cardNo: string; name: string }>('redeemCard', { cardNo, activeCode })
+
+export interface BenefitItem {
+  code: string
+  name: string
+  description?: string
+  status?: string
+}
+
+export const listBenefitsCloud = () =>
+  callOrander<{ items: BenefitItem[]; claimed: Array<{ code: string; at: string }> }>('listBenefits', {})
+
+export const claimBenefitCloud = (code: string) =>
+  callOrander<{ code: string; ok: boolean }>('claimBenefit', { code })
+
+export interface PointsFlow {
+  id: string
+  delta: number
+  reason?: string
+  at: string
+}
+
+export const listPointsFlowCloud = () => callOrander<{ items: PointsFlow[] }>('listPointsFlow', {})

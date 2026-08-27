@@ -1,0 +1,139 @@
+.coupon-page-body {
+  padding-bottom: 60rpx;
+}
+
+/* 领券横排 */
+.coupon-tpl-strip {
+  display: flex;
+  gap: 16rpx;
+  overflow-x: auto;
+}
+
+.coupon-tpl {
+  flex-shrink: 0;
+  width: 220rpx;
+  border-radius: 20rpx;
+  background: var(--brand-soft);
+  padding: 22rpx;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.coupon-tpl-value {
+  font-size: 40rpx;
+  font-weight: 800;
+  color: var(--brand);
+}
+
+.coupon-tpl-name {
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  font-weight: 600;
+}
+
+.coupon-tpl-threshold {
+  margin-top: 4rpx;
+  font-size: 20rpx;
+  color: var(--muted);
+}
+
+.coupon-tpl-cta {
+  margin-top: 14rpx;
+  height: 52rpx;
+  border-radius: 999rpx;
+  background: var(--brand);
+  color: #fff;
+  font-size: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Tab */
+.coupon-tabs {
+  display: flex;
+  gap: 28rpx;
+  margin-top: 8rpx;
+}
+
+.coupon-tab {
+  font-size: 28rpx;
+  color: var(--muted);
+  padding-bottom: 10rpx;
+}
+
+.coupon-tab-active {
+  color: var(--ink);
+  font-weight: 700;
+  border-bottom: 6rpx solid var(--brand);
+}
+
+/* 券卡：左值右说明，中间打孔线 */
+.coupon-card {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  padding: 30rpx 28rpx;
+}
+
+.coupon-card-disabled {
+  opacity: 0.55;
+}
+
+.coupon-left {
+  text-align: center;
+  min-width: 150rpx;
+}
+
+.coupon-value {
+  font-size: 44rpx;
+  font-weight: 800;
+  color: var(--appetite);
+}
+
+.coupon-threshold {
+  margin-top: 6rpx;
+  font-size: 20rpx;
+  color: var(--muted);
+}
+
+.coupon-divider {
+  width: 2rpx;
+  align-self: stretch;
+  background: repeating-linear-gradient(
+    to bottom,
+    var(--line) 0,
+    var(--line) 12rpx,
+    transparent 12rpx,
+    transparent 22rpx
+  );
+}
+
+.coupon-body {
+  flex: 1;
+}
+
+.coupon-name {
+  font-size: 28rpx;
+  font-weight: 600;
+}
+
+.coupon-expired {
+  margin-top: 8rpx;
+  font-size: 22rpx;
+  color: var(--muted);
+}
+
+.coupon-use {
+  padding: 14rpx 26rpx;
+  border-radius: 999rpx;
+  background: var(--appetite);
+  color: #fff;
+  font-size: 24rpx;
+  font-weight: 600;
+}
+
+.coupon-state {
+  font-size: 24rpx;
+  color: var(--muted);
+}

@@ -1,0 +1,51 @@
+<view class="orander-page {{themeClass}} {{fontClass}}">
+  <navigation-bar title="钱包" color="{{navColor}}" background="{{navBackground}}"></navigation-bar>
+
+  <scroll-view class="page-scroll" scroll-y>
+    <view class="page-body wallet-page-body list-gap">
+      <!-- 余额卡 -->
+      <view class="surface wallet-hero">
+        <view class="section-kicker">MY WALLET</view>
+        <view class="wallet-balance-row">
+          <view class="wallet-block">
+            <view class="wallet-label">余额</view>
+            <view class="num wallet-value">{{walletText}}</view>
+          </view>
+          <view class="wallet-divider"></view>
+          <view class="wallet-block">
+            <view class="wallet-label">积分</view>
+            <view class="num wallet-points">{{points}}</view>
+          </view>
+        </view>
+        <view class="wallet-actions">
+          <view class="button-ghost wallet-action" hover-class="press-dim" hover-stay-time="60" bindtap="goRedeem">兑换 / 充值</view>
+        </view>
+      </view>
+
+      <!-- 积分流水 -->
+      <view wx:if="{{flows.length}}" class="surface">
+        <view class="section-kicker">POINTS FLOW</view>
+        <view class="list-gap flow-list">
+          <view wx:for="{{flows}}" wx:key="id" class="flow-row">
+            <view>
+              <view class="flow-reason">{{item.reason}}</view>
+              <view class="flow-date">{{item.dateText}}</view>
+            </view>
+            <view class="num flow-delta {{item.positive ? 'flow-positive' : 'flow-negative'}}">{{item.deltaText}}</view>
+          </view>
+        </view>
+      </view>
+
+      <view wx:if="{{!cloudOk}}" class="surface empty-state">
+        <view class="section-title">云端暂不可用</view>
+        <view class="section-copy">确认云函数已部署 R1+ 版本后再试。</view>
+      </view>
+
+      <view wx:elif="{{!loading && !flows.length && cloudOk}}" class="surface empty-state">
+        <view class="empty-icon empty-ticket"><view class="empty-ticket-line"></view><view class="empty-ticket-line"></view></view>
+        <view class="section-title">还没有积分流水</view>
+        <view class="section-copy">每完成一笔订单都会自动积累积分。</view>
+      </view>
+    </view>
+  </scroll-view>
+</view>

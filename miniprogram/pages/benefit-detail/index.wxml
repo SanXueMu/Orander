@@ -1,0 +1,38 @@
+<view class="orander-page {{themeClass}} {{fontClass}}">
+  <navigation-bar title="福利详情" color="{{navColor}}" background="{{navBackground}}"></navigation-bar>
+
+  <scroll-view class="page-scroll" scroll-y>
+    <view class="page-body bd-page-body list-gap">
+      <!-- 主视觉横幅 -->
+      <view class="bd-hero bd-hero-{{meta.tone}}">
+        <view class="bd-hero-kicker">MEMBER BENEFIT</view>
+        <view class="bd-hero-name">{{meta.name}}</view>
+        <view class="bd-hero-tagline">{{meta.tagline}}</view>
+      </view>
+
+      <!-- 权益说明 -->
+      <view class="surface bd-panel">
+        <view class="section-kicker">详情</view>
+        <view class="bd-desc">{{meta.description}}</view>
+        <view wx:if="{{meta.perks.length}}" class="list-gap bd-perks">
+          <view wx:for="{{meta.perks}}" wx:key="*this" class="bd-perk-row">
+            <view class="bd-perk-dot"></view>
+            <text>{{item}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 领取 -->
+      <view
+        hover-class="press-scale"
+        hover-stay-time="60"
+        class="{{claimed ? 'button-ghost' : 'button-primary'}} bd-claim {{claiming ? 'bd-busy' : ''}}"
+        bindtap="claim"
+      >
+        {{claimed ? '已领取' : claiming ? '领取中…' : '立即领取'}}
+      </view>
+
+      <view wx:if="{{!cloudOk}}" class="section-copy bd-note">提示：云端暂不可用，领取需云函数 R1+ 已部署。</view>
+    </view>
+  </scroll-view>
+</view>

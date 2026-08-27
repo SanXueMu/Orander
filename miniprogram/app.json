@@ -13,7 +13,12 @@
     "pages/admin/index",
     "pages/admin-settings/index",
     "pages/admin-dish/index",
-    "pages/admin-user/index"
+    "pages/admin-user/index",
+    "pages/coupons/index",
+    "pages/wallet/index",
+    "pages/redeem/index",
+    "pages/benefits/index",
+    "pages/benefit-detail/index"
   ],
   "window": {
     "navigationBarTextStyle": "black",
