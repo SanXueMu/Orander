@@ -2,11 +2,21 @@ Component({
   properties: {
     active: {
       type: String,
-      value: 'menu',
+      value: 'home',
     },
   },
 
   methods: {
+    goHome() {
+      if (this.data.active === 'home') {
+        return
+      }
+
+      wx.redirectTo({
+        url: '/pages/home/index',
+      })
+    },
+
     goMenu() {
       if (this.data.active === 'menu') {
         return
@@ -17,13 +27,13 @@ Component({
       })
     },
 
-    goOrders() {
-      if (this.data.active === 'orders') {
+    goMall() {
+      if (this.data.active === 'mall') {
         return
       }
 
       wx.redirectTo({
-        url: '/pages/orders/index',
+        url: '/pages/mall/index',
       })
     },
 

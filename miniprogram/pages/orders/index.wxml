@@ -8,7 +8,7 @@
   <navigation-bar title="我的订单" color="{{navColor}}" background="{{navBackground}}"></navigation-bar>
 
   <scroll-view class="page-scroll" scroll-y>
-    <view class="page-body orders-page-body with-tabbar">
+    <view class="page-body orders-page-body">
       <view wx:if="{{profile}}" class="surface glass-blur orders-hero">
         <view class="section-kicker">ORDER ARCHIVE</view>
         <view class="section-title">{{profile.nickname}} 的过往点单</view>
@@ -56,5 +56,4 @@
     </view>
   </scroll-view>
 
-  <visitor-tab-bar active="orders"></visitor-tab-bar>
 </view>

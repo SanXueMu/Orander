@@ -140,9 +140,15 @@ Page({
   logout() {
     clearCart()
     clearSession(false)
-    /* 退出后回菜单首页，保持游客浏览（不再回登录页） */
+    /* 退出后回首页（Tab 第一页），保持游客浏览 */
     wx.reLaunch({
-      url: '/pages/dish/index',
+      url: '/pages/home/index',
+    })
+  },
+
+  goOrders() {
+    wx.navigateTo({
+      url: '/pages/orders/index',
     })
   },
 

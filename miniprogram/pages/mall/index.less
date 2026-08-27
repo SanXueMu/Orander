@@ -1,0 +1,99 @@
+/* 百货页（单长页 + 吸顶锚点目录 · R0 骨架，R4 接楼层数据与查看更多） */
+.mall-tabs {
+  position: fixed;
+  top: calc(44px + env(safe-area-inset-top));
+  left: 0;
+  right: 0;
+  height: 88rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  z-index: 20;
+}
+
+.mall-tab {
+  padding: 12rpx 6rpx;
+  font-size: 26rpx;
+  color: var(--muted);
+  position: relative;
+}
+
+.mall-tab-active {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.mall-tab-active::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 0;
+  width: 40rpx;
+  height: 6rpx;
+  border-radius: 6rpx;
+  background: var(--brand);
+}
+
+.mall-scroll {
+  padding-top: 88rpx;
+  box-sizing: border-box;
+}
+
+.mall-page-body {
+  padding-top: 20rpx;
+}
+
+.mall-floor {
+  margin-bottom: 44rpx;
+}
+
+.mall-floor-head {
+  padding: 10rpx 8rpx 18rpx;
+}
+
+.mall-floor-title {
+  font-size: 34rpx;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.mall-floor-copy {
+  margin-top: 6rpx;
+  font-size: 22rpx;
+  color: var(--muted);
+}
+
+.mall-floor-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18rpx;
+}
+
+.mall-goods-card {
+  width: calc(50% - 9rpx);
+  padding: 20rpx;
+  border-radius: 20rpx;
+  box-sizing: border-box;
+}
+
+.mall-goods-figure {
+  width: 100%;
+  height: 280rpx;
+  border-radius: 14rpx;
+  background: var(--panel-soft);
+}
+
+.mall-goods-name {
+  margin-top: 16rpx;
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.mall-goods-price {
+  margin-top: 8rpx;
+  font-size: 28rpx;
+  font-weight: 800;
+  color: var(--appetite);
+}

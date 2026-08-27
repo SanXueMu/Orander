@@ -1,0 +1,37 @@
+<view class="orander-page {{themeClass}} {{fontClass}}">
+  <navigation-bar title="Orander GO" color="{{navColor}}" background="{{navBackground}}"></navigation-bar>
+
+  <scroll-view class="page-scroll" scroll-y>
+    <view class="page-body home-page-body with-tabbar">
+
+      <view class="home-hero fade-in-up">
+        <view class="home-hero-date">{{dateText}}</view>
+        <view class="home-hero-title">{{greetingText}}</view>
+        <view class="home-hero-copy">一杯灵感之茶，此刻为你现制。</view>
+        <view class="home-hero-cup" aria-hidden="true">
+          <view class="home-hero-cup-lid"></view>
+          <view class="home-hero-cup-body">
+            <view class="home-hero-cup-leaf"></view>
+          </view>
+        </view>
+      </view>
+
+      <view class="home-entry-row fade-in-up-late">
+        <view class="surface home-entry-card" hover-class="press-scale" hover-stay-time="60" bindtap="goPickup">
+          <view class="home-entry-title">到店取</view>
+          <view class="home-entry-copy">到店自提 · 免排队</view>
+          <view class="home-entry-arrow">›</view>
+        </view>
+        <view class="surface home-entry-card" hover-class="press-scale" hover-stay-time="60" bindtap="goDelivery">
+          <view class="home-entry-title">喜外送</view>
+          <view class="home-entry-copy">外送到家 · 足不出户</view>
+          <view class="home-entry-arrow">›</view>
+        </view>
+      </view>
+
+      <view class="home-slogan fade-in-up-late">new style tea, by inspiration</view>
+    </view>
+  </scroll-view>
+
+  <visitor-tab-bar active="home"></visitor-tab-bar>
+</view>

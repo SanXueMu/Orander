@@ -1,20 +1,20 @@
-/* 实色胶囊 dock：底由 app 级 .glass-dock 提供（Token 4.0 实色白 + 投影），active 春茶绿胶囊 */
+/* 实色胶囊 dock：底由 app 级 .glass-dock 提供（Token 5.0 实色白 + 投影），active 喜茶绿胶囊 */
 .visitor-tabbar {
   position: fixed;
   left: 24rpx;
   right: 24rpx;
   bottom: calc(24rpx + env(safe-area-inset-bottom));
   height: 116rpx;
-  padding: 10rpx 14rpx;
+  padding: 10rpx 10rpx;
   display: flex;
   align-items: center;
-  gap: 12rpx;
+  gap: 8rpx;
   border-radius: 999rpx;
   box-sizing: border-box;
   z-index: 30;
 }
 
-/* 图标在上、文字居中；active = 整颗春茶绿胶囊 */
+/* 图标在上、文字居中；active = 整颗喜茶绿胶囊 */
 .visitor-tab {
   flex: 1;
   height: 96rpx;
@@ -31,7 +31,7 @@
 .visitor-tab-active {
   color: var(--on-brand);
   background: var(--brand);
-  box-shadow: 0 6rpx 16rpx rgba(31, 91, 67, 0.24);
+  box-shadow: 0 6rpx 16rpx rgba(45, 204, 112, 0.32);
 }
 
 .visitor-tab-label {
@@ -47,41 +47,81 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 5rpx;
-}
-
-.icon-menu-line {
-  width: 100%;
-  height: 3.5rpx;
-  border-radius: 4rpx;
-  background: currentColor;
-}
-
-.icon-menu-line-short {
-  width: 62%;
-}
-
-.icon-receipt {
-  border: 3rpx solid currentColor;
-  border-radius: 6rpx;
-  padding: 4rpx 6rpx;
-  box-sizing: border-box;
+  align-items: center;
   gap: 4rpx;
 }
 
-.icon-receipt-line {
-  width: 100%;
-  height: 3rpx;
+/* 首页：房子 */
+.icon-home-roof {
+  width: 0;
+  height: 0;
+  border-left: 14rpx solid transparent;
+  border-right: 14rpx solid transparent;
+  border-bottom: 10rpx solid currentColor;
+}
+
+.icon-home-body {
+  width: 20rpx;
+  height: 12rpx;
+  border: 3rpx solid currentColor;
+  border-top: none;
+  border-radius: 0 0 4rpx 4rpx;
+  box-sizing: border-box;
+}
+
+/* 点单：茶杯 */
+.icon-cup {
+  position: relative;
+}
+
+.icon-cup-lid {
+  width: 24rpx;
+  height: 4rpx;
   border-radius: 4rpx;
   background: currentColor;
 }
 
-.icon-receipt-line-short {
-  width: 55%;
+.icon-cup-body {
+  width: 18rpx;
+  height: 13rpx;
+  border: 3rpx solid currentColor;
+  border-top: none;
+  border-radius: 0 0 8rpx 8rpx;
+  box-sizing: border-box;
 }
 
+.icon-cup-straw {
+  position: absolute;
+  right: 3rpx;
+  top: -2rpx;
+  width: 3rpx;
+  height: 12rpx;
+  border-radius: 4rpx;
+  background: currentColor;
+  transform: rotate(18deg);
+}
+
+/* 百货：袋子 */
+.icon-bag-handle {
+  width: 12rpx;
+  height: 8rpx;
+  border: 3rpx solid currentColor;
+  border-bottom: none;
+  border-radius: 8rpx 8rpx 0 0;
+  box-sizing: border-box;
+}
+
+.icon-bag-body {
+  width: 24rpx;
+  height: 15rpx;
+  margin-top: -3rpx;
+  border: 3rpx solid currentColor;
+  border-radius: 4rpx;
+  box-sizing: border-box;
+}
+
+/* 我的：人 */
 .icon-person {
-  align-items: center;
   gap: 3rpx;
 }
 

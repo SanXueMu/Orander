@@ -43,6 +43,10 @@
       </view>
 
       <view class="profile-menu-list">
+        <view class="profile-menu-item" hover-class="press-dim" hover-stay-time="60" bindtap="goOrders">
+          <view class="profile-menu-label">我的订单</view>
+          <view class="profile-menu-arrow">›</view>
+        </view>
         <view class="profile-menu-item" hover-class="press-dim" hover-stay-time="60" bindtap="goSettings">
           <view class="profile-menu-label">通用设置</view>
           <view class="profile-menu-arrow">›</view>

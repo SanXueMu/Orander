@@ -1,19 +1,25 @@
 <view class="visitor-tabbar glass-dock">
-  <view class="visitor-tab {{active === 'menu' ? 'visitor-tab-active' : ''}}" hover-class="press-dim" hover-stay-time="60" bindtap="goMenu">
-    <view class="tab-icon icon-menu">
-      <view class="icon-menu-line"></view>
-      <view class="icon-menu-line"></view>
-      <view class="icon-menu-line icon-menu-line-short"></view>
+  <view class="visitor-tab {{active === 'home' ? 'visitor-tab-active' : ''}}" hover-class="press-dim" hover-stay-time="60" bindtap="goHome">
+    <view class="tab-icon icon-home">
+      <view class="icon-home-roof"></view>
+      <view class="icon-home-body"></view>
     </view>
-    <view class="visitor-tab-label">菜单</view>
+    <view class="visitor-tab-label">首页</view>
   </view>
-  <view class="visitor-tab {{active === 'orders' ? 'visitor-tab-active' : ''}}" hover-class="press-dim" hover-stay-time="60" bindtap="goOrders">
-    <view class="tab-icon icon-receipt">
-      <view class="icon-receipt-line"></view>
-      <view class="icon-receipt-line"></view>
-      <view class="icon-receipt-line icon-receipt-line-short"></view>
+  <view class="visitor-tab {{active === 'menu' ? 'visitor-tab-active' : ''}}" hover-class="press-dim" hover-stay-time="60" bindtap="goMenu">
+    <view class="tab-icon icon-cup">
+      <view class="icon-cup-lid"></view>
+      <view class="icon-cup-body"></view>
+      <view class="icon-cup-straw"></view>
     </view>
-    <view class="visitor-tab-label">订单</view>
+    <view class="visitor-tab-label">点单</view>
+  </view>
+  <view class="visitor-tab {{active === 'mall' ? 'visitor-tab-active' : ''}}" hover-class="press-dim" hover-stay-time="60" bindtap="goMall">
+    <view class="tab-icon icon-bag">
+      <view class="icon-bag-handle"></view>
+      <view class="icon-bag-body"></view>
+    </view>
+    <view class="visitor-tab-label">百货</view>
   </view>
   <view class="visitor-tab {{active === 'mine' ? 'visitor-tab-active' : ''}}" hover-class="press-dim" hover-stay-time="60" bindtap="goProfile">
     <view class="tab-icon icon-person">

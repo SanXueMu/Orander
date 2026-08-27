@@ -1,0 +1,40 @@
+<view class="orander-page {{themeClass}} {{fontClass}}">
+  <navigation-bar title="灵感上新" color="{{navColor}}" background="{{navBackground}}"></navigation-bar>
+
+  <view class="mall-tabs glass-dock">
+    <view
+      wx:for="{{floors}}"
+      wx:key="key"
+      class="mall-tab {{activeFloor === item.key ? 'mall-tab-active' : ''}}"
+      data-key="{{item.key}}"
+      bindtap="onFloorTap"
+    >{{item.title}}</view>
+  </view>
+
+  <scroll-view class="page-scroll mall-scroll" scroll-y>
+    <view class="page-body mall-page-body with-tabbar">
+      <block wx:for="{{floors}}" wx:key="key">
+        <view id="floor-{{item.key}}" class="mall-floor fade-in-up">
+          <view class="mall-floor-head">
+            <view class="mall-floor-title">{{item.title}}</view>
+            <view class="mall-floor-copy">{{item.copy}}</view>
+          </view>
+          <view class="mall-floor-grid">
+            <view class="surface mall-goods-card">
+              <view class="mall-goods-figure"></view>
+              <view class="mall-goods-name">好物准备中</view>
+              <view class="mall-goods-price">¥ --</view>
+            </view>
+            <view class="surface mall-goods-card">
+              <view class="mall-goods-figure"></view>
+              <view class="mall-goods-name">好物准备中</view>
+              <view class="mall-goods-price">¥ --</view>
+            </view>
+          </view>
+        </view>
+      </block>
+    </view>
+  </scroll-view>
+
+  <visitor-tab-bar active="mall"></visitor-tab-bar>
+</view>

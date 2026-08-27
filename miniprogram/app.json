@@ -1,8 +1,10 @@
 {
   "pages": [
+    "pages/home/index",
     "pages/dish/index",
-    "pages/index/index",
+    "pages/mall/index",
     "pages/profile/index",
+    "pages/index/index",
     "pages/orders/index",
     "pages/order-detail/index",
     "pages/settings/index",
