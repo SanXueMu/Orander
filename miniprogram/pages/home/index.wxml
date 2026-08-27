@@ -29,6 +29,42 @@
         </view>
       </view>
 
+
+      <!-- CMS 活动流（content 域排期驱动，R4） -->
+      <view wx:for="{{activities}}" wx:key="id" class="act-card fade-in-up" data-template="{{item.template}}">
+        <view wx:if="{{item.template === 'NEW_PRODUCT'}}" class="act-hero act-hero-green">
+          <view class="act-kicker">新品首发</view>
+          <view class="act-title">{{item.title}}</view>
+          <view class="act-sub">{{item.subtitle}}</view>
+          <view class="act-cta act-cta-light" hover-class="press-scale" hover-stay-time="60" catchtap="goPickup">去尝鲜</view>
+        </view>
+
+        <view wx:elif="{{item.template === 'ANNIVERSARY'}}" class="act-hero act-hero-gold">
+          <view class="act-kicker">周年庆</view>
+          <view class="act-title">{{item.title}}</view>
+          <view class="act-sub">{{item.subtitle}}</view>
+          <view class="act-cta act-cta-dark" hover-class="press-scale" hover-stay-time="60" catchtap="goPickup">立即下单</view>
+        </view>
+
+        <view wx:elif="{{item.template === 'INVITE_MEMBER'}}" class="act-ticket">
+          <view class="act-ticket-left">
+            <view class="act-kicker">邀请有礼</view>
+            <view class="act-title">{{item.title}}</view>
+            <view class="act-sub">{{item.subtitle}}</view>
+          </view>
+          <view class="act-ticket-right">
+            <text class="num ticket-num">¥20</text>
+            <text class="ticket-unit">两张券</text>
+            <view class="act-invite-btn" hover-class="press-scale" hover-stay-time="60" bindtap="comingSoonInvite">去邀请</view>
+          </view>
+        </view>
+
+        <view wx:else class="act-hero act-hero-warm">
+          <view class="act-title">{{item.title}}</view>
+          <view class="act-sub">{{item.subtitle}}</view>
+        </view>
+      </view>
+
       <view class="home-slogan fade-in-up-late">new style tea, by inspiration</view>
     </view>
   </scroll-view>

@@ -374,7 +374,8 @@ export const previewOrderCloud = async (payload: PreviewPayload) => {
 }
 
 export interface CreateOrderV2Payload {
-  storeId: string
+  storeId?: string
+  biz?: 'TEA' | 'MALL'
   mode: FulfillMode
   note?: string
   couponInstanceId?: string
@@ -480,3 +481,33 @@ export interface PointsFlow {
 }
 
 export const listPointsFlowCloud = () => callOrander<{ items: PointsFlow[] }>('listPointsFlow', {})
+
+/* ============ R4 百货 + 内容域 ============ */
+
+export interface MallProduct {
+  id: string
+  name: string
+  floor: string
+  floorName: string
+  price: number
+  originalPrice: number
+  image: string
+  stock: number
+  soldCount: number
+}
+
+export const getMallFloorsCloud = () =>
+  callOrander<{ products: MallProduct[] }>('getMallFloors', {})
+
+export type ActivityTemplate = 'NEW_PRODUCT' | 'ANNIVERSARY' | 'SELLING_POINT' | 'INVITE_MEMBER' | 'GENERIC'
+
+export interface HomeActivity {
+  id: string
+  template: ActivityTemplate | string
+  title: string
+  subtitle?: string
+  image?: string
+}
+
+export const getHomeActivitiesCloud = () =>
+  callOrander<{ activities: HomeActivity[] }>('getHomeActivities', {})

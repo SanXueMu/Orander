@@ -18,7 +18,9 @@
     "pages/wallet/index",
     "pages/redeem/index",
     "pages/benefits/index",
-    "pages/benefit-detail/index"
+    "pages/benefit-detail/index",
+    "pages/mall-more/index",
+    "pages/mall-product/index"
   ],
   "window": {
     "navigationBarTextStyle": "black",

@@ -1,16 +1,19 @@
 import { getCurrentMember, isVisitorSession } from '../../utils/orander'
 import { applyPageLook, pageLookBehavior } from '../../behaviors/page-look'
+import { getHomeActivitiesCloud } from '../../utils/cloud'
 
 Page({
   behaviors: [pageLookBehavior],
 
   data: {
+    activities: [] as import('../../utils/cloud').HomeActivity[],
     profile: null as ReturnType<typeof getCurrentMember>,
     greetingText: '',
     dateText: '',
   },
 
   onShow() {
+    this.loadActivities()
     const profile = isVisitorSession() ? null : getCurrentMember()
     applyPageLook(this, profile)
 
@@ -34,6 +37,7 @@ Page({
       greetingText: profile ? `${greeting}，${profile.nickname}` : `${greeting}，欢迎光临`,
       dateText: `${now.getMonth() + 1}月${now.getDate()}日 · 灵感之茶`,
     })
+    void this.loadActivities()
   },
 
   goPickup() {
@@ -46,5 +50,18 @@ Page({
     wx.redirectTo({
       url: '/pages/dish/index',
     })
+  },
+
+  async loadActivities() {
+    try {
+      const data = await getHomeActivitiesCloud()
+      this.setData({ activities: (data && data.activities) || [] })
+    } catch (error) {
+      this.setData({ activities: [] })
+    }
+  },
+
+  comingSoonInvite() {
+    wx.showToast({ title: '邀请有礼即将上线', icon: 'none' })
   },
 })

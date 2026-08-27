@@ -116,3 +116,87 @@
   text-transform: lowercase;
   color: var(--muted);
 }
+
+/* ============ R4 活动模板卡 ============ */
+.act-card { margin-top: 24rpx; }
+
+.act-hero {
+  border-radius: 28rpx;
+  padding: 44rpx 38rpx;
+  color: #fff;
+}
+
+.act-hero-green { background: linear-gradient(135deg, #1fbf68, #0f7a44); }
+.act-hero-gold { background: linear-gradient(135deg, #c9a24f, #a8842f); }
+.act-hero-warm { background: linear-gradient(135deg, #ff8f6b, #f06a4a); }
+
+.act-kicker {
+  display: inline-block;
+  padding: 6rpx 18rpx;
+  border-radius: 999rpx;
+  background: rgba(255,255,255,0.22);
+  font-size: 20rpx;
+  letter-spacing: 3rpx;
+}
+
+.act-title {
+  margin-top: 18rpx;
+  font-size: 42rpx;
+  font-weight: 800;
+}
+
+.act-sub {
+  margin-top: 10rpx;
+  font-size: 25rpx;
+  opacity: 0.92;
+}
+
+.act-cta {
+  margin-top: 26rpx;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14rpx 40rpx;
+  border-radius: 999rpx;
+  font-size: 25rpx;
+  font-weight: 700;
+}
+
+.act-cta-light { background: #fff; color: var(--brand); }
+.act-cta-dark { background: rgba(32,36,46,0.9); color: #fff; }
+
+/* 邀请券票根 */
+.act-ticket {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  border-radius: 28rpx;
+  padding: 34rpx 30rpx;
+  background: linear-gradient(135deg, #fff7e8, #ffe9c7);
+  border: 1.5px dashed #d9a84e;
+}
+
+.act-ticket-left { flex: 1; min-width: 0; }
+.act-ticket-left .act-title { color: #7a5410; font-size: 34rpx; }
+.act-ticket-left .act-sub { color: #9a7a3f; }
+
+.act-ticket-right {
+  flex-shrink: 0;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ticket-num { font-size: 52rpx; font-weight: 800; color: #b8860b; }
+.ticket-unit { font-size: 20rpx; color: #9a7a3f; }
+
+.act-invite-btn {
+  margin-top: 12rpx;
+  padding: 12rpx 32rpx;
+  border-radius: 999rpx;
+  background: #20242e;
+  color: #fff;
+  font-size: 24rpx;
+  font-weight: 700;
+}

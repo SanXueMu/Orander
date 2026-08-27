@@ -49,6 +49,25 @@ const mapSpu = (doc = {}) => ({
 async function priceItems(items = []) {
   const results = []
   for (const item of items) {
+    /* 百货商品通道：m:<mall_products.id>，无规格，直接按价 */
+    if (item.spuId && String(item.spuId).indexOf('m:') === 0) {
+      const mallResult = await col('mall_products').where({ id: String(item.spuId).slice(2) }).limit(1).get()
+      const mallDoc = mallResult.data[0]
+      if (!mallDoc || mallDoc.status !== 'ON') {
+        throw new Error(`百货商品不存在或已下架: ${item.spuId}`)
+      }
+      const mallQty = Math.max(1, Math.min(99, Number(item.qty) || 1))
+      results.push({
+        spuId: item.spuId,
+        name: mallDoc.name || '',
+        image: mallDoc.image || '',
+        qty: mallQty,
+        unitPrice: Number(mallDoc.price || 0),
+        subtotal: Number((Number(mallDoc.price || 0) * mallQty).toFixed(2)),
+        selections: [],
+      })
+      continue
+    }
     const spuResult = await col('spus').where({ id: item.spuId }).limit(1).get()
     if (spuResult.length === 0 && spuResult.data.length === 0) {
       throw new Error(`商品不存在: ${item.spuId}`)

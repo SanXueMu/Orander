@@ -191,6 +191,7 @@ Page({
       const order = await createOrderV2Cloud({
         storeId: store ? store.id : '',
         mode: getFulfillMode(),
+        biz: getCartLinesV2().some((line) => line.spuId.startsWith('m:')) ? 'MALL' : 'TEA',
         note: this.data.note.trim(),
         items: getCartLinesV2().map((line) => ({
           spuId: line.spuId.startsWith('legacy:') ? line.spuId.slice('legacy:'.length) : line.spuId,

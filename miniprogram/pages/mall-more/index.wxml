@@ -1,0 +1,27 @@
+<view class="orander-page {{themeClass}} {{fontClass}}">
+  <navigation-bar title="{{title}}" color="{{navColor}}" background="{{navBackground}}"></navigation-bar>
+  <scroll-view class="page-scroll" scroll-y>
+    <view class="page-body list-gap">
+      <view wx:if="{{!items.length && !loading}}" class="surface empty-panel">该楼层暂无商品，敬请期待</view>
+      <view class="more-grid">
+        <view
+          wx:for="{{items}}"
+          wx:key="id"
+          class="surface more-card"
+          hover-class="press-scale"
+          hover-stay-time="60"
+          data-id="{{item.id}}"
+          bindtap="goProduct"
+        >
+          <image wx:if="{{item.image}}" class="more-img" src="{{item.image}}" mode="aspectFill"></image>
+          <view wx:else class="more-figure"></view>
+          <view class="more-name">{{item.name}}</view>
+          <view class="mall-goods-price-row">
+            <text class="num more-price">¥{{item.price}}</text>
+            <text wx:if="{{item.originalPrice > item.price}}" class="mall-goods-origin">¥{{item.originalPrice}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+</view>

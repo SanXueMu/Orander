@@ -1,0 +1,22 @@
+<view class="orander-page {{themeClass}} {{fontClass}}">
+  <navigation-bar title="商品详情" color="{{navColor}}" background="{{navBackground}}"></navigation-bar>
+  <scroll-view class="page-scroll" scroll-y>
+    <view class="page-body list-gap prod-page" wx:if="{{product}}">
+      <image wx:if="{{product.image}}" class="prod-hero-img" src="{{product.image}}" mode="aspectFill"></image>
+      <view wx:else class="surface prod-hero-figure"></view>
+      <view class="surface prod-panel">
+        <view class="prod-name">{{product.name}}</view>
+        <view class="prod-price-row">
+          <text class="num prod-price">{{priceText}}</text>
+          <text wx:if="{{originText}}" class="mall-goods-origin">{{originText}}</text>
+        </view>
+        <view class="prod-meta">已售 {{product.soldCount}} · 库存 {{product.stock}}</view>
+      </view>
+      <view class="surface prod-cta-panel">
+        <view class="btn-outline prod-cart-btn" hover-class="press-scale" hover-stay-time="60" bindtap="addToCart">加入购物车</view>
+        <view class="cta-button prod-buy-btn {{busy ? 'busy' : ''}}" hover-class="press-scale" hover-stay-time="60" bindtap="goBuy">立即购买</view>
+      </view>
+    </view>
+    <view wx:else class="page-body empty-panel">商品走丢了，返回再试试</view>
+  </scroll-view>
+</view>

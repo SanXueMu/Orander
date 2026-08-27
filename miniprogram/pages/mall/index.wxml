@@ -1,34 +1,42 @@
 <view class="orander-page {{themeClass}} {{fontClass}}">
-  <navigation-bar title="灵感上新" color="{{navColor}}" background="{{navBackground}}"></navigation-bar>
+  <navigation-bar title="Orander 百货" color="{{navColor}}" background="{{navBackground}}"></navigation-bar>
 
   <view class="mall-tabs glass-dock">
     <view
-      wx:for="{{floors}}"
+      wx:for="{{sections}}"
       wx:key="key"
       class="mall-tab {{activeFloor === item.key ? 'mall-tab-active' : ''}}"
       data-key="{{item.key}}"
       bindtap="onFloorTap"
     >{{item.title}}</view>
+    <view wx:if="{{!sections.length && !loading}}" class="mall-tab">百货即将上新</view>
   </view>
 
-  <scroll-view class="page-scroll mall-scroll" scroll-y>
+  <scroll-view class="page-scroll mall-scroll" scroll-y scroll-into-view="{{scrollInto}}" scroll-with-animation>
     <view class="page-body mall-page-body with-tabbar">
-      <block wx:for="{{floors}}" wx:key="key">
-        <view id="floor-{{item.key}}" class="mall-floor fade-in-up">
+      <block wx:for="{{sections}}" wx:key="key" wx:for-item="section">
+        <view id="floor-{{section.key}}" class="mall-floor fade-in-up">
           <view class="mall-floor-head">
-            <view class="mall-floor-title">{{item.title}}</view>
-            <view class="mall-floor-copy">{{item.copy}}</view>
+            <view class="mall-floor-title">{{section.title}}</view>
+            <view class="mall-floor-more" data-floor="{{section.key}}" data-title="{{section.title}}" bindtap="goMore">查看更多 ›</view>
           </view>
           <view class="mall-floor-grid">
-            <view class="surface mall-goods-card">
-              <view class="mall-goods-figure"></view>
-              <view class="mall-goods-name">好物准备中</view>
-              <view class="mall-goods-price">¥ --</view>
-            </view>
-            <view class="surface mall-goods-card">
-              <view class="mall-goods-figure"></view>
-              <view class="mall-goods-name">好物准备中</view>
-              <view class="mall-goods-price">¥ --</view>
+            <view
+              wx:for="{{section.items}}"
+              wx:key="id"
+              class="surface mall-goods-card"
+              hover-class="press-scale"
+              hover-stay-time="60"
+              data-id="{{item.id}}"
+              bindtap="goProduct"
+            >
+              <image wx:if="{{item.image}}" class="mall-goods-img" src="{{item.image}}" mode="aspectFill"></image>
+              <view wx:else class="mall-goods-figure"></view>
+              <view class="mall-goods-name">{{item.name}}</view>
+              <view class="mall-goods-price-row">
+                <text class="num mall-goods-price">¥{{item.price}}</text>
+                <text wx:if="{{item.originalPrice > item.price}}" class="mall-goods-origin">¥{{item.originalPrice}}</text>
+              </view>
             </view>
           </view>
         </view>
