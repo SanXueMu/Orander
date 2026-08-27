@@ -1,0 +1,16 @@
+<view class="orander-page {{themeClass}} {{fontClass}}">
+  <navigation-bar title="消息通知" color="{{navColor}}" background="{{navBackground}}"></navigation-bar>
+  <view wx:if="{{unread > 0}}" class="nf-allread" bindtap="markAll">全部已读（{{unread}}）</view>
+  <scroll-view class="page-scroll" scroll-y>
+    <view class="page-body list-gap">
+      <view wx:if="{{!items.length}}" class="surface empty-panel">暂无消息</view>
+      <view wx:for="{{items}}" wx:key="id" class="surface nf-row {{item.read ? '' : 'nf-unread'}}" data-id="{{item.id}}" data-read="{{item.read ? true : false}}" bindtap="tapItem">
+        <view class="nf-dot"></view>
+        <view class="nf-copy">
+          <view class="nf-title">{{item.title}}</view>
+          <view wx:if="{{item.content}}" class="nf-content">{{item.content}}</view>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+</view>

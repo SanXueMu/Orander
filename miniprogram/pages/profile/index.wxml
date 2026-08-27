@@ -75,14 +75,20 @@
           <view class="menu-row" hover-class="press-dim" hover-stay-time="60" bindtap="goRedeem">
             <text>兑换中心</text><text class="menu-arrow">›</text>
           </view>
-          <view class="menu-row" hover-class="press-dim" hover-stay-time="60" data-label="在线客服" bindtap="comingSoon">
+          <view class="menu-row" hover-class="press-dim" hover-stay-time="60" bindtap="goNotifications">
+            <view class="menu-row-left"><text>消息通知</text><text wx:if="{{unread > 0}}" class="menu-badge num">{{unread}}</text></view><text class="menu-arrow">›</text>
+          </view>
+          <view class="menu-row" hover-class="press-dim" hover-stay-time="60" bindtap="goCs">
             <text>在线客服</text><text class="menu-arrow">›</text>
           </view>
-          <view class="menu-row" hover-class="press-dim" hover-stay-time="60" data-label="团餐预订" bindtap="comingSoon">
+          <view class="menu-row" hover-class="press-dim" hover-stay-time="60" bindtap="goGroupmeal">
             <text>团餐预订</text><text class="menu-arrow">›</text>
           </view>
-          <view class="menu-row" hover-class="press-dim" hover-stay-time="60" data-label="发票助手" bindtap="comingSoon">
+          <view class="menu-row" hover-class="press-dim" hover-stay-time="60" bindtap="goInvoice">
             <text>发票助手</text><text class="menu-arrow">›</text>
+          </view>
+          <view class="menu-row" hover-class="press-dim" hover-stay-time="60" bindtap="goPolicies">
+            <text>条款与政策</text><text class="menu-arrow">›</text>
           </view>
           <view class="menu-row menu-row-last" hover-class="press-dim" hover-stay-time="60" bindtap="goSettings">
             <text>设置</text><text class="menu-arrow">›</text>

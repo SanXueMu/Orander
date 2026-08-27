@@ -1,0 +1,33 @@
+.nf-allread {
+  margin: 18rpx 26rpx 0;
+  align-self: flex-end;
+  text-align: right;
+  font-size: 24rpx;
+  color: var(--brand);
+}
+
+.nf-row {
+  display: flex;
+  gap: 16rpx;
+  padding: 28rpx;
+}
+
+.nf-dot {
+  width: 14rpx; height: 14rpx;
+  border-radius: 50%;
+  background: var(--line-strong, #ddd);
+  margin-top: 12rpx;
+  flex-shrink: 0;
+}
+
+.nf-unread .nf-dot { background: var(--appetite); }
+.nf-unread .nf-title { font-weight: 700; }
+
+.nf-title { font-size: 28rpx; }
+
+.nf-content {
+  margin-top: 8rpx;
+  font-size: 25rpx;
+  color: var(--muted);
+  line-height: 1.5;
+}

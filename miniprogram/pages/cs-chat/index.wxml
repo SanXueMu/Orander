@@ -1,0 +1,17 @@
+<view class="orander-page {{themeClass}} {{fontClass}}">
+  <navigation-bar title="在线客服" color="{{navColor}}" background="{{navBackground}}"></navigation-bar>
+  <view class="cs-body">
+    <scroll-view class="cs-scroll" scroll-y scroll-into-view="{{scrollInto}}" scroll-with-animation>
+      <view class="cs-list">
+        <view wx:for="{{messages}}" wx:key="id" id="msg-{{index}}" class="cs-row {{item.mine ? 'cs-mine' : ''}}">
+          <view class="cs-avatar {{item.mine ? 'cs-avatar-mine' : ''}}">{{item.mine ? '我' : '客'}}</view>
+          <view class="cs-bubble {{item.mine ? 'cs-bubble-mine' : ''}}">{{item.text || '[图片]'}}</view>
+        </view>
+      </view>
+    </scroll-view>
+    <view class="surface cs-input-bar">
+      <input class="cs-input" value="{{input}}" placeholder="描述您的问题…" confirm-type="send" bindinput="onInput" bindconfirm="send" />
+      <view class="cta-button cs-send {{sending || !input ? 'busy' : ''}}" hover-class="press-scale" hover-stay-time="60" bindtap="send">发送</view>
+    </view>
+  </view>
+</view>

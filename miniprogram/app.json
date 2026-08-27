@@ -20,7 +20,14 @@
     "pages/benefits/index",
     "pages/benefit-detail/index",
     "pages/mall-more/index",
-    "pages/mall-product/index"
+    "pages/mall-product/index",
+    "pages/review-write/index",
+    "pages/cs-chat/index",
+    "pages/groupmeal/index",
+    "pages/invoice/index",
+    "pages/policies/index",
+    "pages/policy-detail/index",
+    "pages/notifications/index"
   ],
   "window": {
     "navigationBarTextStyle": "black",

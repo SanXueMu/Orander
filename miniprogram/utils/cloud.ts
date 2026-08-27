@@ -511,3 +511,57 @@ export interface HomeActivity {
 
 export const getHomeActivitiesCloud = () =>
   callOrander<{ activities: HomeActivity[] }>('getHomeActivities', {})
+
+/* ============ R5 外围域 ============ */
+
+export const submitReviewCloud = (payload: { orderId: string; rating: number; content?: string }) =>
+  callOrander<Record<string, unknown>>('submitReview', payload)
+
+export const listMyReviewsCloud = () => callOrander<{ items: unknown[] }>('listMyReviews', {})
+
+export const csCreateSessionCloud = () =>
+  callOrander<{ id: string }>('createSession', {})
+export const csListMySessionsCloud = () =>
+  callOrander<{ items: Array<{ id: string; status: string }> }>('listMySessions', {})
+export const csGetMessagesCloud = (sessionId: string) =>
+  callOrander<{ messages: CsMessage[] }>('getMessages', { sessionId })
+export const csSendMessageCloud = (payload: { sessionId: string; text?: string; image?: string }) =>
+  callOrander<{ message: CsMessage }>('sendMessage', payload)
+export interface CsMessage {
+  id: string
+  from: 'USER' | 'SYSTEM' | 'ADMIN'
+  type: 'text' | 'image'
+  text?: string
+  image?: string
+  createdAt: string
+}
+
+export const gmGetSlotsCloud = (date: string) =>
+  callOrander<{ date: string; slots: Array<{ id: string; label?: string; startTime?: string; endTime?: string; capacity: number; reserved: number; remaining: number }> }>('getSlots', { date })
+export const gmReserveSlotCloud = (payload: { slotId: string; date: string; headcount: number; contactName?: string; phone?: string; note?: string }) =>
+  callOrander<Record<string, unknown>>('reserveSlot', payload)
+export const gmMyReservationsCloud = () => callOrander<{ items: unknown[] }>('myReservations', {})
+
+export interface TitleRecord {
+  id: string
+  name: string
+  taxNo?: string
+}
+export const invListTitlesCloud = () => callOrander<{ items: TitleRecord[] }>('listTitles', {})
+export const invSaveTitleCloud = (payload: { id?: string; name: string; taxNo?: string }) =>
+  callOrander<TitleRecord>('saveTitle', payload)
+export const invDeleteTitleCloud = (id: string) => callOrander<Record<string, unknown>>('deleteTitle', { id })
+export const invListOrdersCloud = () =>
+  callOrander<{ items: Array<{ id: string; orderNumber: string; payAmount: number; createdAt?: string }> }>('listInvoicableOrders', {})
+export const invApplyCloud = (payload: Record<string, unknown>) => callOrander<Record<string, unknown>>('applyInvoice', payload)
+export const invListRecordsCloud = () => callOrander<{ items: unknown[] }>('listInvoiceRecords', {})
+
+export const notifyListCloud = () =>
+  callOrander<{ items: Array<{ id: string; title: string; content?: string; read?: boolean; createdAt?: string }>; unread: number }>('listNotifications', {})
+export const notifyMarkReadCloud = (id: string) => callOrander<Record<string, unknown>>('markRead', { id })
+export const notifyMarkAllReadCloud = () => callOrander<Record<string, unknown>>('markAllRead', {})
+
+export const getPoliciesCloud = () =>
+  callOrander<{ items: Array<{ id: string; title: string; version?: string; updatedAt?: string }> }>('getPolicies', {})
+export const getPolicyCloud = (policyId: string) =>
+  callOrander<{ id: string; title: string; version?: string; sections?: unknown[]; contentHtml?: string; updatedAt?: string }>('getPolicy', { policyId })

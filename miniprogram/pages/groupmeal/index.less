@@ -1,0 +1,69 @@
+.gm-hero { padding: 36rpx 32rpx; }
+.gm-panel { padding: 32rpx; }
+
+.gm-date-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 28rpx;
+  padding-bottom: 22rpx;
+}
+
+.gm-date-value { color: var(--brand); font-weight: 600; }
+
+.gm-slots {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16rpx;
+}
+
+.gm-slot {
+  padding: 18rpx 0;
+  border-radius: 14rpx;
+  background: var(--panel-soft);
+  text-align: center;
+}
+
+.gm-slot-active { background: var(--brand); }
+.gm-slot-active .gm-slot-label, .gm-slot-active .gm-slot-remain { color: #fff; }
+
+.gm-slot-full { opacity: 0.4; }
+
+.gm-slot-label { font-size: 26rpx; font-weight: 600; }
+.gm-slot-remain { margin-top: 6rpx; font-size: 20rpx; color: var(--muted); }
+
+.gm-count-row {
+  margin-top: 24rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 28rpx;
+}
+
+.gm-stepper { display: flex; align-items: center; gap: 22rpx; }
+
+.gm-step-btn {
+  width: 56rpx; height: 56rpx;
+  border-radius: 50%;
+  border: 1.5px solid var(--brand);
+  color: var(--brand);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 30rpx;
+}
+
+.gm-plus { background: var(--brand); color: #fff; }
+
+.gm-count { font-size: 30rpx; font-weight: 700; }
+
+.gm-input {
+  margin-top: 20rpx;
+  height: 84rpx;
+  background: var(--panel-soft);
+  border-radius: 14rpx;
+  padding: 0 24rpx;
+  font-size: 27rpx;
+}
+
+.gm-submit { margin-top: 30rpx; width: 100%; }
+
+.gm-res-row { padding: 20rpx 0; font-size: 26rpx; color: var(--ink); }

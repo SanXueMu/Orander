@@ -1,0 +1,15 @@
+<view class="orander-page {{themeClass}} {{fontClass}}">
+  <navigation-bar title="写评价" color="{{navColor}}" background="{{navBackground}}"></navigation-bar>
+  <scroll-view class="page-scroll" scroll-y>
+    <view class="page-body list-gap">
+      <view class="surface rw-panel">
+        <view class="rw-stars">
+          <view wx:for="{{stars}}" wx:key="*this" class="rw-star {{rating >= item ? 'rw-on' : ''}}" data-star="{{item}}" bindtap="setStar">★</view>
+          <text class="rw-rating-text">{{ratingTexts[rating]}}</text>
+        </view>
+        <textarea class="rw-textarea" placeholder="这杯茶的味道、包装、服务体验如何？" maxlength="300" value="{{content}}" bindinput="onInput"></textarea>
+        <view class="cta-button rw-submit {{submitting ? 'busy' : ''}}" hover-class="press-scale" hover-stay-time="60" bindtap="submit">{{submitting ? '提交中…' : '发布评价'}}</view>
+      </view>
+    </view>
+  </scroll-view>
+</view>

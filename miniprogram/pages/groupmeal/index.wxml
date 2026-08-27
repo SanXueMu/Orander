@@ -1,0 +1,40 @@
+<view class="orander-page {{themeClass}} {{fontClass}}">
+  <navigation-bar title="团餐预订" color="{{navColor}}" background="{{navBackground}}"></navigation-bar>
+  <scroll-view class="page-scroll" scroll-y>
+    <view class="page-body list-gap">
+      <view class="surface gm-hero">
+        <view class="section-title">团餐 · 会议茶歇 · 部门下午茶</view>
+        <view class="section-copy">10 人起订，提前一天预约，门店统一制作配送。</view>
+      </view>
+
+      <view class="surface gm-panel">
+        <picker mode="date" value="{{date}}" bindchange="onDateChange">
+          <view class="gm-date-row"><text>用餐日期</text><text class="gm-date-value">{{date}} ›</text></view>
+        </picker>
+        <view class="gm-slots">
+          <view wx:for="{{slots}}" wx:key="id" class="gm-slot {{item.active ? 'gm-slot-active' : ''}} {{item.full ? 'gm-slot-full' : ''}}" data-id="{{item.id}}" data-full="{{item.full}}" bindtap="pickSlot">
+            <view class="gm-slot-label">{{item.label}}</view>
+            <view class="gm-slot-remain">{{item.full ? '已满' : '余 ' + item.remaining}}</view>
+          </view>
+        </view>
+        <view class="gm-count-row">
+          <text>人数</text>
+          <view class="gm-stepper">
+            <view class="gm-step-btn" bindtap="minusCount">−</view>
+            <text class="num gm-count">{{headcount}}</text>
+            <view class="gm-step-btn gm-plus" bindtap="plusCount">＋</view>
+          </view>
+        </view>
+        <input class="gm-input" placeholder="联系人" value="{{contactName}}" bindinput="onName" />
+        <input class="gm-input" type="number" placeholder="联系电话" value="{{phone}}" bindinput="onPhone" />
+        <input class="gm-input" placeholder="备注（口味/发票等）" value="{{note}}" bindinput="onNote" />
+        <view class="cta-button gm-submit {{reserving ? 'busy' : ''}}" hover-class="press-scale" hover-stay-time="60" bindtap="reserve">{{reserving ? '提交中…' : '提交预约'}}</view>
+      </view>
+
+      <view wx:if="{{reservations.length}}" class="surface gm-panel">
+        <view class="section-title">我的预约</view>
+        <view wx:for="{{reservations}}" wx:key="index" class="gm-res-row">预约 {{index + 1}}</view>
+      </view>
+    </view>
+  </scroll-view>
+</view>

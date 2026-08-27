@@ -5,7 +5,7 @@ import {
   isVisitorSession,
 } from '../../utils/orander'
 import { applyPageLook, pageLookBehavior } from '../../behaviors/page-look'
-import { getMemberProfileCloud, listAssetsCloud, type LevelCard } from '../../utils/cloud'
+import { getMemberProfileCloud, listAssetsCloud, notifyListCloud, type LevelCard } from '../../utils/cloud'
 
 const getMonogram = (value: string, fallback: string) => {
   const trimmed = (value || '').trim()
@@ -34,6 +34,7 @@ Page({
     walletText: formatMoney(0),
     points: 0,
     hasGoldCard: false,
+    unread: 0,
   },
 
   onShow() {
@@ -87,6 +88,12 @@ Page({
           levels,
         })
       }
+      try {
+        const notifications = (await notifyListCloud().catch(() => null)) || { items: [], unread: 0 }
+        this.setData({ unread: Number(notifications.unread || 0) })
+      } catch (error) {
+        /* 静默 */
+      }
       if (assets) {
         const usableCoupons = (assets.coupons || []).filter((coupon) => coupon.status === 'UNUSED')
         this.setData({
@@ -124,6 +131,12 @@ Page({
   goBenefits() {
     wx.navigateTo({ url: '/pages/benefits/index' })
   },
+
+  goNotifications() { wx.navigateTo({ url: '/pages/notifications/index' }) },
+  goCs() { wx.navigateTo({ url: '/pages/cs-chat/index' }) },
+  goGroupmeal() { wx.navigateTo({ url: '/pages/groupmeal/index' }) },
+  goInvoice() { wx.navigateTo({ url: '/pages/invoice/index' }) },
+  goPolicies() { wx.navigateTo({ url: '/pages/policies/index' }) },
 
   goSettings() {
     wx.navigateTo({ url: '/pages/settings/index' })

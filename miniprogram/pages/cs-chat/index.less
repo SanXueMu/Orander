@@ -1,0 +1,61 @@
+.cs-body { display: flex; flex-direction: column; height: calc(100vh - 94rpx); }
+
+.cs-scroll { flex: 1; min-height: 0; }
+
+.cs-list { padding: 24rpx 26rpx 140rpx; }
+
+.cs-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14rpx;
+  margin-bottom: 22rpx;
+}
+
+.cs-mine { flex-direction: row-reverse; }
+
+.cs-avatar {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  background: var(--brand);
+  color: #fff;
+  font-size: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cs-avatar-mine { background: var(--ink); }
+
+.cs-bubble {
+  max-width: 70%;
+  padding: 18rpx 24rpx;
+  border-radius: 20rpx;
+  background: #fff;
+  font-size: 27rpx;
+  line-height: 1.5;
+}
+
+.cs-bubble-mine { background: var(--brand); color: #fff; }
+
+.cs-input-bar {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  padding: 18rpx 24rpx calc(18rpx + env(safe-area-inset-bottom));
+  display: flex;
+  gap: 16rpx;
+  align-items: center;
+  border-radius: 24rpx 24rpx 0 0;
+}
+
+.cs-input {
+  flex: 1;
+  height: 76rpx;
+  background: var(--panel-soft);
+  border-radius: 999rpx;
+  padding: 0 28rpx;
+  font-size: 27rpx;
+}
+
+.cs-send { width: 140rpx; height: 76rpx; border-radius: 999rpx; font-size: 26rpx; }

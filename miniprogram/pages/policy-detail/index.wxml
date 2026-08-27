@@ -1,0 +1,12 @@
+<view class="orander-page {{themeClass}} {{fontClass}}">
+  <navigation-bar title="{{title || '详情'}}" color="{{navColor}}" background="{{navBackground}}"></navigation-bar>
+  <scroll-view class="page-scroll" scroll-y>
+    <view class="page-body list-gap">
+      <view class="surface pd-panel">
+        <view class="section-title">{{title}}</view>
+        <view wx:if="{{version || updatedAt}}" class="pd-meta">{{version}}{{updatedAt ? ' · 更新于 ' + updatedAt : ''}}</view>
+        <rich-text class="pd-content" nodes="{{nodes}}"></rich-text>
+      </view>
+    </view>
+  </scroll-view>
+</view>

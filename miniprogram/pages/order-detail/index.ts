@@ -49,6 +49,8 @@ type OrderDetailView = Order & {
   isPaidOrMaking: boolean
   canPayNow: boolean
   canRefund: boolean
+  canReview: boolean
+  canInvoice: boolean
 }
 
 const normalizeStatus = (status: string) => status
@@ -104,6 +106,8 @@ const getOrderView = (orderId: string): OrderDetailView | null => {
     isPaidOrMaking: statusCode === 'PAID' || statusCode === 'PREPARING',
     canPayNow: statusCode === 'PENDING_PAY',
     canRefund: statusCode === 'PAID' || statusCode === 'PREPARING',
+    canReview: statusCode === 'COMPLETED',
+    canInvoice: statusCode === 'COMPLETED',
     lines: specLines,
   }
 }
