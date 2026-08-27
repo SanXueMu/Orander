@@ -15,7 +15,11 @@
         <view class="waiting-ring">
           <view class="waiting-ring-core"></view>
         </view>
-        <view class="waiting-title">已下单</view>
+        <view class="waiting-title">{{order.statusText}}</view>
+        <view wx:if="{{order.queueNo}}" class="receipt-queue">
+          <text class="receipt-queue-label">排队号</text>
+          <text class="num receipt-queue-number">{{order.queueNo}} 号</text>
+        </view>
         <view class="num waiting-number">{{order.orderNumber}}</view>
         <view class="waiting-time">{{createdText}}</view>
 

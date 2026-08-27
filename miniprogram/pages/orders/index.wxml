@@ -10,9 +10,13 @@
   <scroll-view class="page-scroll" scroll-y>
     <view class="page-body orders-page-body">
       <view wx:if="{{profile}}" class="surface glass-blur orders-hero">
-        <view class="section-kicker">ORDER ARCHIVE</view>
-        <view class="section-title">{{profile.nickname}} 的过往点单</view>
-        <view class="section-copy">看历史订单、打开回执风格详情，也可以回头补评价。</view>
+        <view class="section-kicker">MY ORDERS</view>
+        <view class="section-title">{{profile.nickname}} 的订单</view>
+        <view class="section-copy">茶饮与百货的每一笔都在这里，排队号与制作进度实时更新。</view>
+        <view class="biz-tabs">
+          <view class="biz-tab {{activeBiz === 'TEA' ? 'biz-tab-active' : ''}}" hover-class="press-dim" hover-stay-time="60" data-biz="TEA" bindtap="switchBiz">茶饮 · 鲜食</view>
+          <view class="biz-tab {{activeBiz === 'MALL' ? 'biz-tab-active' : ''}}" hover-class="press-dim" hover-stay-time="60" data-biz="MALL" bindtap="switchBiz">喜茶百货</view>
+        </view>
       </view>
 
       <view wx:if="{{!profile}}" class="surface empty-state">
@@ -38,8 +42,11 @@
                 </view>
               </view>
               <view class="order-card-preview">{{item.previewText}}</view>
+              <view wx:if="{{item.queueText}}" class="order-card-queue">
+                <text class="queue-label">排队号</text>
+                <text class="num queue-value">{{item.queueText}}</text>
+              </view>
               <view class="order-card-bottom">
-                <view class="order-card-review">{{item.reviewText}}</view>
                 <view class="num order-card-total">{{item.totalText}}</view>
               </view>
             </view>

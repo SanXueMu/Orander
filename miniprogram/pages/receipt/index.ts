@@ -11,7 +11,7 @@ import { applyPageLook, pageLookBehavior } from '../../behaviors/page-look'
 import type { Order, OrderItem } from '../../utils/orander'
 
 type OrderReceiptLine = OrderItem & { priceText: string; subtotalText: string }
-type OrderReceiptView = Order & { statusText: string; lines: OrderReceiptLine[] }
+type OrderReceiptView = Order & { statusText: string; lines: OrderReceiptLine[]; queueNo?: number }
 
 Page({
   behaviors: [pageLookBehavior],
@@ -62,17 +62,32 @@ Page({
 
     applyPageLook(this, getCurrentMember())
 
-    const completed = order.status === 'completed'
+    const raw = order as unknown as { status?: string; queueNo?: number; storeName?: string }
+    const statusCode = raw.status || 'submitted'
+    /* 新状态机映射（含旧版兼容） */
+    const STATUS_TEXT: Record<string, string> = {
+      submitted: '已下单',
+      preparing: '制作中',
+      completed: '已完成',
+      cancelled: '已取消',
+      PENDING_PAY: '待支付',
+      PAID: '已下单·排队中',
+      PREPARING: '制作中',
+      COMPLETED: '已完成',
+    }
+    const done = statusCode === 'completed' || statusCode === 'COMPLETED'
+    const paidStep = statusCode !== 'PENDING_PAY' && statusCode !== 'submitted'
     const statusSteps = [
       { label: '已下单', active: true },
-      { label: '账单确认', active: true },
-      { label: completed ? '已完成' : '等候中', active: completed },
+      { label: '已支付', active: paidStep },
+      { label: done ? '已完成' : statusCode === 'PREPARING' || statusCode === 'preparing' ? '制作中' : '等候出餐', active: paidStep },
     ]
 
     this.setData({
       order: {
         ...order,
-        statusText: completed ? '已完成' : '制作中',
+        statusText: STATUS_TEXT[statusCode] || '已下单',
+        queueNo: raw.queueNo,
         lines: order.items.map((item) => ({
           ...item,
           priceText: formatMoney(item.price),

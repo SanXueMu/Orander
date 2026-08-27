@@ -116,3 +116,81 @@
 .review-button {
   margin-top: 22rpx;
 }
+
+/* ============ R2 排队号 / 时间线 / 操作区 ============ */
+
+.queue-hero {
+  margin-top: 24rpx;
+  padding: 24rpx;
+  border-radius: 20rpx;
+  background: var(--brand-soft, #E8F5E9);
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.queue-hero-label {
+  font-size: 22rpx;
+  color: var(--brand);
+}
+
+.queue-hero-number {
+  font-size: 56rpx;
+  font-weight: 800;
+  color: var(--brand);
+}
+
+.status-timeline {
+  margin-top: 26rpx;
+  display: flex;
+  align-items: flex-start;
+}
+
+.timeline-step {
+  flex: 1;
+  position: relative;
+  text-align: center;
+}
+
+.timeline-dot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+  background: var(--line-strong, #ddd);
+  margin: 0 auto 10rpx;
+  transition: background 200ms ease;
+}
+
+.timeline-step-done .timeline-dot {
+  background: var(--brand);
+}
+
+.timeline-label {
+  font-size: 20rpx;
+  color: var(--muted);
+}
+
+.timeline-step-done .timeline-label {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.detail-action-row {
+  margin-top: 24rpx;
+  display: flex;
+  gap: 16rpx;
+}
+
+.detail-action-main {
+  flex: 1;
+}
+
+.action-busy {
+  opacity: 0.7;
+}
+
+.detail-item-spec {
+  margin-top: 6rpx;
+  font-size: 22rpx;
+  color: var(--muted);
+}

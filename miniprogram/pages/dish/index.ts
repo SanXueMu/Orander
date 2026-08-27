@@ -1,42 +1,50 @@
-import { fetchCloudDishes, getBusinessStatusCloud, initCloud } from '../../utils/cloud'
+import { fetchCatalogCloud, fetchStoresCloud, getBusinessStatusCloud, initCloud } from '../../utils/cloud'
 import {
-  addToCart,
-  cleanSoldOutFromCart,
-  formatMoney,
-  getCart,
-  getCartStats,
-  getCurrentMember,
-  getDishCoverStyle,
-  getDishes,
-  getLastCategory,
-  getMenuCategories,
-  getOrders,
-  getSession,
-  saveLastCategory,
-  setCartQuantity,
-} from '../../utils/orander'
-import type { Dish } from '../../utils/orander'
-import { applyPageLook, pageLookBehavior } from '../../behaviors/page-look'
+  applyPageLook,
+  pageLookBehavior,
+} from '../../behaviors/page-look'
 import { eventBus } from '../../utils/event-bus'
+import {
+  addCartLineV2,
+  buildMenuGroups,
+  clearSoldOutFromCartV2,
+  getCartLinesV2,
+  getCartStatsV2,
+  getSelectedStore,
+  getStoresLocal,
+  getFulfillMode,
+  setCartLineQtyV2,
+  setFulfillMode,
+  saveCatalog,
+  saveStores,
+  setSelectedStoreById,
+  type CartLineV2,
+  type FulfillMode,
+  type Spu,
+  type StoreInfo,
+} from '../../utils/xicha'
+import { formatMoney, getCurrentMember, getSession } from '../../utils/orander'
 
-type MenuDishView = Dish & {
+type MenuSpuView = Spu & {
   quantity: number
+  specQuantity: number
   coverStyle: string
   foodIcon: string
-  priceText: string
+  hasSpecs: boolean
   priceValue: string
-  soldCount: number
 }
 
-const resolveDishId = (event: WechatMiniprogram.BaseEvent) => {
-  const detail = (event as WechatMiniprogram.CustomEvent).detail as { id?: string } | undefined
-  return (detail && detail.id) || (event.currentTarget.dataset.id as string)
+type MenuFlowGroupView = {
+  key: string
+  id: string
+  name: string
+  items: MenuSpuView[]
 }
 
 const FOOD_ICON_RULES: Array<[string, string]> = [
-  ['饮', 'cup'], ['茶', 'cup'], ['咖', 'cup'], ['酒', 'cup'], ['水', 'cup'], ['奶', 'cup'], ['汁', 'cup'], ['浆', 'cup'], ['甜品', 'cup'],
-  ['面', 'bowl'], ['粉', 'bowl'], ['饭', 'bowl'], ['粥', 'bowl'], ['包', 'bowl'], ['饺', 'bowl'], ['汤', 'bowl'], ['锅', 'bowl'], ['主食', 'bowl'],
-  ['凉', 'plate'], ['沙拉', 'plate'], ['卤', 'plate'], ['腌', 'plate'], ['素', 'plate'],
+  ['饮', 'cup'], ['茶', 'cup'], ['咖', 'cup'], ['酒', 'cup'], ['水', 'cup'], ['奶', 'cup'], ['汁', 'cup'], ['浆', 'cup'],
+  ['面', 'bowl'], ['粉', 'bowl'], ['饭', 'bowl'], ['粥', 'bowl'], ['汤', 'bowl'],
+  ['凉', 'plate'], ['沙', 'plate'], ['卤', 'plate'],
 ]
 
 const classifyFoodIcon = (category: string) => {
@@ -45,69 +53,56 @@ const classifyFoodIcon = (category: string) => {
       return icon
     }
   }
-
   return 'bowl'
 }
 
-/* 本地订单统计每个菜品累计销量（"已售 N" 徽章） */
-const buildSoldCountMap = () => {
-  const map = new Map<string, number>()
-  getOrders().forEach((order) => {
-    if (order.status === 'cancelled') {
-      return
-    }
-    order.items.forEach((item) => {
-      map.set(item.dishId, (map.get(item.dishId) || 0) + item.quantity)
-    })
-  })
-  return map
-}
+/* 深色底插画 fallback（与旧版同风格） */
+const COVER_BACKGROUNDS = [
+  'linear-gradient(135deg, #1a1a1a 0%, #4a4a4a 100%)',
+  'linear-gradient(135deg, #2a2a2a 0%, #6a6a6a 100%)',
+  'linear-gradient(135deg, #050505 0%, #585858 100%)',
+  'linear-gradient(135deg, #202020 0%, #8b8b8b 100%)',
+]
 
-type MenuFlowGroup = {
-  key: string
-  name: string
-  items: MenuDishView[]
-}
-
-const decorateDishes = (dishes: Dish[]) => {
-  const cartMap = new Map(getCart().map((item) => [item.dishId, item.quantity]))
-  const soldMap = buildSoldCountMap()
-  return dishes.map((dish) => ({
-    ...dish,
-    quantity: cartMap.get(dish.id) || 0,
-    coverStyle: getDishCoverStyle(dish.id),
-    foodIcon: classifyFoodIcon(dish.category),
-    priceText: formatMoney(dish.price),
-    priceValue: String(dish.price),
-    soldCount: soldMap.get(dish.id) || 0,
-  }))
-}
-
-/* S2 左右分栏：搜索时空组分退化为「搜索结果」单组，平时按分类全量分组（锚点跳转而非过滤） */
-const buildFlowState = (keyword: string) => {
-  const search = keyword.trim().toLowerCase()
-  const matches = (dish: Dish) => !search || dish.name.toLowerCase().includes(search) || dish.description.toLowerCase().includes(search) || dish.tags.some((tag) => tag.toLowerCase().includes(search))
-
-  if (search) {
-    const items = decorateDishes(getDishes().filter(matches))
-    return { groups: [{ key: 'search', name: '搜索结果', items }] as MenuFlowGroup[], total: items.length }
+const hashString = (value: string) => {
+  let result = 0
+  for (let index = 0; index < value.length; index += 1) {
+    result = (result * 31 + value.charCodeAt(index)) >>> 0
   }
+  return result
+}
 
-  const groups = getMenuCategories()
-    .map((name, index) => ({ key: String(index), name, items: decorateDishes(getDishes().filter((dish) => dish.category === name && matches(dish))) }))
-    .filter((group) => group.items.length > 0)
-  return { groups, total: groups.reduce((sum, group) => sum + group.items.length, 0) }
+const getDishCoverStyle = (seed: string) => {
+  return `background:${COVER_BACKGROUNDS[hashString(seed || 'spu') % COVER_BACKGROUNDS.length]};`
+}
+
+const decorateSpus = (): { groups: MenuFlowGroupView[]; total: number } => {
+  const keyword = ''
+  const flow = buildMenuGroups(keyword)
+  const lines = getCartLinesV2()
+  const qtyBySpu = new Map<string, number>()
+  lines.forEach((line) => {
+    qtyBySpu.set(line.spuId, (qtyBySpu.get(line.spuId) || 0) + line.quantity)
+  })
+
+  const groups = flow.groups.map((group) => ({
+    key: group.key,
+    id: group.id,
+    name: group.name,
+    items: group.items.map((spu) => ({
+      ...spu,
+      quantity: 0,
+      specQuantity: qtyBySpu.get(spu.id) || 0,
+      coverStyle: getDishCoverStyle(spu.id),
+      foodIcon: classifyFoodIcon(spu.categoryName),
+      hasSpecs: !!(spu.specGroups && spu.specGroups.length > 0),
+      priceValue: String(spu.basePrice),
+    })),
+  }))
+  return { groups, total: flow.total }
 }
 
 const WEEKDAYS = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
-
-const buildGreeting = () => {
-  const now = new Date()
-  const hour = now.getHours()
-  const greeting = hour < 6 ? '夜深了' : hour < 11 ? '早上好' : hour < 14 ? '中午好' : hour < 18 ? '下午好' : '晚上好'
-  const dateText = `${now.getMonth() + 1}月${now.getDate()}日 ${WEEKDAYS[now.getDay()]}`
-  return { greetingText: greeting, dateText }
-}
 
 Page({
   behaviors: [pageLookBehavior],
@@ -116,7 +111,6 @@ Page({
 
   orderCreatedHandler: null as (() => void) | null,
 
-  /* S2 滚动同步：右侧滚动位置 → 左侧分类高亮 */
   _flowScrollTop: 0,
   _anchorOffsets: [] as Array<{ top: number; name: string }>,
   _lastScrollSync: 0,
@@ -129,13 +123,23 @@ Page({
     dateText: '',
     businessOpen: true,
     businessLoaded: false,
-    categories: ['全部'],
+    /* 地址栏 */
+    fulfillMode: 'PICKUP' as FulfillMode,
+    store: null as StoreInfo | null,
+    storeSheetVisible: false,
+    stores: [] as StoreInfo[],
+    /* 菜单 */
+    categories: ['全部'] as string[],
     railActive: '全部',
     searchKeyword: '',
-    flowGroups: [] as MenuFlowGroup[],
+    flowGroups: [] as MenuFlowGroupView[],
     flowTotal: 0,
     flowInto: '',
     flowTop: 0,
+    /* 规格弹窗 */
+    pickerVisible: false,
+    pickerSpu: null as Spu | null,
+    /* 结算 */
     cartCount: 0,
     countBounce: false,
     cartTotalText: formatMoney(0),
@@ -143,12 +147,35 @@ Page({
   },
 
   async onShow() {
-    /* 游客模式：未登录也可自由浏览菜单（审核要求先体验后授权），结算时才引导登录 */
-    this.setData(buildGreeting())
+    this.setData({
+      greetingText: (() => {
+        const hour = new Date().getHours()
+        return hour < 6 ? '夜深了' : hour < 11 ? '早上好' : hour < 14 ? '中午好' : hour < 18 ? '下午好' : '晚上好'
+      })(),
+      dateText: (() => {
+        const now = new Date()
+        return `${now.getMonth() + 1}月${now.getDate()}日 ${WEEKDAYS[now.getDay()]}`
+      })(),
+      fulfillMode: getFulfillMode(),
+      store: getSelectedStore(),
+      stores: getStoresLocal(),
+    })
 
     if (initCloud()) {
       this.setData({ menuLoading: true })
-      await fetchCloudDishes()
+      const catalog = await fetchCatalogCloud()
+      if (catalog && catalog.spus && catalog.spus.length > 0) {
+        saveCatalog(catalog)
+      }
+      fetchStoresCloud().then((result) => {
+        if (result && result.stores && result.stores.length > 0) {
+          saveStores(result.stores)
+          this.setData({ stores: result.stores })
+          if (!this.data.store) {
+            this.setData({ store: getSelectedStore() })
+          }
+        }
+      })
 
       getBusinessStatusCloud().then((status) => {
         if (status) {
@@ -157,12 +184,9 @@ Page({
       })
     }
 
-    const removed = cleanSoldOutFromCart()
+    const removed = clearSoldOutFromCartV2()
     if (removed > 0) {
-      wx.showToast({
-        title: `已清理 ${removed} 件售罄菜品`,
-        icon: 'none',
-      })
+      wx.showToast({ title: `已清理 ${removed} 件售罄商品`, icon: 'none' })
     }
 
     this.refreshPage()
@@ -174,6 +198,7 @@ Page({
         setTimeout(() => {
           this.setData({ countBounce: false })
         }, 420)
+        this.decorateOnly()
       }
       this.orderCreatedHandler = () => {
         this.setData({ cartCount: 0 })
@@ -188,49 +213,45 @@ Page({
       eventBus.off('cart-changed', this.cartChangedHandler)
       this.cartChangedHandler = null
     }
-
     if (this.orderCreatedHandler) {
       eventBus.off('order-created', this.orderCreatedHandler)
       this.orderCreatedHandler = null
     }
   },
 
+  /* 只刷新数量徽标与锚点（避免整体 setData 抖动） */
+  decorateOnly() {
+    const next = decorateSpus()
+    this.setData({
+      flowGroups: next.groups,
+      flowTotal: next.total,
+      cartTotalText: formatMoney(getCartStatsV2().total),
+    })
+    wx.nextTick(() => this.measureAnchors())
+  },
+
   refreshPage() {
     const session = getSession()
     applyPageLook(this, getCurrentMember())
-    const categories = ['全部', ...getMenuCategories()]
-    const remembered = getLastCategory()
-    const railActive = categories.includes(this.data.railActive) && this.data.railActive !== '全部'
-      ? this.data.railActive
-      : categories.includes(remembered) && remembered !== '全部' ? remembered : '全部'
-    const stats = getCartStats()
-    const flow = buildFlowState(this.data.searchKeyword)
-
+    const flow = decorateSpus()
+    const categories = ['全部', ...flow.groups.map((group) => group.name)]
     this.setData({
       nickname: session ? session.nickname : '访客',
       categories,
-      railActive,
+      railActive: categories.includes(this.data.railActive) ? this.data.railActive : '全部',
       flowGroups: flow.groups,
       flowTotal: flow.total,
-      cartCount: stats.count,
-      cartTotalText: formatMoney(stats.total),
+      cartCount: getCartStatsV2().count,
+      cartTotalText: formatMoney(getCartStatsV2().total),
     })
     this.scheduleAnchorWork()
   },
 
-  /* 数据/渲染就绪后：量锚点位置 + 首次按记忆分类定位 */
   scheduleAnchorWork() {
     wx.nextTick(() => {
       this.measureAnchors()
       if (!this._didInitialAnchor) {
         this._didInitialAnchor = true
-        const remembered = this.data.railActive
-        if (remembered !== '全部') {
-          const group = this.data.flowGroups.find((item) => item.name === remembered)
-          if (group) {
-            this.setData({ flowInto: `anchor-${group.key}` })
-          }
-        }
       }
     })
   },
@@ -241,27 +262,19 @@ Page({
     query.select('.menu-flow').boundingClientRect()
     query.exec((rects) => {
       const anchors = (rects[0] || []) as WechatMiniprogram.BoundingClientRectResult[]
-      const flow = rects[1] as WechatMiniprogram.BoundingClientRectResult | null
-      if (!flow || !anchors.length) {
+      const flowRect = rects[1] as WechatMiniprogram.BoundingClientRectResult | null
+      if (!flowRect || !anchors.length) {
         return
       }
-      this._anchorOffsets = anchors.map((rect) => ({
-        top: rect.top - flow.top + this._flowScrollTop,
-        name: '',
+      this._anchorOffsets = anchors.map((rect, index) => ({
+        top: rect.top - flowRect.top + this._flowScrollTop,
+        name: this.data.flowGroups[index] ? this.data.flowGroups[index].name : '',
       }))
-      this._anchorOffsets.forEach((offset, index) => {
-        const group = this.data.flowGroups[index]
-        if (group) {
-          offset.name = group.name
-        }
-      })
     })
   },
 
-  /* 点左侧分类 → 右侧锚点滚动（不做过滤，茶饮菜单范式） */
   tapRailCategory(event: WechatMiniprogram.BaseEvent) {
     const category = event.currentTarget.dataset.category as string
-    saveLastCategory(category)
     if (category === '全部') {
       this.setData({
         railActive: category,
@@ -299,83 +312,169 @@ Page({
 
   onSearchInput(event: WechatMiniprogram.CustomEvent) {
     const detail = event.detail as { value?: string }
-    const searchKeyword = detail.value || ''
-    const flow = buildFlowState(searchKeyword)
+    this.applySearch(detail.value || '')
+  },
+
+  applySearch(keyword: string) {
+    const flow = buildMenuGroups(keyword)
+    const lines = getCartLinesV2()
+    const qtyBySpu = new Map<string, number>()
+    lines.forEach((line) => qtyBySpu.set(line.spuId, (qtyBySpu.get(line.spuId) || 0) + line.quantity))
     this.setData({
-      searchKeyword,
-      flowGroups: flow.groups,
+      searchKeyword: keyword,
+      flowGroups: flow.groups.map((group) => ({
+        key: group.key,
+        id: group.id,
+        name: group.name,
+        items: group.items.map((spu) => ({
+          ...spu,
+          quantity: 0,
+          specQuantity: qtyBySpu.get(spu.id) || 0,
+          coverStyle: getDishCoverStyle(spu.id),
+          foodIcon: classifyFoodIcon(spu.categoryName),
+          hasSpecs: !!(spu.specGroups && spu.specGroups.length > 0),
+          priceValue: String(spu.basePrice),
+        })),
+      })),
       flowTotal: flow.total,
       railActive: '全部',
       flowInto: '',
     })
-    this.scheduleAnchorWork()
+    wx.nextTick(() => this.measureAnchors())
   },
 
   clearSearch() {
-    const flow = buildFlowState('')
-    this.setData({
-      searchKeyword: '',
-      flowGroups: flow.groups,
-      flowTotal: flow.total,
-      railActive: '全部',
-      flowInto: '',
-    })
-    this.scheduleAnchorWork()
+    this.applySearch('')
   },
 
-  /* 图片 bindload 淡入：只更新 loadedImages 小对象，不动 dishes 数组 */
   onDishImageLoad(event: WechatMiniprogram.BaseEvent) {
-    const dishId = event.currentTarget.dataset.id as string
-    if (!dishId || this.data.loadedImages[dishId]) {
+    const spuId = event.currentTarget.dataset.id as string
+    if (!spuId || this.data.loadedImages[spuId]) {
       return
     }
-
-    this.setData({
-      [`loadedImages.${dishId}`]: true,
-    })
+    this.setData({ [`loadedImages.${spuId}`]: true })
   },
 
-  increaseDish(event: WechatMiniprogram.BaseEvent) {
-    const dishId = resolveDishId(event)
-    const dish = getDishes().find((item) => item.id === dishId)
-    if (!dish || dish.soldOut) {
-      return
-    }
+  /* ===== 地址栏：履约模式 + 门店 ===== */
 
-    addToCart(dishId, 1)
+  switchMode(event: WechatMiniprogram.BaseEvent) {
+    const mode = event.currentTarget.dataset.mode as FulfillMode
+    setFulfillMode(mode)
+    this.setData({ fulfillMode: mode })
     wx.vibrateShort({ type: 'light' })
-    this.refreshPage()
   },
 
-  decreaseDish(event: WechatMiniprogram.BaseEvent) {
-    const dishId = resolveDishId(event)
-    const cartLine = getCart().find((item) => item.dishId === dishId)
-    if (!cartLine) {
+  openStoreSheet() {
+    const stores = getStoresLocal()
+    if (!stores.length) {
+      wx.showToast({ title: '门店列表加载中', icon: 'none' })
+      if (initCloud()) {
+        fetchStoresCloud().then((result) => {
+          if (result && result.stores && result.stores.length) {
+            saveStores(result.stores)
+            this.setData({ stores: result.stores, storeSheetVisible: true })
+          }
+        })
+      }
+      return
+    }
+    this.setData({ storeSheetVisible: true })
+  },
+
+  closeStoreSheet() {
+    this.setData({ storeSheetVisible: false })
+  },
+
+  noop() {},
+
+  selectStore(event: WechatMiniprogram.BaseEvent) {
+    const storeId = event.currentTarget.dataset.id as string
+    setSelectedStoreById(storeId)
+    this.setData({ store: getSelectedStore(), storeSheetVisible: false })
+    wx.vibrateShort({ type: 'light' })
+  },
+
+  /* ===== 无规格直接加减 ===== */
+
+  findPlainLine(spuId: string): CartLineV2 | null {
+    return getCartLinesV2().find((line) => line.spuId === spuId && line.selections.length === 0) || null
+  },
+
+  increaseSpu(event: WechatMiniprogram.BaseEvent) {
+    const spuId = event.currentTarget.dataset.id as string
+    const groups = this.data.flowGroups
+    let target: Spu | null = null
+    groups.forEach((group) => {
+      const found = group.items.find((item) => item.id === spuId)
+      if (found) {
+        target = found
+      }
+    })
+    if (!target || (target as Spu).soldOut) {
       return
     }
 
-    setCartQuantity(dishId, cartLine.quantity - 1)
-    this.refreshPage()
+    const spu = target as Spu
+    addCartLineV2({
+      spuId: spu.id,
+      name: spu.name,
+      image: spu.image,
+      basePrice: spu.basePrice,
+      quantity: 1,
+      selections: [],
+    })
+    wx.vibrateShort({ type: 'light' })
+  },
+
+  decreaseSpu(event: WechatMiniprogram.BaseEvent) {
+    const spuId = event.currentTarget.dataset.id as string
+    const line = this.findPlainLine(spuId)
+    if (!line) {
+      return
+    }
+    setCartLineQtyV2(line.key, line.quantity - 1)
+  },
+
+  /* ===== 规格弹窗 ===== */
+
+  openSpecPicker(event: WechatMiniprogram.BaseEvent) {
+    const spuId = event.currentTarget.dataset.id as string
+    let target: Spu | null = null
+    this.data.flowGroups.forEach((group) => {
+      const found = group.items.find((item) => item.id === spuId)
+      if (found) {
+        target = found
+      }
+    })
+    if (!target) {
+      return
+    }
+    this.setData({ pickerVisible: true, pickerSpu: target })
+  },
+
+  onPickerClose() {
+    this.setData({ pickerVisible: false })
+  },
+
+  onPickerAdd(event: WechatMiniprogram.CustomEvent) {
+    const detail = event.detail as { line: Omit<CartLineV2, 'key'> }
+    if (detail && detail.line) {
+      addCartLineV2(detail.line)
+      wx.showToast({ title: '已加入购物车', icon: 'none' })
+    }
   },
 
   goBill() {
-    wx.navigateTo({
-      url: '/pages/cart/index',
-    })
+    wx.navigateTo({ url: '/pages/cart/index' })
   },
 
   goOrders() {
-    wx.redirectTo({
-      url: '/pages/orders/index',
-    })
+    wx.redirectTo({ url: '/pages/orders/index' })
   },
 
   tapSettle() {
     if (this.data.businessLoaded && !this.data.businessOpen) {
-      wx.showToast({
-        title: '今日暂停营业，暂不能下单',
-        icon: 'none',
-      })
+      wx.showToast({ title: '暂停营业中，暂不能下单', icon: 'none' })
       return
     }
 

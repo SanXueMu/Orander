@@ -21,6 +21,20 @@
           </view>
         </view>
 
+        <!-- 排队号大字（已支付/制作中） -->
+        <view wx:if="{{order.isPaidOrMaking}}" class="queue-hero">
+          <text class="queue-hero-label">当前排队号</text>
+          <text class="num queue-hero-number">{{order.queueNo}} 号</text>
+        </view>
+
+        <!-- 状态时间线 -->
+        <view class="status-timeline">
+          <view wx:for="{{order.timeline}}" wx:key="code" class="timeline-step {{item.done ? 'timeline-step-done' : ''}}">
+            <view class="timeline-dot"></view>
+            <view class="timeline-label">{{item.label}}</view>
+          </view>
+        </view>
+
         <view class="detail-guest-row">
           <text>Guest</text>
           <text>{{order.nickname}} / {{order.relationLabel}}</text>
@@ -30,6 +44,12 @@
           <text>{{order.totalText}}</text>
         </view>
         <view wx:if="{{order.note}}" class="detail-note">备注：{{order.note}}</view>
+
+        <!-- 待支付/进行中操作区 -->
+        <view wx:if="{{order.canPayNow || order.canRefund}}" class="detail-action-row">
+          <view wx:if="{{order.canPayNow}}" hover-class="press-scale" hover-stay-time="60" class="button-primary detail-action-main {{paying ? 'action-busy' : ''}}" bindtap="payNow">{{paying ? '支付中…' : '去支付'}}</view>
+          <view wx:if="{{order.canRefund}}" hover-class="press-dim" hover-stay-time="60" class="button-ghost detail-action-ghost" bindtap="applyRefund">申请退款</view>
+        </view>
       </view>
 
       <view class="surface detail-items-card">
@@ -37,6 +57,7 @@
         <view wx:for="{{order.lines}}" wx:key="dishId" class="detail-item-row">
           <view>
             <view class="detail-item-name">{{item.name}}</view>
+            <view wx:if="{{item.specText}}" class="detail-item-spec">{{item.specText}}</view>
             <view class="detail-item-meta">{{item.quantity}} x {{item.priceText}}</view>
           </view>
           <view class="detail-item-subtotal">{{item.subtotalText}}</view>

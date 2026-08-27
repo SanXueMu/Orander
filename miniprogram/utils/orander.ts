@@ -16,6 +16,11 @@ export interface Member {
   themeId: ThemeId
   fontId: FontId
   joinedAt: string
+  /* 喜茶复刻 R2+：云端会员档案扩展字段 */
+  openId?: string
+  growthValue?: number
+  levelCode?: string
+  levelName?: string
 }
 
 export interface Dish {

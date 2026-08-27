@@ -570,3 +570,266 @@
   align-items: center;
   justify-content: center;
 }
+
+/* ============ R2 店铺地址栏（到店取 | 喜外送） ============ */
+
+.store-bar {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  padding: 16rpx 24rpx;
+  background: #ffffff;
+}
+
+.store-seg {
+  display: flex;
+  padding: 4rpx;
+  border-radius: 999rpx;
+  background: var(--panel-soft);
+  flex-shrink: 0;
+}
+
+.seg-item {
+  padding: 12rpx 26rpx;
+  font-size: 24rpx;
+  color: var(--muted);
+  border-radius: 999rpx;
+  transition: all 180ms ease;
+}
+
+.seg-active {
+  background: var(--accent);
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.store-row {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.store-meta {
+  flex: 1;
+  min-width: 0;
+}
+
+.store-name {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.store-address {
+  margin-top: 2rpx;
+  font-size: 20rpx;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.store-arrow {
+  width: 14rpx;
+  height: 14rpx;
+  border-top: 3rpx solid var(--muted);
+  border-right: 3rpx solid var(--muted);
+  transform: rotate(45deg);
+  flex-shrink: 0;
+}
+
+/* 招牌角标 */
+.menu-feat-tag {
+  position: absolute;
+  left: 12rpx;
+  top: 12rpx;
+  padding: 4rpx 14rpx;
+  border-radius: 999rpx;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--brand-deep, #22B864);
+  font-size: 18rpx;
+  font-weight: 700;
+  letter-spacing: 2rpx;
+}
+
+/* 标签 chip */
+.menu-tag-chip {
+  padding: 4rpx 12rpx;
+  border-radius: 8rpx;
+  background: var(--appetite-soft);
+  color: var(--appetite);
+  font-size: 18rpx;
+}
+
+.menu-dish-meta {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+}
+
+.price-from {
+  font-size: 20rpx;
+  color: var(--muted);
+  margin-left: 2rpx;
+}
+
+/* 选规格按钮 */
+.specs-cta {
+  position: relative;
+  min-width: 132rpx;
+  height: 56rpx;
+  padding: 0 26rpx;
+  border-radius: 999rpx;
+  background: var(--accent);
+  color: #ffffff;
+  font-size: 24rpx;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+}
+
+.specs-cta-has {
+  background: var(--brand);
+}
+
+.specs-cta-count {
+  min-width: 32rpx;
+  height: 32rpx;
+  padding: 0 6rpx;
+  border-radius: 999rpx;
+  background: #ffffff;
+  color: var(--brand);
+  font-size: 20rpx;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 门店选择半屏 */
+.ss-mask {
+  position: fixed;
+  inset: 0;
+  z-index: 210;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: flex-end;
+}
+
+.ss-panel {
+  width: 100%;
+  max-height: 68vh;
+  background: #ffffff;
+  border-radius: 32rpx 32rpx 0 0;
+  overflow: hidden;
+  animation: ss-rise 240ms cubic-bezier(0.22, 1, 0.36, 1);
+  box-sizing: border-box;
+}
+
+@keyframes ss-rise {
+  from {
+    transform: translateY(30%);
+    opacity: 0.4;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.ss-head {
+  position: relative;
+  padding: 34rpx 40rpx 16rpx;
+}
+
+.ss-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.ss-close {
+  position: absolute;
+  top: 32rpx;
+  right: 36rpx;
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 50%;
+  background: var(--panel-soft);
+}
+
+.ss-close-line {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 24rpx;
+  height: 3rpx;
+  border-radius: 2rpx;
+  background: var(--muted);
+}
+
+.ss-close-a {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.ss-close-b {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.ss-body {
+  max-height: 54vh;
+  box-sizing: border-box;
+}
+
+.ss-store {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  padding: 26rpx 40rpx;
+  border-bottom: 1rpx solid var(--line);
+}
+
+.ss-store-active {
+  background: rgba(45, 204, 112, 0.06);
+}
+
+.ss-store-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.ss-store-name {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.ss-store-active .ss-store-name {
+  color: var(--brand);
+}
+
+.ss-store-address {
+  margin-top: 4rpx;
+  font-size: 22rpx;
+  color: var(--muted);
+}
+
+.ss-check {
+  width: 32rpx;
+  height: 18rpx;
+  border-left: 4rpx solid var(--brand);
+  border-bottom: 4rpx solid var(--brand);
+  transform: rotate(-45deg) translateY(-3rpx);
+  flex-shrink: 0;
+}
+
+.ss-pad {
+  height: calc(30rpx + env(safe-area-inset-bottom));
+}

@@ -10,23 +10,7 @@ import {
 } from './orander'
 import type { ContactCard, Dish, Member, Order, OrderItem } from './orander'
 
-type OranderAction =
-  | 'verifyAdmin'
-  | 'changeAdminPassword'
-  | 'bootstrap'
-  | 'syncVisitor'
-  | 'listDishes'
-  | 'saveDish'
-  | 'deleteDish'
-  | 'listMembers'
-  | 'deleteMember'
-  | 'listMemberOrders'
-  | 'listAllOrders'
-  | 'updateOrderStatus'
-  | 'createOrder'
-  | 'getBusinessStatus'
-  | 'setBusinessStatus'
-  | 'getOrderStats'
+type OranderAction = string
 
 interface CloudEnvelope<T> {
   ok: boolean
@@ -327,4 +311,96 @@ export const setBusinessStatusCloud = async (open: boolean, adminToken: string, 
 
 export const getOrderStatsCloud = async () => {
   return callOrander<OrderStats>('getOrderStats')
+}
+
+/* ========================================
+ * 喜茶GO 复刻 · 新域接口（R2 核心交易）
+ * ======================================== */
+
+import type { CatalogCategory, FulfillMode, Spu, StoreInfo } from './xicha'
+
+export interface CloudOrderItem {
+  name: string
+  price: number
+  quantity: number
+  image?: string
+}
+
+/** 新版订单（服务端计价/状态机）：字段与旧 Order 兼容 + 扩展 */
+export interface XiOrder {
+  id: string
+  orderNumber: string
+  memberId: string
+  nickname: string
+  relationLabel: string
+  total: number
+  note: string
+  status: string
+  createdAt: string
+  items: CloudOrderItem[]
+  review?: { rating: number; comment: string; createdAt: string }
+  biz?: 'TEA' | 'MALL'
+  fulfillMode?: FulfillMode
+  storeId?: string
+  storeName?: string
+  queueNo?: number
+  pricedItems?: Array<{ spuId: string; name: string; unitPrice: number; quantity: number; subtotal: number; image?: string; selections: Array<{ groupName: string; optionName: string }> }>
+  pickupCode?: string
+}
+
+export const fetchCatalogCloud = async () => {
+  return callOrander<{ categories: CatalogCategory[]; spus: Spu[] }>('getProductCatalog')
+}
+
+export const fetchStoresCloud = async (params: { latitude?: number; longitude?: number } = {}) => {
+  return callOrander<{ stores: StoreInfo[] }>('getStores', params)
+}
+
+export const getMemberProfileCloud = async () => {
+  return callOrander<Record<string, unknown>>('getMemberProfile')
+}
+
+export interface PreviewPayload {
+  storeId: string
+  mode: FulfillMode
+  items: Array<{ spuId: string; qty: number; selections: Array<{ groupId: string; optionId: string }> }>
+}
+
+export const previewOrderCloud = async (payload: PreviewPayload) => {
+  return callOrander<{
+    itemsTotal: number
+    deliveryFee: number
+    packagingFee: number
+    discount: number
+    payable: number
+    lines: XiOrder['pricedItems']
+  }>('previewOrder', payload as unknown as Record<string, unknown>)
+}
+
+export interface CreateOrderV2Payload {
+  storeId: string
+  mode: FulfillMode
+  note?: string
+  couponInstanceId?: string
+  items: PreviewPayload['items']
+}
+
+export const createOrderV2Cloud = async (payload: CreateOrderV2Payload) => {
+  return callOrander<XiOrder>('createOrderV2', payload as unknown as Record<string, unknown>)
+}
+
+export const payOrderCloud = async (orderId: string) => {
+  return callOrander<XiOrder>('payOrder', { orderId })
+}
+
+export const cancelOrderV2Cloud = async (orderId: string) => {
+  return callOrander<XiOrder>('cancelOrder', { orderId })
+}
+
+export const refundApplyCloud = async (orderId: string, reason: string) => {
+  return callOrander<XiOrder>('refundApply', { orderId, reason })
+}
+
+export const getMyOrdersV2Cloud = async (page = 1, pageSize = 20) => {
+  return callOrander<PaginatedOrders>('getMyOrders', { page, pageSize })
 }

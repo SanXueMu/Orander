@@ -6,36 +6,38 @@
   </view>
 
   <navigation-bar color="{{navColor}}" background="{{navBackground}}">
-    <view slot="center" class="nav-title">账单</view>
+    <view slot="center" class="nav-title">购物车</view>
   </navigation-bar>
 
   <scroll-view class="page-scroll" scroll-y>
     <view class="page-body cart-page-body">
       <view class="surface bill-head">
         <view>
-          <view class="section-kicker">BILL</view>
-          <view class="bill-name">{{nickname}}</view>
+          <view class="section-kicker">FULFILL</view>
+          <view class="bill-name">{{modeLabel}} · {{storeName}}</view>
         </view>
         <view class="bill-head-actions">
-          <view hover-class="press-scale" hover-stay-time="60" class="menu-mini-action" bindtap="backMenu">菜单</view>
+          <view hover-class="press-scale" hover-stay-time="60" class="menu-mini-action" bindtap="backMenu">继续点单</view>
         </view>
       </view>
 
       <view wx:if="{{lines.length}}" class="list-gap bill-list">
-        <view wx:for="{{lines}}" wx:key="dishId" class="swipe-shell" data-id="{{item.dishId}}" bindtouchstart="onLineTouchStart" bindtouchend="onLineTouchEnd">
-          <view class="swipe-delete" data-id="{{item.dishId}}" bindtap="removeLine">删除</view>
-          <view class="surface cart-line swipe-content {{swipedLineId === item.dishId ? 'swipe-open' : ''}}">
-            <view class="cart-line-image" style="{{item.coverStyle}}">
-              <view class="cart-line-art">{{item.dish.name}}</view>
+        <view wx:for="{{lines}}" wx:key="key" class="swipe-shell" data-id="{{item.key}}" bindtouchstart="onLineTouchStart" bindtouchend="onLineTouchEnd">
+          <view class="swipe-delete" data-id="{{item.key}}" bindtap="removeLine">删除</view>
+          <view class="surface cart-line swipe-content {{swipedLineId === item.key ? 'swipe-open' : ''}}">
+            <image wx:if="{{item.image}}" class="cart-line-photo" src="{{item.image}}" mode="aspectFill"></image>
+            <view wx:else class="cart-line-image" style="{{item.coverStyle}}">
+              <view class="cart-line-art">{{item.name}}</view>
             </view>
             <view class="cart-line-copy">
               <view class="cart-line-header">
-                <view class="cart-line-name">{{item.dish.name}}</view>
+                <view class="cart-line-name">{{item.name}}</view>
                 <view class="num cart-line-price">{{item.subtotalText}}</view>
               </view>
-              <view class="cart-line-desc">{{item.dish.category}}</view>
+              <view wx:if="{{item.specText}}" class="cart-line-spec">{{item.specText}}</view>
+              <view class="cart-line-desc num">{{item.unitText}} / 件</view>
               <view class="cart-line-actions">
-                <dish-stepper variant="line" quantity="{{item.quantity}}" dish-id="{{item.dishId}}" bind:minus="decreaseQuantity" bind:plus="increaseQuantity" />
+                <dish-stepper variant="line" quantity="{{item.quantity}}" dish-id="{{item.key}}" bind:minus="decreaseQuantity" bind:plus="increaseQuantity" />
               </view>
             </view>
           </view>
@@ -43,15 +45,14 @@
 
         <view class="surface note-card">
           <view class="field-label">备注</view>
-          <input class="field-input {{noteFocused ? 'field-focused' : ''}}" placeholder="口味偏好、忌口或上菜要求（选填）" value="{{note}}" maxlength="60" bindinput="onNoteInput" bindfocus="onNoteFocus" bindblur="onNoteBlur" />
+          <input class="field-input {{noteFocused ? 'field-focused' : ''}}" placeholder="口味偏好、忌口或出餐要求（选填）" value="{{note}}" maxlength="60" bindinput="onNoteInput" bindfocus="onNoteFocus" bindblur="onNoteBlur" />
         </view>
-
       </view>
 
       <view wx:else class="surface empty-state empty-cart">
-<view class="empty-icon empty-bill"><view class="empty-bill-line"></view><view class="empty-bill-line"></view></view>
-        <view class="section-title">账单为空</view>
-        <view hover-class="press-scale" hover-stay-time="60" class="button-primary empty-cart-button" bindtap="backMenu">去选菜</view>
+        <view class="empty-icon empty-bill"><view class="empty-bill-line"></view><view class="empty-bill-line"></view></view>
+        <view class="section-title">购物车是空的</view>
+        <view hover-class="press-scale" hover-stay-time="60" class="button-primary empty-cart-button" bindtap="backMenu">去点单</view>
       </view>
     </view>
   </scroll-view>
@@ -59,12 +60,25 @@
   <view wx:if="{{lines.length}}" class="bill-footer-fixed">
     <view class="glass-dock summary-card">
       <view class="summary-row">
-        <view class="summary-title">合计</view>
+        <view class="summary-title">合计 · {{countText}} 件</view>
         <view class="num summary-amount">{{totalText}}</view>
       </view>
       <view class="button-row summary-buttons">
-        <view hover-class="press-scale" hover-stay-time="60" class="button-ghost summary-button" bindtap="backMenu">继续选菜</view>
-        <view hover-class="press-scale" hover-stay-time="60" class="button-primary summary-button" bindtap="submitOrder">{{submitting ? '提交中…' : '下单'}}</view>
+        <view hover-class="press-scale" hover-stay-time="60" class="button-ghost summary-button" bindtap="backMenu">继续选</view>
+        <view hover-class="press-scale" hover-stay-time="60" class="button-primary summary-button" bindtap="submitOrder">{{submitting ? '提交中…' : '提交订单'}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 模拟支付面板（个人主体无商户号，预留真实支付接口位） -->
+  <view wx:if="{{payVisible}}" class="pay-mask" bindtap="closePaySheet">
+    <view class="pay-panel" catchtap="stopBubble">
+      <view class="pay-title">确认支付</view>
+      <view class="pay-store">{{modeLabel}} · {{storeName}}</view>
+      <view class="num pay-amount">{{payAmountText}}</view>
+      <view class="pay-note">演示环境模拟支付，无需真实扣款</view>
+      <view class="pay-confirm {{paying ? 'pay-confirm-busy' : ''}}" hover-class="press-dim" hover-stay-time="60" bindtap="confirmPay">
+        {{paying ? '支付中…' : '立即支付'}}
       </view>
     </view>
   </view>

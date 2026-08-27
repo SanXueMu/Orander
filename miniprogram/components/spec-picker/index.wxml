@@ -1,0 +1,57 @@
+<view wx:if="{{visible}}" class="sp-mask" bindtap="closePopup">
+  <view class="sp-panel" catchtap="stopBubble">
+    <view class="sp-head">
+      <view class="sp-name">{{spu.name}}</view>
+      <view class="sp-summary">{{specSummary || '请选择规格'}}</view>
+      <view class="sp-close" hover-class="press-dim" hover-stay-time="60" bindtap="closePopup">
+        <view class="sp-close-line sp-close-a"></view>
+        <view class="sp-close-line sp-close-b"></view>
+      </view>
+    </view>
+
+    <scroll-view class="sp-body" scroll-y enhanced show-scrollbar="{{false}}">
+      <view wx:for="{{groups}}" wx:key="id" wx:for-item="group" class="sp-group">
+        <view class="sp-group-name">{{group.name}}</view>
+        <view class="sp-options">
+          <view
+            wx:for="{{group.options}}"
+            wx:key="id"
+            wx:for-item="option"
+            class="sp-option {{picks[group.id] && picks[group.id].indexOf(option.id) >= 0 ? 'sp-option-active' : ''}}"
+            hover-class="press-dim"
+            hover-stay-time="60"
+            data-group="{{group.id}}"
+            data-option="{{option.id}}"
+            bindtap="tapOption"
+          >
+            <text>{{option.name}}</text>
+            <text wx:if="{{option.extraPrice > 0}}" class="sp-option-extra">+{{option.extraPrice}}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="sp-qty-row">
+        <view class="sp-group-name">数量</view>
+        <view class="sp-stepper">
+          <view class="sp-step-btn {{quantity <= 1 ? 'sp-step-disabled' : ''}}" hover-class="press-dim" hover-stay-time="60" bindtap="decreaseQty">
+            <view class="sp-step-minus"></view>
+          </view>
+          <view class="sp-step-num num">{{quantity}}</view>
+          <view class="sp-step-btn sp-step-plus" hover-class="press-dim" hover-stay-time="60" bindtap="increaseQty">
+            <view class="sp-step-v"></view>
+            <view class="sp-step-h"></view>
+          </view>
+        </view>
+      </view>
+      <view class="sp-body-pad"></view>
+    </scroll-view>
+
+    <view class="sp-foot">
+      <view class="sp-total num">
+        <text class="sp-total-symbol">¥</text>
+        <text class="sp-total-value">{{totalText}}</text>
+      </view>
+      <view class="sp-confirm" hover-class="press-scale" hover-stay-time="60" bindtap="confirmAdd">加入购物车</view>
+    </view>
+  </view>
+</view>

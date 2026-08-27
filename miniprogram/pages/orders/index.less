@@ -87,3 +87,49 @@
 .empty-orders-button {
   margin-top: 28rpx;
 }
+
+/* ============ R2 业务 Tab + 排队号 ============ */
+
+.biz-tabs {
+  margin-top: 20rpx;
+  display: flex;
+  gap: 14rpx;
+}
+
+.biz-tab {
+  padding: 12rpx 28rpx;
+  border-radius: 999rpx;
+  background: var(--panel-soft);
+  color: var(--muted);
+  font-size: 24rpx;
+  transition: all 180ms ease;
+}
+
+.biz-tab-active {
+  background: var(--brand);
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.order-status-brand {
+  background: var(--brand-soft, #E8F5E9);
+  color: var(--brand);
+}
+
+.order-card-queue {
+  margin-top: 16rpx;
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.queue-label {
+  font-size: 20rpx;
+  color: var(--muted);
+}
+
+.queue-value {
+  font-size: 30rpx;
+  font-weight: 800;
+  color: var(--brand);
+}

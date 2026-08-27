@@ -1,25 +1,66 @@
-import { createCloudOrder, initCloud } from '../../utils/cloud'
-import {
-  buildCartLines,
-  formatMoney,
-  getCartStats,
-  getCurrentMember,
-  getRelationLabel,
-  getSession,
-  removeFromCart,
-  setCartQuantity,
-  clearCart,
-  createOrder,
-} from '../../utils/orander'
-import { MAX_CART_QUANTITY } from '../../utils/orander'
-import { eventBus } from '../../utils/event-bus'
 import { applyPageLook, pageLookBehavior } from '../../behaviors/page-look'
+import { eventBus } from '../../utils/event-bus'
+import {
+  cacheOrder,
+  formatMoney,
+  getCurrentMember,
+  getSession,
+} from '../../utils/orander'
+import {
+  clearCartV2,
+  getCartLinesV2,
+  getCartStatsV2,
+  getFulfillMode,
+  getSelectedStore,
+  priceUnit,
+  removeCartLineV2,
+  selectionsText,
+  setCartLineQtyV2,
+} from '../../utils/xicha'
+import { createOrderV2Cloud, initCloud, payOrderCloud } from '../../utils/cloud'
 
-type CartLineView = ReturnType<typeof buildCartLines>[number] & { subtotalText: string }
+type LineView = {
+  key: string
+  name: string
+  image: string
+  coverStyle: string
+  specText: string
+  unitText: string
+  subtotalText: string
+  quantity: number
+}
 
-const resolveDishId = (event: WechatMiniprogram.BaseEvent) => {
-  const detail = (event as WechatMiniprogram.CustomEvent).detail as { id?: string } | undefined
-  return (detail && detail.id) || (event.currentTarget.dataset.id as string)
+const COVER_BACKGROUNDS = [
+  'linear-gradient(135deg, #1a1a1a 0%, #4a4a4a 100%)',
+  'linear-gradient(135deg, #2a2a2a 0%, #6a6a6a 100%)',
+  'linear-gradient(135deg, #050505 0%, #585858 100%)',
+]
+
+const hashString = (value: string) => {
+  let result = 0
+  for (let index = 0; index < value.length; index += 1) {
+    result = (result * 31 + value.charCodeAt(index)) >>> 0
+  }
+  return result
+}
+
+const buildLineViews = (): { lines: LineView[]; totalText: string; countText: number } => {
+  const stats = getCartStatsV2()
+  const lines = getCartLinesV2().map((line) => {
+    const unit = priceUnit(line.basePrice, line.selections)
+    const specText = selectionsText(line.selections)
+    return {
+      key: line.key,
+      name: line.name,
+      image: line.image || '',
+      coverStyle: `background:${COVER_BACKGROUNDS[hashString(line.spuId) % COVER_BACKGROUNDS.length]};`,
+      specText,
+      unitText: formatMoney(unit),
+      subtotalText: formatMoney(Number((unit * line.quantity).toFixed(2))),
+      quantity: line.quantity,
+    }
+  })
+  return { lines, totalText: formatMoney(stats.total), countText: stats.count }
 }
 
 Page({
@@ -27,134 +68,86 @@ Page({
 
   data: {
     nickname: '访客',
+    storeName: '',
+    modeLabel: '到店取',
+    lines: [] as LineView[],
+    totalText: formatMoney(0),
+    countText: 0,
     note: '',
     noteFocused: false,
     swipedLineId: '',
-    touchStartX: 0,
-    touchStartY: 0,
     submitting: false,
-    lines: [] as CartLineView[],
-    totalText: formatMoney(0),
+    /* 模拟支付面板 */
+    payVisible: false,
+    payAmountText: formatMoney(0),
+    paying: false,
+    pendingOrderId: '',
   },
 
   onShow() {
-    /* 游客可查看购物车（本地数据），提交订单时才要求登录 */
-    this.refreshPage()
+    applyPageLook(this, getCurrentMember())
+    this.refresh()
   },
 
-  refreshPage() {
+  refresh() {
     const session = getSession()
-    applyPageLook(this, getCurrentMember())
-    const stats = getCartStats()
-    const lines: CartLineView[] = buildCartLines().map((line) => ({
-      ...line,
-      subtotalText: formatMoney(line.subtotal),
-    }))
-
+    const store = getSelectedStore()
+    const mode = getFulfillMode()
+    const views = buildLineViews()
     this.setData({
       nickname: session ? session.nickname : '访客',
-      lines,
-      totalText: formatMoney(stats.total),
+      storeName: store ? store.name : 'Orander GO',
+      modeLabel: mode === 'DELIVERY' ? '喜外送' : '到店取',
+      ...views,
     })
-    eventBus.emit('cart-changed', { count: stats.count })
   },
 
-  vibrateLight() {
-    wx.vibrateShort({ type: 'light' })
-  },
-
-  increaseQuantity(event: WechatMiniprogram.BaseEvent) {
-    const dishId = resolveDishId(event)
-    const line = buildCartLines().find((item) => item.dishId === dishId)
-    if (!line) {
-      return
-    }
-
-    if (line.quantity >= MAX_CART_QUANTITY) {
-      wx.showToast({
-        title: `每样菜品最多 ${MAX_CART_QUANTITY} 份`,
-        icon: 'none',
-      })
-      return
-    }
-
-    setCartQuantity(dishId, line.quantity + 1)
-    this.vibrateLight()
-    this.refreshPage()
-  },
-
-  decreaseQuantity(event: WechatMiniprogram.BaseEvent) {
-    const dishId = resolveDishId(event)
-    const line = buildCartLines().find((item) => item.dishId === dishId)
-    if (!line) {
-      return
-    }
-
-    setCartQuantity(dishId, line.quantity - 1)
-    this.refreshPage()
-  },
+  /* ===== 行操作 ===== */
 
   onLineTouchStart(event: WechatMiniprogram.TouchEvent) {
-    const touch = event.changedTouches[0]
-    this.setData({
-      touchStartX: touch ? touch.clientX : 0,
-      touchStartY: touch ? touch.clientY : 0,
-    })
+    const id = event.currentTarget.dataset.id as string
+    this._touchStartX = event.touches[0].clientX
+    this.setData({ swipedLineId: this.data.swipedLineId === id ? '' : this.data.swipedLineId })
   },
 
+  _touchStartX: 0,
+
   onLineTouchEnd(event: WechatMiniprogram.TouchEvent) {
-    const touch = event.changedTouches[0]
-    const endX = touch ? touch.clientX : 0
-    const endY = touch ? touch.clientY : 0
-    const deltaX = endX - this.data.touchStartX
-    const deltaY = endY - this.data.touchStartY
-    const lineId = event.currentTarget.dataset.id as string
-
-    if (Math.abs(deltaY) > Math.abs(deltaX)) {
-      return
-    }
-
-    if (deltaX < -36) {
-      this.setData({
-        swipedLineId: lineId,
-      })
-      return
-    }
-
-    if (deltaX > 20 || this.data.swipedLineId === lineId) {
-      this.setData({
-        swipedLineId: '',
-      })
+    const deltaX = event.changedTouches[0].clientX - this._touchStartX
+    if (deltaX < -40) {
+      this.setData({ swipedLineId: event.currentTarget.dataset.id as string })
+    } else if (deltaX > 40) {
+      this.setData({ swipedLineId: '' })
     }
   },
 
   removeLine(event: WechatMiniprogram.BaseEvent) {
-    const dishId = event.currentTarget.dataset.id as string
-    const line = buildCartLines().find((item) => item.dishId === dishId)
+    removeCartLineV2(event.currentTarget.dataset.id as string)
+    this.refresh()
+  },
+
+  increaseQuantity(event: WechatMiniprogram.BaseEvent) {
+    const key = event.currentTarget.dataset.id as string
+    const line = getCartLinesV2().find((item) => item.key === key)
+    if (!line || line.quantity >= 99) {
+      return
+    }
+    setCartLineQtyV2(key, line.quantity + 1)
+    this.refresh()
+  },
+
+  decreaseQuantity(event: WechatMiniprogram.BaseEvent) {
+    const key = event.currentTarget.dataset.id as string
+    const line = getCartLinesV2().find((item) => item.key === key)
     if (!line) {
       return
     }
-
-    wx.showModal({
-      title: '移除菜品',
-      content: `确定把「${line.dish.name}」从账单中移除吗？`,
-      success: (result) => {
-        if (!result.confirm) {
-          return
-        }
-
-        removeFromCart(dishId)
-        this.setData({ swipedLineId: '' })
-        this.refreshPage()
-      },
-    })
+    setCartLineQtyV2(key, line.quantity - 1)
+    this.refresh()
   },
 
   onNoteInput(event: WechatMiniprogram.CustomEvent) {
-    const detail = event.detail as { value?: string }
-    this.setData({
-      note: detail.value || '',
-    })
+    this.setData({ note: (event.detail as { value?: string }).value || '' })
   },
 
   onNoteFocus() {
@@ -165,102 +158,99 @@ Page({
     this.setData({ noteFocused: false })
   },
 
-  submitOrder() {
-    if (this.data.submitting) {
-      return
-    }
-
-    if (!getSession()) {
-      wx.showModal({
-        title: '登录后下单',
-        content: '提交订单需要先登录身份，购物车会为你保留。',
-        confirmText: '去登录',
-        success: (res) => {
-          if (res.confirm) {
-            wx.navigateTo({ url: '/pages/index/index' })
-          }
-        },
-      })
-      return
-    }
-
-    const profile = getCurrentMember()
-    const lines = buildCartLines()
-    if (!profile || !lines.length) {
-      wx.showToast({
-        title: '账单为空',
-        icon: 'none',
-      })
-      return
-    }
-
-    const note = this.data.note.trim()
-    this.setData({ submitting: true })
-
-    const finishSubmit = () => {
-      this.setData({ submitting: false })
-    }
-
-    const submitLocal = () => {
-      const order = createOrder(note)
-      if (!order) {
-        finishSubmit()
-        wx.showToast({
-          title: '账单为空',
-          icon: 'none',
-        })
-        return
-      }
-
-      eventBus.emit('order-created', { orderId: order.id })
-      wx.vibrateShort({ type: 'light' })
-      wx.redirectTo({
-        url: `/pages/receipt/index?id=${order.id}`,
-      })
-    }
-
-    if (!initCloud()) {
-      submitLocal()
-      return
-    }
-
-    wx.showLoading({ title: '下单中' })
-    createCloudOrder({
-      memberId: profile.id,
-      nickname: profile.nickname,
-      relationLabel: getRelationLabel(profile),
-      total: lines.reduce((result, line) => result + line.subtotal, 0),
-      note,
-      items: lines.map((line) => ({
-        dishId: line.dish.id,
-        name: line.dish.name,
-        price: line.dish.price,
-        quantity: line.quantity,
-        subtotal: line.subtotal,
-        image: line.dish.image,
-      })),
-    }).then((order) => {
-      wx.hideLoading()
-      if (!order) {
-        submitLocal()
-        return
-      }
-
-      clearCart()
-      eventBus.emit('order-created', { orderId: order.id })
-      wx.vibrateShort({ type: 'light' })
-      wx.redirectTo({
-        url: `/pages/receipt/index?id=${order.id}`,
-      })
-    }).catch(() => {
-      wx.hideLoading()
-      submitLocal()
+  backMenu() {
+    wx.navigateBack({
+      fail: () => wx.redirectTo({ url: '/pages/dish/index' }),
     })
   },
 
-  backMenu() {
-    wx.redirectTo({
-      url: '/pages/dish/index',
-    })
+  /* ===== 下单（服务端计价）→ 模拟支付 ===== */
+
+  async submitOrder() {
+    if (this.data.submitting) {
+      return
+    }
+    if (!this.data.lines.length) {
+      wx.showToast({ title: '购物车是空的', icon: 'none' })
+      return
+    }
+
+    const store = getSelectedStore()
+
+    if (!initCloud()) {
+      wx.showModal({
+        title: '云端不可用',
+        content: '未检测到云开发环境，暂时无法下单。',
+        showCancel: false,
+      })
+      return
+    }
+
+    this.setData({ submitting: true })
+    try {
+      const order = await createOrderV2Cloud({
+        storeId: store ? store.id : '',
+        mode: getFulfillMode(),
+        note: this.data.note.trim(),
+        items: getCartLinesV2().map((line) => ({
+          spuId: line.spuId.startsWith('legacy:') ? line.spuId.slice('legacy:'.length) : line.spuId,
+          qty: line.quantity,
+          selections: line.selections.map((ref) => ({ groupId: ref.groupId, optionId: ref.optionId })),
+        })),
+      })
+
+      if (!order || !order.id) {
+        throw new Error('no order')
+      }
+
+      cacheOrder(order as unknown as Parameters<typeof cacheOrder>[0])
+      this.setData({
+        submitting: false,
+        payVisible: true,
+        payAmountText: formatMoney(order.total),
+        pendingOrderId: order.id,
+      })
+    } catch (error) {
+      console.error('[cart] createOrderV2 failed', error)
+      this.setData({ submitting: false })
+      wx.showModal({
+        title: '下单失败',
+        content: '云端服务暂不可用，请稍后重试（确认云函数 orander 已部署 R1 新版）。',
+        showCancel: false,
+      })
+    }
+  },
+
+  closePaySheet() {
+    if (this.data.paying) {
+      return
+    }
+    this.setData({ payVisible: false })
+  },
+
+  stopBubble() {},
+
+  async confirmPay() {
+    if (this.data.paying || !this.data.pendingOrderId) {
+      return
+    }
+    this.setData({ paying: true })
+    try {
+      const paid = await payOrderCloud(this.data.pendingOrderId)
+      await new Promise<void>((resolve) => setTimeout(resolve, 700))
+      this.setData({ paying: false, payVisible: false, pendingOrderId: '' })
+      clearCartV2()
+      eventBus.emit('order-created', { orderId: this.data.pendingOrderId || '' })
+      if (paid && typeof paid.queueNo !== 'undefined') {
+        wx.setStorageSync('xc-last-queue', paid.queueNo)
+      }
+      wx.redirectTo({
+        url: `/pages/receipt/index?id=${this.data.pendingOrderId}&justPaid=1`,
+      })
+    } catch (error) {
+      console.error('[cart] payOrder failed', error)
+      this.setData({ paying: false })
+      wx.showToast({ title: '支付失败，请重试', icon: 'none' })
+    }
   },
 })
