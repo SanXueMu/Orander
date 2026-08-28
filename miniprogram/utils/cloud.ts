@@ -571,6 +571,9 @@ export const getPoliciesCloud = () =>
 export const getPolicyCloud = (policyId: string) =>
   callOrander<{ id: string; title: string; version?: string; sections?: unknown[]; contentHtml?: string; updatedAt?: string }>('getPolicy', { policyId })
 
+export const savePolicyCloud = (policy: Record<string, unknown>) =>
+  callOrander<Record<string, unknown>>('savePolicy', { policy })
+
 /* ==================== R6a 管理端包装 ==================== */
 
 export interface AdminDashboard {
@@ -621,3 +624,62 @@ export const adminSetStoreOverrideCloud = (
   spuId: string,
   override: { soldOut?: boolean; price?: number },
 ) => callOrander<Record<string, unknown>>('setStoreSpuOverride', { adminToken, storeId, spuId, override })
+
+/* ============ R6b 管理端第二批次 ============ */
+export const adminListCouponTemplatesCloud = (adminToken: string) =>
+  callOrander<{ items?: unknown[] }>('listCouponTemplates', { adminToken })
+
+export const adminCreateCouponTemplateCloud = (
+  adminToken: string,
+  payload: { name: string; type: string; value: number; threshold: number; validDays: number; total: number; limitPerUser: number },
+) => callOrander<Record<string, unknown>>('createCouponTemplate', { adminToken, ...payload })
+
+export const adminCreateCodeBatchCloud = (
+  adminToken: string,
+  payload: { count: number; rewardType: string; rewardValue: number },
+) => callOrander<{ batchId: string; count: number; codes: string[] }>('createCodeBatch', { adminToken, ...payload })
+
+export const adminGrantCouponCloud = (adminToken: string, templateId: string, openIds: string[]) =>
+  callOrander<{ issued: number }>('grantCoupon', { adminToken, templateId, openIds })
+
+export const adminListMembersCloud = (adminToken: string) =>
+  callOrander<{ items?: Array<Record<string, unknown>> }>('listMembersWithStats', { adminToken })
+
+export const adminListReviewsCloud = (adminToken: string) =>
+  callOrander<{ items?: Array<Record<string, unknown>> }>('listReviews', { adminToken })
+
+export const adminModerateReviewCloud = (adminToken: string, reviewId: string, status: 'APPROVED' | 'REJECTED') =>
+  callOrander<Record<string, unknown>>('moderateReview', { adminToken, reviewId, status })
+
+export const adminReplyReviewCloud = (adminToken: string, reviewId: string, reply: string) =>
+  callOrander<Record<string, unknown>>('replyReview', { adminToken, reviewId, reply })
+
+export const adminListSessionsCloud = (adminToken: string) =>
+  callOrander<{ items?: Array<Record<string, unknown>> }>('listSessions', { adminToken })
+
+export const adminReplyCsCloud = (adminToken: string, sessionId: string, text: string) =>
+  callOrander<Record<string, unknown>>('adminReply', { adminToken, sessionId, text })
+
+export const adminListInvoicesCloud = (adminToken: string) =>
+  callOrander<{ items?: Array<Record<string, unknown>> }>('listApplies', { adminToken })
+
+export const adminIssueInvoiceCloud = (adminToken: string, invoiceId: string) =>
+  callOrander<Record<string, unknown>>('issueInvoice', { adminToken, invoiceId })
+
+export const adminListActivitiesCloud = (adminToken: string) =>
+  callOrander<{ activities?: Array<Record<string, unknown>> }>('getHomeActivities', { adminToken })
+
+export const adminSaveActivityCloud = (adminToken: string, activity: Record<string, unknown>) =>
+  callOrander<Record<string, unknown>>('saveActivity', { adminToken, activity })
+
+export const adminDeleteActivityCloud = (adminToken: string, activityId: string) =>
+  callOrander<Record<string, unknown>>('deleteActivity', { adminToken, activityId })
+
+export const adminListReservationsCloud = (adminToken: string, date?: string) =>
+  callOrander<{ items?: Array<Record<string, unknown>> }>('listReservations', { adminToken, date: date || '' })
+
+export const adminSetSlotCapacityCloud = (adminToken: string, slotId: string, capacity: number) =>
+  callOrander<Record<string, unknown>>('setSlotCapacity', { adminToken, slotId, capacity })
+
+export const adminGetSlotsCloud = (adminToken: string, date: string) =>
+  callOrander<{ slots?: Array<Record<string, unknown>> }>('getSlots', { adminToken, date })

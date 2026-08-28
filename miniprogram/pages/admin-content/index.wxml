@@ -1,0 +1,57 @@
+<navigation-bar title="内容管理" back="{{true}}" />
+<scroll-view class="viewport" scroll-y>
+  <view class="ap-tabs">
+    <view class="ap-tab {{tab === 'act' ? 'ap-tab-on' : ''}}" data-tab="act" bindtap="switchTab">首页活动</view>
+    <view class="ap-tab {{tab === 'policy' ? 'ap-tab-on' : ''}}" data-tab="policy" bindtap="switchTab">条款政策</view>
+  </view>
+
+  <block wx:if="{{tab === 'act'}}">
+    <view wx:if="{{!editing}}" class="ap-primary-wrap"><button class="ap-primary" bindtap="startCreate">＋ 新建活动</button></view>
+    <view wx:if="{{editing}}" class="ap-card">
+      <view class="ap-form-row"><text>标题</text><input value="{{form.title}}" data-key="title" bindinput="onForm" /></view>
+      <view class="ap-form-row"><text>副标题</text><input value="{{form.subtitle}}" data-key="subtitle" bindinput="onForm" /></view>
+      <view class="ap-form-row"><text>模板</text>
+        <picker range="{{['新品首发','周年庆','单品卖点','邀请有礼','通用']}}" bindchange="onTemplate">
+          <view class="ap-pick">{{templateLabel(form.template)}} ▾</view>
+        </picker>
+      </view>
+      <view class="ap-form-row"><text>开始</text>
+        <picker mode="date" data-key="startDate" value="{{form.startDate}}" bindchange="onDate"><view class="ap-pick">{{form.startDate || '选择'}} ▾</view></picker>
+        <text>结束</text>
+        <picker mode="date" data-key="endDate" value="{{form.endDate}}" bindchange="onDate"><view class="ap-pick">{{form.endDate || '选择'}} ▾</view></picker>
+      </view>
+      <view class="ap-form-row"><text>排序/状态</text>
+        <view class="ap-duo">
+          <input type="number" value="{{form.order}}" data-key="order" bindinput="onForm" />
+          <picker range="{{['ON','OFF']}}" data-key="status" bindchange="onStatusPick"><view class="ap-pick">{{form.status}} ▾</view></picker>
+        </view>
+      </view>
+      <view class="ap-btn-row">
+        <button class="ap-primary" bindtap="saveActivity">保存</button>
+        <button class="ap-ghost" bindtap="cancelEdit">取消</button>
+      </view>
+    </view>
+    <view class="ap-card" wx:for="{{activities}}" wx:key="id">
+      <view class="ap-row-head"><text class="ap-name">{{item.title}}</text><text class="ap-tag">{{templateLabel(item.template)}}</text></view>
+      <view class="ap-meta">{{item.startDate}} ~ {{item.endDate}} · 权重{{item.order}}</view>
+      <view class="ap-btn-row">
+        <button class="ap-mini" data-id="{{item.id}}" bindtap="startEdit">编辑</button>
+        <button class="ap-mini ap-mini-danger" data-id="{{item.id}}" bindtap="removeActivity">删除</button>
+      </view>
+    </view>
+  </block>
+
+  <block wx:if="{{tab === 'policy'}}">
+    <view class="ap-card" wx:for="{{policies}}" wx:key="id">
+      <view class="ap-row-head"><text class="ap-name">{{item.title}}</text><text class="ap-tag">{{item.version}}</text></view>
+      <view wx:if="{{policyEditingId !== item.id}}" class="ap-btn-row"><button class="ap-mini" data-id="{{item.id}}" bindtap="startPolicy">编辑正文</button></view>
+      <view wx:else>
+        <textarea class="ap-area" value="{{policyBody}}" bindinput="onPolicyBody" auto-height />
+        <view class="ap-btn-row">
+          <button class="ap-mini" bindtap="savePolicyBody">保存</button>
+          <button class="ap-mini" bindtap="cancelPolicy" data-id="{{item.id}}">收起</button>
+        </view>
+      </view>
+    </view>
+  </block>
+</scroll-view>

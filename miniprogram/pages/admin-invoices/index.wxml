@@ -1,0 +1,17 @@
+<navigation-bar title="开票处理" back="{{true}}" />
+<scroll-view class="viewport" scroll-y>
+  <view class="ap-card" wx:for="{{invoices}}" wx:key="id">
+    <view class="ap-row-head">
+      <text class="ap-name">{{item.titleName || '抬头'}}</text>
+      <text class="ap-tag">{{statusLabel(item.status)}}</text>
+    </view>
+    <view class="ap-meta">
+      {{item.bizType || '餐饮'}} · ¥{{item.amount || 0}} · 税号 {{item.titleTaxNo || '-'}}
+      <block wx:if="{{item.invoiceNo}}"> · 票号 {{item.invoiceNo}}</block>
+    </view>
+    <view class="ap-btn-row" wx:if="{{item.status !== 'ISSUED'}}">
+      <button class="ap-mini" data-id="{{item.id}}" bindtap="issue">开具发票</button>
+    </view>
+  </view>
+  <view wx:if="{{!invoices.length && !loading}}" class="ap-empty">暂无开票申请</view>
+</scroll-view>

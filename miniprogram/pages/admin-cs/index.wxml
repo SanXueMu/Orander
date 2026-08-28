@@ -1,0 +1,23 @@
+<navigation-bar title="客服工作台" back="{{true}}" />
+<scroll-view class="viewport" scroll-y>
+  <view class="ap-card" wx:for="{{sessions}}" wx:key="id">
+    <view class="ap-row-head" data-id="{{item.id}}" bindtap="toggle">
+      <text class="ap-name">{{item.nickname || item.id}}</text>
+      <text class="ap-tag">{{item.status || 'OPEN'}}</text>
+    </view>
+    <view class="ap-content">{{lastText(item)}}</view>
+    <block wx:if="{{openId === item.id}}">
+      <view class="ap-msgs">
+        <view wx:for="{{item.messages}}" wx:for-item="msg" wx:key="index" class="ap-msg {{msg.from === 'USER' ? '' : 'ap-msg-admin'}}">
+          <text class="ap-msg-from">{{msg.from === 'USER' ? '用户' : '客服'}}</text>
+          <text>{{msg.text}}</text>
+        </view>
+      </view>
+      <view class="ap-reply-box">
+        <input value="{{replyText}}" bindinput="onReply" placeholder="以客服身份回复" />
+        <button class="ap-mini" bindtap="sendReply">发送</button>
+      </view>
+    </block>
+  </view>
+  <view wx:if="{{!sessions.length && !loading}}" class="ap-empty">暂无会话</view>
+</scroll-view>

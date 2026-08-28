@@ -1,0 +1,69 @@
+<navigation-bar title="营销中心" back="{{true}}" />
+<scroll-view class="viewport" scroll-y>
+  <view class="ap-tabs">
+    <view wx:for="{{['coupon','code','grant','gm']}}" wx:key="*this"
+      class="ap-tab {{tab === item ? 'ap-tab-on' : ''}}" data-tab="{{item}}" bindtap="switchTab">
+      {{item === 'coupon' ? '券模板' : item === 'code' ? '兑换码' : item === 'grant' ? '批量发券' : '团餐档期'}}
+    </view>
+  </view>
+
+  <block wx:if="{{tab === 'coupon'}}">
+    <view class="ap-card">
+      <view class="ap-form-row"><text>名称</text><input value="{{tplName}}" data-key="tplName" bindinput="onField" placeholder="如 新客立减券" /></view>
+      <view class="ap-form-row"><text>类型</text>
+        <picker range="{{['AMOUNT','PERCENT']}}" value="{{tplType === 'PERCENT' ? 1 : 0}}" bindchange="onTplTypePick">
+          <view class="ap-pick">{{tplType === 'AMOUNT' ? '满减(元)' : '折扣(折)'}} ▾</view>
+        </picker>
+      </view>
+      <view class="ap-form-row"><text>{{tplType === 'AMOUNT' ? '面额' : '折扣值'}}</text><input type="digit" value="{{tplValue}}" data-key="tplValue" bindinput="onField" /></view>
+      <view class="ap-form-row"><text>门槛(0无)</text><input type="digit" value="{{tplThreshold}}" data-key="tplThreshold" bindinput="onField" /></view>
+      <view class="ap-form-row"><text>有效天数</text><input type="number" value="{{tplDays}}" data-key="tplDays" bindinput="onField" /></view>
+      <view class="ap-form-row"><text>总量/限领</text>
+        <view class="ap-duo"><input type="number" value="{{tplTotal}}" data-key="tplTotal" bindinput="onField" /><input type="number" value="{{tplLimit}}" data-key="tplLimit" bindinput="onField" /></view>
+      </view>
+      <button class="ap-primary" bindtap="createTemplate">创建模板</button>
+    </view>
+    <view class="ap-card" wx:for="{{templates}}" wx:key="id">
+      <view class="ap-tpl-head"><text class="ap-tpl-name">{{item.name}}</text><text class="ap-tpl-meta">{{item.type === 'AMOUNT' ? '满减' : item.type === 'PERCENT' ? '折扣' : '兑换'}}</text></view>
+      <view class="ap-tpl-meta">{{item.type === 'AMOUNT' ? '减' : '折'}}{{item.value}} · 门槛{{item.threshold}} · 已发{{item.issued}}/{{item.total}}</view>
+    </view>
+    <view wx:if="{{!templates.length && !loading}}" class="ap-empty">暂无模板</view>
+  </block>
+
+  <block wx:if="{{tab === 'code'}}">
+    <view class="ap-card">
+      <view class="ap-form-row"><text>数量</text><input type="number" value="{{codeCount}}" data-key="codeCount" bindinput="onField" /></view>
+      <view class="ap-form-row"><text>积分值</text><input type="number" value="{{codeValue}}" data-key="codeValue" bindinput="onField" /></view>
+      <button class="ap-primary" bindtap="createCodes">生成批次</button>
+      <textarea wx:if="{{codeResult}}" class="ap-codes" value="{{codeResult}}" disabled auto-height />
+      <view wx:if="{{codeResult}}" class="ap-copy" bindtap="copyCodes">复制全部</view>
+    </view>
+  </block>
+
+  <block wx:if="{{tab === 'grant'}}">
+    <view class="ap-card">
+      <view class="ap-form-row"><text>模板</text>
+        <picker range="{{templates}}" range-key="name" value="{{grantTplIndex}}" bindchange="onTplPick">
+          <view class="ap-pick">{{templates.length ? templates[grantTplIndex].name : '先创建模板'}} ▾</view>
+        </picker>
+      </view>
+      <textarea class="ap-area" value="{{grantOpenIds}}" data-key="grantOpenIds" bindinput="onField" placeholder="每行一个 openId，可逗号分隔" />
+      <button class="ap-primary" bindtap="grantCoupons">批量发放</button>
+      <view wx:if="{{grantResult}}" class="ap-note">{{grantResult}}</view>
+    </view>
+  </block>
+
+  <block wx:if="{{tab === 'gm'}}">
+    <picker mode="date" value="{{gmDate}}" bindchange="onGmDate">
+      <view class="ap-card ap-date">{{gmDate}} ▾ 点按换日期</view>
+    </picker>
+    <view class="ap-card" wx:for="{{slots}}" wx:key="id">
+      <view class="ap-tpl-head"><text class="ap-tpl-name">{{item.label || item.startTime || item.id}}</text><text class="ap-tpl-meta">余 {{item.capacity - item.reserved}}/{{item.capacity}}</text></view>
+      <view class="ap-form-row"><text>容量</text><input type="number" value="{{item.capacity}}" data-id="{{item.id}}" bindblur="onCapacity" /></view>
+    </view>
+    <view class="ap-card" wx:if="{{reservations.length}}">
+      <view class="ap-tpl-head"><text class="ap-tpl-name">当日预约</text></view>
+      <view class="ap-tpl-meta" wx:for="{{reservations}}" wx:for-item="res" wx:key="id">{{res.timeLabel || res.slotId}} · {{res.contact || res.openId}} · {{res.headcount}}人</view>
+    </view>
+  </block>
+</scroll-view>

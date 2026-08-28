@@ -90,12 +90,34 @@
       </view>
     </view>
 
-    <view class="link-rows">
-      <view class="todo-row" bindtap="comingSoon">
-        <view class="todo-label">会员 / 营销 / 内容</view>
-        <view class="todo-val">R6b 开放</view>
-        <view class="todo-arrow">›</view>
+    <view class="grid" style="margin-top: 20rpx;">
+      <view class="grid-item" bindtap="goMembers">
+        <view class="grid-icon">会</view>
+        <view class="grid-name">会员列表</view>
       </view>
+      <view class="grid-item" bindtap="goPromote">
+        <view class="grid-icon">营</view>
+        <view class="grid-name">营销中心</view>
+      </view>
+      <view class="grid-item" bindtap="goContent">
+        <view class="grid-icon">容</view>
+        <view class="grid-name">内容管理</view>
+      </view>
+      <view class="grid-item" bindtap="goReviews">
+        <view class="grid-icon">评</view>
+        <view class="grid-name">评价审核</view>
+      </view>
+      <view class="grid-item" bindtap="goCs">
+        <view class="grid-icon">服</view>
+        <view class="grid-name">客服工作台</view>
+      </view>
+      <view class="grid-item" bindtap="goInvoices">
+        <view class="grid-icon">票</view>
+        <view class="grid-name">开票处理</view>
+      </view>
+    </view>
+
+    <view class="link-rows">
       <view class="todo-row" bindtap="goLegacyUser">
         <view class="todo-label">花名册（旧）</view>
         <view class="todo-val">查看</view>

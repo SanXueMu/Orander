@@ -32,7 +32,13 @@
     "pages/invoice/index",
     "pages/policies/index",
     "pages/policy-detail/index",
-    "pages/notifications/index"
+    "pages/notifications/index",
+    "pages/admin-promote/index",
+    "pages/admin-members/index",
+    "pages/admin-content/index",
+    "pages/admin-reviews/index",
+    "pages/admin-cs/index",
+    "pages/admin-invoices/index"
   ],
   "window": {
     "navigationBarTextStyle": "black",

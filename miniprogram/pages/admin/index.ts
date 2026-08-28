@@ -94,5 +94,10 @@ Page({
   goStores() { wx.navigateTo({ url: '/pages/admin-stores/index' }) },
   goSettings() { wx.navigateTo({ url: '/pages/admin-settings/index' }) },
   goLegacyUser() { wx.navigateTo({ url: '/pages/admin-user/index' }) },
-  comingSoon() { wx.showToast({ title: 'R6b 开放', icon: 'none' }) },
+  goMembers() { wx.navigateTo({ url: '/pages/admin-members/index' }) },
+  goPromote() { wx.navigateTo({ url: '/pages/admin-promote/index' }) },
+  goContent() { wx.navigateTo({ url: '/pages/admin-content/index' }) },
+  goReviews() { wx.navigateTo({ url: '/pages/admin-reviews/index' }) },
+  goCs() { wx.navigateTo({ url: '/pages/admin-cs/index' }) },
+  goInvoices() { wx.navigateTo({ url: '/pages/admin-invoices/index' }) },
 })

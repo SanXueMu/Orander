@@ -1,0 +1,22 @@
+<navigation-bar title="评价审核" back="{{true}}" />
+<scroll-view class="viewport" scroll-y>
+  <view class="ap-card" wx:for="{{reviews}}" wx:key="id">
+    <view class="ap-row-head">
+      <text class="ap-name">{{item.nickname || '用户'}}</text>
+      <text class="ap-tag">{{statusLabel(item.status)}}</text>
+    </view>
+    <view class="ap-stars">{{item.rating || 5}} 星</view>
+    <view class="ap-content">{{item.content}}</view>
+    <view wx:if="{{item.reply}}" class="ap-reply">商家回复：{{item.reply}}</view>
+    <view class="ap-btn-row" wx:if="{{replyingId !== item.id}}">
+      <button class="ap-mini" data-id="{{item.id}}" data-status="APPROVED" bindtap="moderate">通过</button>
+      <button class="ap-mini ap-mini-danger" data-id="{{item.id}}" data-status="REJECTED" bindtap="moderate">驳回</button>
+      <button class="ap-mini" data-id="{{item.id}}" bindtap="startReply">回复</button>
+    </view>
+    <view wx:else class="ap-reply-box">
+      <input value="{{replyText}}" bindinput="onReply" placeholder="输入商家回复" />
+      <button class="ap-mini" bindtap="submitReply">发送</button>
+    </view>
+  </view>
+  <view wx:if="{{!reviews.length && !loading}}" class="ap-empty">暂无评价</view>
+</scroll-view>

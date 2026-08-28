@@ -1,0 +1,13 @@
+<navigation-bar title="会员列表" back="{{true}}" />
+<scroll-view class="viewport" scroll-y>
+  <view class="ap-search"><input value="{{keyword}}" bindinput="onKeyword" placeholder="搜索昵称 / ID" /></view>
+  <view class="ap-stat">共 {{total}} 位会员</view>
+  <view class="ap-card" wx:for="{{shown}}" wx:key="id">
+    <view class="ap-row-head">
+      <text class="ap-name">{{item.nickname || item.id}}</text>
+      <text class="ap-level">{{item.level || 'V0'}}</text>
+    </view>
+    <view class="ap-meta">成长值 {{item.growthValue || 0}} · 订单 {{item.ordersCount || 0}} 单 · 加入 {{fmtJoined(item.joinedAt)}} · 最近 {{fmtLast(item.lastOrderAt)}}</view>
+  </view>
+  <view wx:if="{{!shown.length && !loading}}" class="ap-empty">没有匹配的会员</view>
+</scroll-view>
