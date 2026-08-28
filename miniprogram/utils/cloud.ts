@@ -319,6 +319,8 @@ export const getOrderStatsCloud = async () => {
 
 import type { CatalogCategory, FulfillMode, Spu, StoreInfo } from './xicha'
 
+export type { CatalogCategory, Spu, StoreInfo }
+
 export interface CloudOrderItem {
   name: string
   price: number
@@ -340,10 +342,11 @@ export interface XiOrder {
   items: CloudOrderItem[]
   review?: { rating: number; comment: string; createdAt: string }
   biz?: 'TEA' | 'MALL'
+  payAmount?: number
+  queueNo?: number
   fulfillMode?: FulfillMode
   storeId?: string
   storeName?: string
-  queueNo?: number
   pricedItems?: Array<{ spuId: string; name: string; unitPrice: number; quantity: number; subtotal: number; image?: string; selections: Array<{ groupName: string; optionName: string }> }>
   pickupCode?: string
 }
@@ -376,6 +379,8 @@ export const previewOrderCloud = async (payload: PreviewPayload) => {
 export interface CreateOrderV2Payload {
   storeId?: string
   biz?: 'TEA' | 'MALL'
+  payAmount?: number
+  queueNo?: number
   mode: FulfillMode
   note?: string
   couponInstanceId?: string
@@ -565,3 +570,54 @@ export const getPoliciesCloud = () =>
   callOrander<{ items: Array<{ id: string; title: string; version?: string; updatedAt?: string }> }>('getPolicies', {})
 export const getPolicyCloud = (policyId: string) =>
   callOrander<{ id: string; title: string; version?: string; sections?: unknown[]; contentHtml?: string; updatedAt?: string }>('getPolicy', { policyId })
+
+/* ==================== R6a 管理端包装 ==================== */
+
+export interface AdminDashboard {
+  today?: { orders?: number; gmv?: number; pendingPrepare?: number; making?: number }
+  total?: { orders?: number; gmv?: number; members?: number }
+  todos?: { pendingRefunds?: number; runningActivities?: number; openSessions?: number }
+  funnel?: { visits?: number; orders?: number; conversion?: number }
+  daily?: Array<{ date: string; orders: number; gmv: number }>
+  topDishes?: Array<{ spuId: string; name: string; quantity: number; revenue: number }>
+  pendingRefunds?: Array<Record<string, unknown>>
+  openSessions?: Array<Record<string, unknown>>
+  activeActivities?: Array<Record<string, unknown>>
+}
+
+export const adminGetDashboardCloud = (adminToken: string) =>
+  callOrander<AdminDashboard>('getDashboard', { adminToken })
+
+export const adminListOrdersCloud = (adminToken: string, page = 1, pageSize = 20) =>
+  callOrander<{ items: XiOrder[]; total: number }>('listAllOrders', { adminToken, page, pageSize })
+
+export const adminListRefundsCloud = (adminToken: string) =>
+  callOrander<{ items: Array<Record<string, unknown>> }>('listRefunds', { adminToken })
+
+export const adminReviewRefundCloud = (adminToken: string, refundId: string, approve: boolean, note = '') =>
+  callOrander<Record<string, unknown>>('reviewRefund', { adminToken, refundId, approve, note })
+
+export const adminStartPreparingCloud = (adminToken: string, orderId: string) =>
+  callOrander<XiOrder>('startPreparing', { adminToken, orderId })
+
+export const adminCompleteOrderCloud = (adminToken: string, orderId: string) =>
+  callOrander<XiOrder>('completeOrder', { adminToken, orderId })
+
+export const adminSaveSpuCloud = (adminToken: string, spu: Record<string, unknown>) =>
+  callOrander<Record<string, unknown>>('saveSpu', { adminToken, spu })
+
+export const adminDeleteSpuCloud = (adminToken: string, spuId: string) =>
+  callOrander<Record<string, unknown>>('deleteSpu', { adminToken, spuId })
+
+export const adminSaveCategoryCloud = (adminToken: string, category: Record<string, unknown>) =>
+  callOrander<Record<string, unknown>>('saveCategory', { adminToken, category })
+
+export const adminSaveStoreCloud = (adminToken: string, store: Record<string, unknown>) =>
+  callOrander<Record<string, unknown>>('saveStore', { adminToken, store })
+
+export const adminSetStoreOverrideCloud = (
+  adminToken: string,
+  storeId: string,
+  spuId: string,
+  override: { soldOut?: boolean; price?: number },
+) => callOrander<Record<string, unknown>>('setStoreSpuOverride', { adminToken, storeId, spuId, override })

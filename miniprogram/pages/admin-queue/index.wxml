@@ -1,0 +1,48 @@
+<navigation-bar title="制作队列" back="{{true}}"></navigation-bar>
+<view class="admin-page">
+  <view class="queue-head">
+    <view class="q-stat">
+      <view class="num q-num">{{pending.length}}</view>
+      <view class="q-label">待制作</view>
+    </view>
+    <view class="q-stat">
+      <view class="num q-num">{{making.length}}</view>
+      <view class="q-label">制作中</view>
+    </view>
+    <view class="q-stat">
+      <view class="num q-num">{{doneCount}}</view>
+      <view class="q-label">今日完成</view>
+    </view>
+  </view>
+
+  <view class="board">
+    <view class="board-col">
+      <view class="col-title col-wait">待制作</view>
+      <view wx:for="{{pending}}" wx:key="id" class="q-card">
+        <view class="num q-no">{{item.queueNo || '-'}}</view>
+        <view class="q-name">{{item.previewText}}</view>
+        <view class="num q-amount">{{item.totalText}}</view>
+        <view class="q-btn" data-id="{{item.id}}" bindtap="startMaking">开始制作</view>
+      </view>
+      <view wx:if="{{!pending.length}}" class="q-empty">空闲</view>
+    </view>
+    <view class="board-col">
+      <view class="col-title col-make">制作中</view>
+      <view wx:for="{{making}}" wx:key="id" class="q-card">
+        <view class="num q-no">{{item.queueNo || '-'}}</view>
+        <view class="q-name">{{item.previewText}}</view>
+        <view class="num q-amount">{{item.totalText}}</view>
+        <view class="q-btn q-btn-done" data-id="{{item.id}}" bindtap="complete">完成叫号</view>
+      </view>
+      <view wx:if="{{!making.length}}" class="q-empty">空闲</view>
+    </view>
+  </view>
+
+  <view class="done-list">
+    <view class="done-title">今日已完成 {{done.length}} 单</view>
+    <view wx:for="{{done}}" wx:key="id" class="done-row">
+      <text class="num done-no">{{item.queueNo || '-'}} 号</text>
+      <text class="done-name">{{item.previewText}}</text>
+    </view>
+  </view>
+</view>

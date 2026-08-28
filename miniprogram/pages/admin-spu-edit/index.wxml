@@ -1,0 +1,45 @@
+<navigation-bar title="{{spuId ? '编辑商品' : '新建商品'}}" back="{{true}}"></navigation-bar>
+<view class="admin-page">
+  <view class="form-card">
+    <view class="field">
+      <view class="field-label">商品名称</view>
+      <input class="field-input" value="{{name}}" bindinput="onInput" data-field="name" placeholder="如 茉莉初雪" />
+    </view>
+    <view class="field">
+      <view class="field-label">基础价（元）</view>
+      <input class="field-input" type="digit" value="{{basePrice}}" bindinput="onInput" data-field="basePrice" placeholder="18" />
+    </view>
+    <view class="field">
+      <view class="field-label">分类</view>
+      <picker range="{{catNames}}" value="{{catIndex}}" bindchange="onCatChange">
+        <view class="field-input field-picker">{{catNames[catIndex] || '选择分类'}}</view>
+      </picker>
+    </view>
+    <view class="field">
+      <view class="field-label">卖点描述</view>
+      <input class="field-input" value="{{description}}" bindinput="onInput" data-field="description" placeholder="一句话卖点" />
+    </view>
+  </view>
+
+  <view class="form-card">
+    <view class="sec-head">
+      <view class="sec-title">规格组</view>
+      <view class="sec-add" bindtap="addGroup">+ 加组</view>
+    </view>
+    <view wx:for="{{groups}}" wx:key="index" class="group-card">
+      <view class="group-row">
+        <input class="field-input group-name" value="{{item.name}}" bindinput="onGroupInput" data-index="{{index}}" data-field="name" placeholder="组名（杯型/甜度…）" />
+        <view class="seg">
+          <view class="seg-item {{item.type === 'single' ? 'seg-on' : ''}}" data-index="{{index}}" data-type="single" bindtap="onTypeChange">单选</view>
+          <view class="seg-item {{item.type === 'multi' ? 'seg-on' : ''}}" data-index="{{index}}" data-type="multi" bindtap="onTypeChange">多选</view>
+        </view>
+      </view>
+      <textarea class="field-area" value="{{item.optionsText}}" bindinput="onGroupInput" data-index="{{index}}" data-field="optionsText" placeholder="每行一个：名称,加价（如 大杯,3）" maxlength="600" />
+      <view class="group-del" data-index="{{index}}" bindtap="delGroup">删除该组</view>
+    </view>
+    <view wx:if="{{!groups.length}}" class="empty-panel">无规格组则按基础价直购</view>
+  </view>
+
+  <view class="cta-button {{saving ? 'busy' : ''}}" bindtap="save">保存商品</view>
+  <view wx:if="{{spuId}}" class="danger-button" bindtap="remove">删除商品</view>
+</view>

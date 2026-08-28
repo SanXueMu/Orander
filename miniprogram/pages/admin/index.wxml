@@ -1,295 +1,111 @@
-<view class="orander-page {{themeClass}} {{fontClass}} admin-page">
-  <view class="aurora">
-    <view class="aurora-dot aurora-a"></view>
-    <view class="aurora-dot aurora-b"></view>
-    <view class="aurora-dot aurora-c"></view>
-  </view>
-  <navigation-bar color="{{navColor}}" background="{{navBackground}}">
-    <view slot="center" class="nav-title">管理</view>
-  </navigation-bar>
+<navigation-bar title="管理工作台" back="{{false}}"></navigation-bar>
+<view class="admin-page">
 
-  <scroll-view class="page-scroll" scroll-y>
-    <view class="page-body admin-page-body list-gap">
-      <block wx:if="{{activePanel === 'home'}}">
-        <view class="admin-statusbar">
-          <view class="admin-business-toggle {{businessOpen ? 'business-open' : 'business-closed'}}" bindtap="toggleBusinessStatus">
-            <view class="admin-business-dot"></view>
-            <view class="admin-business-label">{{businessOpen ? '营业中' : '已暂停'}}</view>
-          </view>
-          <view class="admin-statusbar-side">
-            <view hover-class="press-scale" hover-stay-time="60" class="menu-mini-action" bindtap="goSettings">设置</view>
-            <view hover-class="press-scale" hover-stay-time="60" class="menu-mini-action" bindtap="logout">退出</view>
-          </view>
-        </view>
-
-        <view class="surface glass-blur admin-board stagger-in" style="--stagger-index: 0">
-          <view class="section-kicker">{{greeting}}，欢迎回家</view>
-          <view class="admin-board-title">今日相聚</view>
-          <block wx:if="{{statsToday.visitors > 0}}">
-            <view class="admin-board-value-row">
-              <view class="num admin-board-value">{{statsToday.visitors}}</view>
-              <view class="admin-board-unit">位朋友来家里吃饭</view>
-            </view>
-          </block>
-          <block wx:else>
-            <view class="admin-board-empty">今天还没有朋友来访</view>
-            <view class="admin-board-empty-sub">备好一桌菜，静候好友上门</view>
-          </block>
-          <view class="admin-board-metrics">
-            <view class="admin-board-metric">
-              <view class="num admin-board-metric-value">{{statsToday.orders}}</view>
-              <view class="admin-board-metric-label">今日点单</view>
-            </view>
-            <view class="admin-board-metric">
-              <view class="num admin-board-metric-value">{{statsToday.dishes}}</view>
-              <view class="admin-board-metric-label">点的菜</view>
-            </view>
-            <view class="admin-board-metric">
-              <view class="num admin-board-metric-value {{statsToday.submitted > 0 ? 'admin-board-metric-hot' : ''}}">{{statsToday.submitted}}</view>
-              <view class="admin-board-metric-label">待准备</view>
-            </view>
-          </view>
-        </view>
-
-        <view wx:if="{{statsToday.submitted > 0}}" class="admin-reminder stagger-in" style="--stagger-index: 1" hover-class="press-dim" hover-stay-time="60" data-panel="orders" bindtap="switchPanel">
-          <view class="admin-reminder-dot"></view>
-          <view class="admin-reminder-copy">还有 {{statsToday.submitted}} 道朋友点的菜待准备</view>
-          <view class="admin-reminder-go">去准备 ›</view>
-        </view>
-
-        <view class="admin-grid stagger-in" style="--stagger-index: 2">
-          <view class="surface admin-grid-cell" hover-class="press-scale" hover-stay-time="60" data-panel="menu" bindtap="switchPanel">
-            <view class="admin-grid-badge badge-menu">菜</view>
-            <view class="admin-grid-text">
-              <view class="admin-grid-title">家常菜单</view>
-              <view class="admin-grid-sub">新增 · 上下架 · 编辑</view>
-            </view>
-          </view>
-          <view class="surface admin-grid-cell" hover-class="press-scale" hover-stay-time="60" data-panel="orders" bindtap="switchPanel">
-            <view class="admin-grid-badge badge-orders">单</view>
-            <view class="admin-grid-text">
-              <view class="admin-grid-title">朋友点单</view>
-              <view class="admin-grid-sub">接单 · 标记完成</view>
-            </view>
-          </view>
-          <view class="surface admin-grid-cell" hover-class="press-scale" hover-stay-time="60" data-panel="stats" bindtap="switchPanel">
-            <view class="admin-grid-badge badge-stats">数</view>
-            <view class="admin-grid-text">
-              <view class="admin-grid-title">美好回忆</view>
-              <view class="admin-grid-sub">来访 · 朋友最爱</view>
-            </view>
-          </view>
-          <view class="surface admin-grid-cell" hover-class="press-scale" hover-stay-time="60" data-panel="users" bindtap="switchPanel">
-            <view class="admin-grid-badge badge-users">客</view>
-            <view class="admin-grid-text">
-              <view class="admin-grid-title">花名册</view>
-              <view class="admin-grid-sub">每位朋友的来访记录</view>
-            </view>
-          </view>
-        </view>
-      </block>
-
-      <block wx:elif="{{activePanel === 'orders'}}">
-        <view class="admin-backbar" hover-class="press-dim" hover-stay-time="60" bindtap="backHome">
-          <view class="admin-backbar-arrow">‹</view>
-          <view class="admin-backbar-title">工作台</view>
-          <view class="admin-backbar-current">朋友点单</view>
-        </view>
-        <view wx:if="{{cloudDegraded}}" class="cloud-degraded">
-          <view class="cloud-degraded-copy">
-            <view class="cloud-degraded-copy-label">云端数据加载失败</view>
-            <view>正在展示本地缓存，可重试拉取云端数据。</view>
-          </view>
-          <view class="cloud-retry-button" hover-class="press-scale" hover-stay-time="60" bindtap="retryCloud">重试</view>
-        </view>
-
-        <view wx:if="{{ordersLoading}}" class="surface admin-empty">加载中…</view>
-        <view wx:elif="{{!orders.length}}" class="surface admin-empty">还没有朋友点单</view>
-        <view wx:else class="list-gap">
-          <view wx:for="{{orders}}" wx:key="id" class="surface admin-card admin-order-card stagger-in" style="--stagger-index: {{index > 7 ? 7 : index}}">
-            <view class="admin-order-colorbar colorbar-{{item.status}}"></view>
-            <view class="admin-card-top">
-              <view>
-                <view class="admin-card-title">
-                  {{item.nickname}}
-                  <view wx:if="{{item.canComplete}}" class="admin-pending-badge">待完成</view>
-                </view>
-                <view class="admin-card-copy">{{item.orderNumber}} · {{item.createdText}}</view>
-              </view>
-              <view class="admin-order-status status-{{item.status}}">{{item.statusText}}</view>
-            </view>
-            <view class="admin-card-copy">{{item.previewText}}</view>
-            <view wx:if="{{item.note}}" class="admin-card-copy admin-order-note">备注：{{item.note}}</view>
-            <view class="admin-card-actions user-card-actions">
-              <view class="num admin-card-price">{{item.totalText}}</view>
-              <view wx:if="{{item.canComplete}}" hover-class="press-deep" hover-stay-time="60" class="admin-complete-button" data-id="{{item.id}}" bindtap="completeOrder">✓ 标记完成</view>
-            </view>
-          </view>
-
-          <view class="surface admin-orders-pager">
-            <view hover-class="press-scale" hover-stay-time="60" class="button-ghost mini-action {{ordersPage <= 1 ? 'pager-disabled' : ''}}" bindtap="prevOrdersPage">上一页</view>
-            <view class="admin-card-copy">{{ordersPage}} / {{ordersTotal > 0 ? (ordersTotal + ordersPageSize - 1) / ordersPageSize : 1}}</view>
-            <view hover-class="press-scale" hover-stay-time="60" class="button-ghost mini-action {{ordersPage * ordersPageSize >= ordersTotal ? 'pager-disabled' : ''}}" bindtap="nextOrdersPage">下一页</view>
-          </view>
-        </view>
-      </block>
-
-      <block wx:elif="{{activePanel === 'stats'}}">
-        <view class="admin-backbar" hover-class="press-dim" hover-stay-time="60" bindtap="backHome">
-          <view class="admin-backbar-arrow">‹</view>
-          <view class="admin-backbar-title">工作台</view>
-          <view class="admin-backbar-current">美好回忆</view>
-        </view>
-
-        <view wx:if="{{cloudDegraded}}" class="cloud-degraded">
-          <view class="cloud-degraded-copy">
-            <view class="cloud-degraded-copy-label">云端统计加载失败</view>
-            <view>正在展示本地统计，可重试拉取云端数据。</view>
-          </view>
-          <view class="cloud-retry-button" hover-class="press-scale" hover-stay-time="60" bindtap="retryCloud">重试</view>
-        </view>
-        <view wx:if="{{!stats}}" class="surface admin-empty">暂无统计数据</view>
-        <view wx:else class="list-gap">
-          <view class="surface admin-card stagger-in" style="--stagger-index: 0">
-            <view class="section-kicker">近 7 日</view>
-            <view class="section-title">近 7 日相聚</view>
-            <view class="chart-row">
-              <view wx:for="{{statsDaily}}" wx:key="date" class="chart-col">
-                <view class="chart-bar-wrap">
-                  <view class="chart-bar {{item.orders === 0 ? 'chart-bar-empty' : ''}}" style="height: {{item.percent}}%; animation-delay: {{index * 60}}ms"></view>
-                </view>
-                <view class="chart-label">{{item.date}}</view>
-              </view>
-            </view>
-          </view>
-
-          <view class="surface admin-stats-grid stagger-in" style="--stagger-index: 1">
-            <view class="admin-stats-item">
-              <view class="num admin-stats-value">{{stats.totalOrders}}</view>
-              <view class="admin-stats-label">相聚次数</view>
-            </view>
-            <view class="admin-stats-item">
-              <view class="num admin-stats-value">{{members.length}}</view>
-              <view class="admin-stats-label">朋友</view>
-            </view>
-            <view class="admin-stats-item">
-              <view class="num admin-stats-value">{{stats.completedCount}}</view>
-              <view class="admin-stats-label">已完成</view>
-            </view>
-            <view class="admin-stats-item">
-              <view class="num admin-stats-value">{{statsRevenueText}}</view>
-              <view class="admin-stats-label">累计心意</view>
-            </view>
-          </view>
-
-          <view class="surface admin-card stagger-in" style="--stagger-index: 2">
-            <view class="section-kicker">朋友最爱</view>
-            <view class="section-title">朋友最爱的菜</view>
-            <view wx:for="{{statsTopDishes}}" wx:key="dishId" class="admin-rank-row">
-              <view class="admin-rank-index">{{index + 1}}</view>
-              <view class="admin-rank-main">
-                <view class="admin-rank-head">
-                  <view class="admin-card-title">{{item.name}}</view>
-                  <view class="admin-card-copy">被点了 {{item.quantity}} 次</view>
-                </view>
-                <view class="admin-rank-progress">
-                  <view class="admin-rank-progress-fill" style="width: {{item.percent}}%; animation-delay: {{index * 80}}ms"></view>
-                </view>
-              </view>
-            </view>
-            <view wx:if="{{!statsTopDishes.length}}" class="admin-empty">还没有朋友点过菜</view>
-          </view>
-        </view>
-      </block>
-
-      <block wx:elif="{{activePanel === 'menu'}}">
-        <view class="admin-backbar" hover-class="press-dim" hover-stay-time="60" bindtap="backHome">
-          <view class="admin-backbar-arrow">‹</view>
-          <view class="admin-backbar-title">工作台</view>
-          <view class="admin-backbar-current">家常菜单</view>
-        </view>
-
-        <view class="surface admin-menu-toolbar">
-          <scroll-view class="admin-category-strip" scroll-x enable-flex>
-            <view class="admin-category-row">
-              <view
-                wx:for="{{categories}}"
-                wx:key="*this"
-                hover-class="press-dim" hover-stay-time="60" class="chip {{item === activeCategory ? 'chip-active' : ''}}"
-                data-category="{{item}}"
-                bindtap="switchCategory"
-              >
-                {{item}}
-              </view>
-            </view>
-          </scroll-view>
-          <view hover-class="press-scale" hover-stay-time="60" class="button-primary admin-add-dish-button" bindtap="goCreateDish">＋ 新增菜品</view>
-        </view>
-
-        <view class="list-gap">
-          <view wx:for="{{dishes}}" wx:key="id" class="swipe-shell" data-id="{{item.id}}" bindtouchstart="onDishTouchStart" bindtouchend="onDishTouchEnd">
-            <view class="swipe-delete" data-id="{{item.id}}" bindtap="removeDish">删除</view>
-            <view class="surface admin-card admin-dish-card swipe-content stagger-in {{swipedDishId === item.id ? 'swipe-open' : ''}}" style="--stagger-index: {{index > 7 ? 7 : index}}" bindtap="closeSwipe">
-              <view class="admin-dish-thumb" data-image="{{item.image}}" catchtap="previewDishImage">
-                <block wx:if="{{item.image}}">
-                  <image class="admin-dish-thumb-image" src="{{item.image}}" mode="aspectFill"></image>
-                </block>
-                <block wx:else>
-                  <view class="admin-dish-thumb-fallback" style="{{item.coverStyle}}">{{item.imageLabel}}</view>
-                </block>
-                <view wx:if="{{item.soldOut}}" class="admin-dish-thumb-mask">售罄</view>
-              </view>
-
-              <view class="admin-dish-main">
-                <view class="admin-dish-head">
-                  <view class="admin-card-title">{{item.name}}</view>
-                  <view class="num admin-dish-price">{{item.priceText}}</view>
-                </view>
-                <view class="admin-card-copy admin-dish-category">{{item.category}}</view>
-                <view class="admin-card-copy admin-dish-desc">{{item.description}}</view>
-                <view class="admin-dish-foot">
-                  <view class="admin-card-copy admin-dish-state {{item.soldOut ? 'is-soldout' : ''}}">{{item.soldOutLabel}}</view>
-                  <switch color="#F2AB39" checked="{{item.availableChecked}}" data-id="{{item.id}}" bindchange="toggleDishAvailability"></switch>
-                  <view hover-class="press-scale" hover-stay-time="60" class="button-ghost mini-action admin-dish-edit" data-id="{{item.id}}" bindtap="goEditDish">编辑</view>
-                </view>
-              </view>
-            </view>
-          </view>
-        </view>
-      </block>
-
-      <block wx:else>
-        <view class="admin-backbar" hover-class="press-dim" hover-stay-time="60" bindtap="backHome">
-          <view class="admin-backbar-arrow">‹</view>
-          <view class="admin-backbar-title">工作台</view>
-          <view class="admin-backbar-current">花名册</view>
-        </view>
-
-        <view class="list-gap">
-          <view wx:for="{{members}}" wx:key="id" class="surface admin-card">
-            <view class="admin-card-top">
-              <view class="admin-member-main">
-                <block wx:if="{{item.showAvatarImage}}">
-                  <image class="admin-member-avatar-image" src="{{item.avatarUrl}}" mode="aspectFill"></image>
-                </block>
-                <block wx:else>
-                  <view class="admin-member-avatar-fallback" style="{{item.avatarStyle}}">{{item.avatarLabel}}</view>
-                </block>
-                <view>
-                  <view class="admin-card-title">{{item.nickname}}</view>
-                  <view class="admin-card-copy">相识于 {{item.joinedText}}</view>
-                </view>
-              </view>
-              <view class="num admin-card-price">{{item.ordersCount}} 次来访</view>
-            </view>
-            <view class="admin-card-copy">最近来访 {{item.lastOrderText}}</view>
-            <view class="admin-card-actions user-card-actions">
-              <view hover-class="press-scale" hover-stay-time="60" class="button-ghost mini-action" data-id="{{item.id}}" bindtap="goUserOrders">点单记录</view>
-              <view hover-class="press-scale" hover-stay-time="60" class="button-ghost mini-action" data-id="{{item.id}}" bindtap="removeMemberRecord">删除</view>
-            </view>
-          </view>
-        </view>
-      </block>
+  <view wx:if="{{!adminReady}}" class="gate">
+    <view class="gate-card">
+      <view class="gate-title">管理员验证</view>
+      <view class="gate-desc">输入管理密码进入工作台</view>
+      <input class="gate-input" password type="text" placeholder="管理密码" value="{{password}}" bindinput="onPasswordInput" />
+      <view class="gate-btn {{password ? '' : 'gate-btn-dim'}}" bindtap="submitPassword">进入工作台</view>
     </view>
-  </scroll-view>
+  </view>
+
+  <block wx:else>
+    <view class="dash">
+      <view class="dash-cards">
+        <view class="dash-card">
+          <view class="num dash-num">{{todayGmvText}}</view>
+          <view class="dash-label">今日营业额</view>
+        </view>
+        <view class="dash-card">
+          <view class="num dash-num">{{todayOrders}}</view>
+          <view class="dash-label">今日订单</view>
+        </view>
+        <view class="dash-card {{pendingRefundCount ? 'dash-card-warn' : ''}}" bindtap="goOrders" data-tab="refund">
+          <view class="num dash-num">{{pendingRefundCount}}</view>
+          <view class="dash-label">待审退款</view>
+        </view>
+        <view class="dash-card" bindtap="goQueue">
+          <view class="num dash-num">{{makingCount}}</view>
+          <view class="dash-label">制作中</view>
+        </view>
+      </view>
+
+      <view class="dash-chart">
+        <view class="panel-title">近 7 日</view>
+        <view class="chart-row">
+          <view wx:for="{{daily}}" wx:key="date" class="chart-col">
+            <view class="chart-bar" style="height: {{item.barHeight}}rpx"></view>
+            <view class="chart-date">{{item.date}}</view>
+          </view>
+        </view>
+      </view>
+
+      <view class="dash-todo">
+        <view class="panel-title">待办</view>
+        <view class="todo-row" bindtap="goOrders" data-tab="refund">
+          <view class="todo-label">退款审批</view>
+          <view class="todo-val {{pendingRefundCount ? 'todo-hot' : ''}}">{{pendingRefundCount ? pendingRefundCount + ' 单待处理' : '无待办'}}</view>
+          <view class="todo-arrow">›</view>
+        </view>
+        <view class="todo-row" bindtap="goQueue">
+          <view class="todo-label">制作队列</view>
+          <view class="todo-val">{{queueCount ? queueCount + ' 单排队' : '空闲'}}</view>
+          <view class="todo-arrow">›</view>
+        </view>
+        <view class="todo-row" bindtap="goOrders" data-tab="all">
+          <view class="todo-label">全部订单</view>
+          <view class="todo-val">{{totalOrders}} 单</view>
+          <view class="todo-arrow">›</view>
+        </view>
+      </view>
+
+      <view class="dash-top">
+        <view class="panel-title">热销 TOP</view>
+        <view wx:for="{{topDishes}}" wx:key="spuId" class="top-row">
+          <view class="top-rank num">{{index + 1}}</view>
+          <view class="top-name">{{item.name}}</view>
+          <view class="num top-qty">x{{item.quantity}}</view>
+        </view>
+        <view wx:if="{{!topDishes.length}}" class="empty-panel">暂无销售数据</view>
+      </view>
+    </view>
+
+    <view class="grid">
+      <view class="grid-item" bindtap="goSpus">
+        <view class="grid-icon">茶</view>
+        <view class="grid-name">商品管理</view>
+      </view>
+      <view class="grid-item" bindtap="goOrders" data-tab="all">
+        <view class="grid-icon">单</view>
+        <view class="grid-name">订单中心</view>
+      </view>
+      <view class="grid-item" bindtap="goQueue">
+        <view class="grid-icon">制</view>
+        <view class="grid-name">制作队列</view>
+      </view>
+      <view class="grid-item" bindtap="goStores">
+        <view class="grid-icon">店</view>
+        <view class="grid-name">门店管理</view>
+      </view>
+    </view>
+
+    <view class="link-rows">
+      <view class="todo-row" bindtap="comingSoon">
+        <view class="todo-label">会员 / 营销 / 内容</view>
+        <view class="todo-val">R6b 开放</view>
+        <view class="todo-arrow">›</view>
+      </view>
+      <view class="todo-row" bindtap="goLegacyUser">
+        <view class="todo-label">花名册（旧）</view>
+        <view class="todo-val">查看</view>
+        <view class="todo-arrow">›</view>
+      </view>
+      <view class="todo-row" bindtap="goSettings">
+        <view class="todo-label">系统设置</view>
+        <view class="todo-val">署名 / 密码</view>
+        <view class="todo-arrow">›</view>
+      </view>
+    </view>
+  </block>
 </view>

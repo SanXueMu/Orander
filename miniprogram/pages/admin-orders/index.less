@@ -1,0 +1,27 @@
+@import (reference) '/app.less';
+.admin-page { min-height: 100vh; background: var(--page-bg); padding: 20rpx 24rpx 60rpx; }
+.chip-row { white-space: nowrap; margin-bottom: 20rpx; }
+.chip {
+  display: inline-block; padding: 12rpx 30rpx; border-radius: 999rpx; margin-right: 14rpx;
+  background: var(--card); color: var(--ink); font-size: 24rpx;
+}
+.chip-on { background: var(--brand); color: #fff; font-weight: 700; }
+.order-card { background: var(--card); border-radius: 20rpx; padding: 24rpx; margin-bottom: 16rpx; }
+.order-head { display: flex; justify-content: space-between; align-items: center; }
+.order-no { font-size: 26rpx; font-weight: 700; color: var(--ink); }
+.order-status { font-size: 22rpx; color: var(--muted); }
+.order-PAID { color: var(--brand); font-weight: 700; }
+.order-PREPARING { color: #d97706; font-weight: 700; }
+.order-ref { color: #e5484d; font-weight: 700; }
+.order-preview { font-size: 24rpx; color: var(--ink); margin-top: 10rpx; }
+.order-meta { font-size: 20rpx; color: var(--muted); margin-top: 6rpx; }
+.order-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 16rpx; }
+.order-total { font-size: 28rpx; font-weight: 800; color: var(--ink); }
+.order-acts { display: flex; gap: 12rpx; }
+.act {
+  padding: 10rpx 24rpx; border-radius: 999rpx; border: 1rpx solid var(--line);
+  font-size: 22rpx; color: var(--ink);
+}
+.act-brand { background: var(--brand); border-color: var(--brand); color: #fff; font-weight: 700; }
+.act-danger { border-color: #e5484d; color: #e5484d; }
+.load-more { text-align: center; color: var(--muted); font-size: 24rpx; padding: 20rpx; }

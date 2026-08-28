@@ -1,0 +1,22 @@
+<navigation-bar title="门店管理" back="{{true}}"></navigation-bar>
+<view class="admin-page">
+  <view wx:for="{{stores}}" wx:key="id" class="store-card">
+    <view class="store-head">
+      <view class="store-name">{{item.name}}</view>
+      <view class="open-switch {{item.open ? 'open-on' : ''}}" data-id="{{item.id}}" bindtap="toggleOpen">{{item.open ? '营业中' : '已打烊'}}</view>
+    </view>
+    <view class="store-address">{{item.address}}</view>
+    <view class="store-hours">营业时间 {{item.businessHours}}</view>
+    <view class="store-acts">
+      <view class="act" data-id="{{item.id}}" bindtap="editStore">编辑信息</view>
+      <view class="act" data-id="{{item.id}}" data-index="{{index}}" bindtap="toggleMenu">菜单售罄设置</view>
+    </view>
+    <view wx:if="{{item.menuOpen}}" class="menu-panel">
+      <view wx:for="{{item.menuSpus}}" wx:for-item="spu" wx:key="id" class="menu-row">
+        <view class="menu-name">{{spu.name}}</view>
+        <view class="menu-flag {{spu.soldOutHere ? 'menu-flag-warn' : ''}}" data-store="{{item.id}}" data-spu="{{spu.id}}" data-index="{{index}}" bindtap="toggleSpuSoldOut">{{spu.soldOutHere ? '本店售罄' : '供应中'}}</view>
+      </view>
+    </view>
+  </view>
+  <view class="tool-add" bindtap="addStore">+ 新门店</view>
+</view>

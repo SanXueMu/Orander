@@ -1,0 +1,29 @@
+<navigation-bar title="商品管理" back="{{true}}"></navigation-bar>
+<view class="admin-page">
+  <scroll-view scroll-x class="chip-row" enhanced show-scrollbar="{{false}}">
+    <view class="chip {{activeCat === '' ? 'chip-on' : ''}}" data-key="" bindtap="switchCat">全部</view>
+    <view wx:for="{{cats}}" wx:key="id" class="chip {{activeCat === item.id ? 'chip-on' : ''}}" data-key="{{item.id}}" bindtap="switchCat">{{item.name}}</view>
+  </scroll-view>
+
+  <view class="tool-row">
+    <view class="tool-add" bindtap="addCat">+ 新分类</view>
+    <view class="tool-add tool-primary" bindtap="addSpu">+ 新商品</view>
+  </view>
+
+  <view wx:for="{{spus}}" wx:key="id" class="spu-card" bindtap="editSpu" data-id="{{item.id}}">
+    <view class="spu-main">
+      <view class="spu-name">{{item.name}}</view>
+      <view class="spu-sub">
+        <text class="num spu-price">¥{{item.basePriceText}}</text>
+        <text class="spu-cat">{{item.catName}}</text>
+        <text wx:if="{{item.specCount}}" class="spu-spec">{{item.specCount}} 组规格</text>
+      </view>
+    </view>
+    <view class="spu-flags">
+      <view class="flag {{item.available ? 'flag-on' : ''}}" data-id="{{item.id}}" catchtap="toggleAvailable">{{item.available ? '在售' : '下架'}}</view>
+      <view class="flag {{item.soldOut ? 'flag-warn' : ''}}" data-id="{{item.id}}" catchtap="toggleSoldOut">{{item.soldOut ? '售罄' : '有货'}}</view>
+      <view class="spu-arrow">›</view>
+    </view>
+  </view>
+  <view wx:if="{{!spus.length && !loading}}" class="empty-panel">该分类暂无商品</view>
+</view>

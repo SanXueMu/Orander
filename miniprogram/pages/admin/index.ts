@@ -1,599 +1,98 @@
-import {
-  deleteMemberCloud,
-  fetchCloudDishes,
-  fetchCloudMembers,
-  getBusinessStatusCloud,
-  getOrderStatsCloud,
-  initCloud,
-  listAllOrdersCloud,
-  setBusinessStatusCloud,
-} from '../../utils/cloud'
-import type { OrderStats, PaginatedOrders } from '../../utils/cloud'
-import {
-  clearCart,
-  clearSession,
-  deleteMember,
-  deleteDish,
-  formatMoney,
-  formatShortDate,
-  getAvatarStyle,
-  getAdminToken,
-  getContactCards,
-  getDishCoverStyle,
-  getDishes,
-  getMenuCategories,
-  getMonogram,
-  getOrders,
-  getSession,
-  isAdminSession,
-  updateDishAvailability,
-} from '../../utils/orander'
-import type { Order } from '../../utils/orander'
-import { pageLookBehavior } from '../../behaviors/page-look'
+import { getAdminToken, loginAdmin } from '../../utils/orander'
+import { verifyAdminCloud, adminGetDashboardCloud, canUseCloud } from '../../utils/cloud'
 
-const ORDER_PAGE_SIZE = 15
-
-const buildTodayFromOrders = (orders: Order[]) => {
-  const startOfToday = new Date()
-  startOfToday.setHours(0, 0, 0, 0)
-  const todayOrders = orders.filter((order) => new Date(order.createdAt) >= startOfToday)
-
-  return {
-    orders: todayOrders.length,
-    revenue: Number(todayOrders.reduce((sum, order) => sum + order.total, 0).toFixed(2)),
-    submitted: todayOrders.filter((order) => order.status === 'submitted').length,
-    visitors: new Set(todayOrders.map((order) => order.memberId)).size,
-    dishes: todayOrders.reduce((sum, order) => sum + order.items.reduce((total, item) => total + item.quantity, 0), 0),
-  }
-}
-
-const buildDailyFromOrders = (orders: Order[]) => {
-  const daily: Array<{ date: string; orders: number; revenue: number }> = []
-
-  for (let offset = 6; offset >= 0; offset -= 1) {
-    const day = new Date()
-    day.setHours(0, 0, 0, 0)
-    day.setDate(day.getDate() - offset)
-    const next = new Date(day)
-    next.setDate(day.getDate() + 1)
-
-    const dayOrders = orders.filter((order) => {
-      const time = new Date(order.createdAt)
-      return time >= day && time < next
-    })
-
-    daily.push({
-      date: `${day.getMonth() + 1}/${day.getDate()}`,
-      orders: dayOrders.length,
-      revenue: Number(dayOrders.reduce((sum, order) => sum + order.total, 0).toFixed(2)),
-    })
-  }
-
-  return daily
-}
-
-const mapMemberCards = () => {
-  return getContactCards().map((member) => ({
-    ...member,
-    showAvatarImage: !!member.avatarUrl,
-    avatarLabel: getMonogram(member.nickname, 'OR'),
-    avatarStyle: getAvatarStyle(member.nickname),
-    joinedText: formatShortDate(member.joinedAt),
-    lastOrderText: formatShortDate(member.lastOrderAt),
-  }))
-}
-
-const mapOrderRows = (orders: Order[]) => {
-  return orders.map((order) => ({
-    ...order,
-    totalText: formatMoney(order.total),
-    createdText: formatShortDate(order.createdAt),
-    statusText: order.status === 'completed' ? '已完成' : order.status === 'preparing' ? '准备中' : order.status === 'cancelled' ? '已取消' : '待准备',
-    previewText: order.items.slice(0, 3).map((item) => item.name).join(' · '),
-    canComplete: order.status === 'submitted' || order.status === 'preparing',
-  }))
-}
-
-const mapDishCards = (activeCategory: string) => {
-    return getDishes()
-      .filter((dish) => activeCategory === '全部' || dish.category === activeCategory)
-      .map((dish) => ({
-        ...dish,
-        priceText: formatMoney(dish.price),
-        soldOutLabel: dish.soldOut ? '已售罄' : '供应中',
-        availableChecked: !dish.soldOut,
-        coverStyle: getDishCoverStyle(dish.id),
-        imageLabel: getMonogram(dish.name, 'DI'),
-      }))
-}
+type DailyBar = { date: string; orders: number; gmv: number; barHeight: number }
 
 Page({
-  behaviors: [pageLookBehavior],
-
   data: {
-    adminName: 'Admin',
-    activePanel: 'home',
-    greeting: '你好',
-    statsToday: { visitors: 0, orders: 0, dishes: 0, submitted: 0 },
-    statsDaily: [] as OrderStats['daily'],
-    statsTopDishes: [] as OrderStats['topDishes'],
-    categories: ['全部'],
-    activeCategory: '全部',
-    dishes: [] as Array<ReturnType<typeof mapDishCards>[number]>,
-    members: [] as Array<ReturnType<typeof mapMemberCards>[number]>,
-    swipedDishId: '',
-    touchStartX: 0,
-    touchStartY: 0,
-    orders: [] as Array<ReturnType<typeof mapOrderRows>[number]>,
-    ordersPage: 1,
-    ordersPageSize: ORDER_PAGE_SIZE,
-    ordersTotal: 0,
-    ordersLoading: false,
-    statsRevenueText: formatMoney(0),
-    stats: null as OrderStats | null,
-    businessOpen: true,
-    businessSyncing: false,
+    adminReady: false,
+    password: '',
+    todayGmvText: '0',
+    todayOrders: 0,
+    pendingRefundCount: 0,
+    makingCount: 0,
+    queueCount: 0,
+    totalOrders: 0,
+    daily: [] as DailyBar[],
+    topDishes: [] as Array<{ spuId: string; name: string; quantity: number; revenue: number }>,
   },
 
-  onHide() {
-    if (this.countUpTimer) {
-      clearInterval(this.countUpTimer)
-      this.countUpTimer = undefined
+  onLoad() {
+    if (getAdminToken()) {
+      this.enterAdmin()
     }
   },
 
-  async onShow() {
-    const hour = new Date().getHours()
-    const greeting = hour < 5 ? '夜深了' : hour < 11 ? '早上好' : hour < 14 ? '中午好' : hour < 18 ? '下午好' : '晚上好'
-    this.setData({ greeting })
-    if (!isAdminSession()) {
-      wx.reLaunch({
-        url: '/pages/index/index',
-      })
+  onPasswordInput(event: WechatMiniprogram.Input) {
+    this.setData({ password: event.detail.value })
+  },
+
+  async submitPassword() {
+    const password = this.data.password.trim()
+    if (!password) {
       return
     }
-
-    await this.refreshPage(true)
-
-    if (initCloud()) {
-      const status = await getBusinessStatusCloud()
-      if (status) {
-        this.setData({ businessOpen: status.open })
-      }
-    }
-  },
-
-  async refreshPage(syncRemote = false) {
-    const session = getSession()
-
-    if (syncRemote && initCloud()) {
-      await Promise.all([
-        fetchCloudDishes(),
-        fetchCloudMembers(),
-      ])
-    }
-
-    const categories = ['全部', ...getMenuCategories()]
-    const activeCategory = categories.indexOf(this.data.activeCategory) >= 0 ? this.data.activeCategory : '全部'
-    const members = mapMemberCards()
-
-    this.setData({
-      adminName: session ? session.nickname : 'Admin',
-      categories,
-      activeCategory,
-      members,
-      dishes: mapDishCards(activeCategory),
-    })
-  },
-
-  backHome() {
-    this.setData({ activePanel: 'home', swipedDishId: '' })
-    this.loadStats()
-  },
-
-  switchPanel(event: WechatMiniprogram.BaseEvent) {
-    const panel = event.currentTarget.dataset.panel as string
-    this.setData({
-      activePanel: panel,
-      swipedDishId: '',
-    })
-
-    if (panel === 'orders') {
-      this.loadOrders(1)
-    } else if (panel === 'stats') {
-      this.loadStats()
-    }
-  },
-
-  async loadOrders(page: number) {
-    if (!initCloud()) {
-      this.loadLocalOrders(page)
+    const result = await verifyAdminCloud(password)
+    if (!result || !result.adminToken) {
+      wx.showToast({ title: '密码错误', icon: 'none' })
       return
     }
-
-    this.setData({ ordersLoading: true })
-    try {
-      const result = await listAllOrdersCloud(page, ORDER_PAGE_SIZE)
-      if (!result) {
-        this.setData({ cloudDegraded: true })
-        this.loadLocalOrders(page)
-        return
-      }
-
-      this.setData({ cloudDegraded: false })
-      this.applyOrders(result)
-    } finally {
-      this.setData({ ordersLoading: false })
-    }
+    loginAdmin(undefined, '', result.adminToken)
+    this.enterAdmin()
   },
 
-  loadLocalOrders(page: number) {
-    const allOrders = getOrders()
-    const total = allOrders.length
-    const start = (page - 1) * ORDER_PAGE_SIZE
-    const items = allOrders.slice(start, start + ORDER_PAGE_SIZE)
-
-    this.setData({
-      orders: mapOrderRows(items),
-      ordersPage: page,
-      ordersTotal: total,
-    })
+  enterAdmin() {
+    this.setData({ adminReady: true })
+    this.refreshDashboard()
   },
 
-  applyOrders(result: PaginatedOrders) {
-    this.setData({
-      orders: mapOrderRows(result.items),
-      ordersPage: result.page,
-      ordersTotal: result.total,
-    })
-  },
-
-  prevOrdersPage() {
-    if (this.data.ordersPage <= 1) {
+  async refreshDashboard() {
+    const token = getAdminToken()
+    if (!token || !canUseCloud()) {
       return
     }
-    this.loadOrders(this.data.ordersPage - 1)
-  },
-
-  nextOrdersPage() {
-    const maxPage = Math.max(1, Math.ceil(this.data.ordersTotal / ORDER_PAGE_SIZE))
-    if (this.data.ordersPage >= maxPage) {
+    const data = await adminGetDashboardCloud(token)
+    if (!data) {
       return
     }
-    this.loadOrders(this.data.ordersPage + 1)
-  },
-
-  async completeOrder(event: WechatMiniprogram.BaseEvent) {
-    const orderId = event.currentTarget.dataset.id as string
-    const order = this.data.orders.find((item) => (item as { id: string }).id === orderId) as Order | undefined
-    if (!order || order.status === 'completed') {
-      return
-    }
-
-    wx.vibrateShort({ type: 'light' })
-
-    if (initCloud()) {
-      const { updateCloudOrderStatus } = await import('../../utils/cloud')
-      const nextOrder = await updateCloudOrderStatus(orderId, 'completed', getAdminToken())
-      if (!nextOrder) {
-        wx.showToast({
-          title: '操作失败',
-          icon: 'none',
-        })
-        return
-      }
-    } else {
-      const { updateOrderStatus } = await import('../../utils/orander')
-      updateOrderStatus(orderId, 'completed')
-    }
-
-    await this.loadOrders(this.data.ordersPage)
-    wx.showToast({
-      title: '已完成',
-      icon: 'success',
-    })
-  },
-
-  async loadStats() {
-    if (!initCloud()) {
-      this.loadLocalStats()
-      return
-    }
-
-    const stats = await getOrderStatsCloud()
-    if (!stats) {
-      this.setData({ cloudDegraded: true })
-      this.loadLocalStats()
-      return
-    }
-
-    this.setData({ cloudDegraded: false })
-    this.applyStats(stats)
-  },
-
-  applyStats(base: OrderStats) {
-    const localOrders = getOrders()
-    const fallbackToday = buildTodayFromOrders(localOrders)
-    const rawToday: Partial<NonNullable<OrderStats['today']>> = base.today || {}
-    const today = {
-      orders: rawToday.orders ?? fallbackToday.orders,
-      submitted: rawToday.submitted ?? fallbackToday.submitted,
-      visitors: rawToday.visitors ?? fallbackToday.visitors,
-      dishes: rawToday.dishes ?? fallbackToday.dishes,
-    }
-    const daily = base.daily && base.daily.length ? base.daily : buildDailyFromOrders(localOrders)
-    const maxOrders = Math.max(...daily.map((day) => day.orders), 0)
-    const chartDaily = daily.map((day) => ({
+    const daily = (data.daily || []).map((day) => ({
       ...day,
-      percent: maxOrders > 0 ? Math.max(4, Math.round((day.orders / maxOrders) * 100)) : 0,
+      barHeight: 10 + Math.round((day.orders / Math.max(1, Math.max(...(data.daily || []).map((d) => d.orders), 1))) * 130),
     }))
-
-    const topDishes = base.topDishes || []
-    const maxQuantity = topDishes.length ? Math.max(...topDishes.map((dish) => dish.quantity)) : 0
-    const chartTopDishes = topDishes.map((dish) => ({
-      ...dish,
-      percent: maxQuantity > 0 ? Math.max(4, Math.round((dish.quantity / maxQuantity) * 100)) : 0,
-    }))
-
+    const today = data.today || (daily.length ? { orders: daily[daily.length - 1].orders, gmv: daily[daily.length - 1].gmv } : { orders: 0, gmv: 0 })
+    const todosFallback = 0
+    void todosFallback
+    const todos = data.todos || { pendingRefunds: 0, runningActivities: 0, openSessions: 0 }
     this.setData({
-      stats: base,
-      statsRevenueText: formatMoney(base.revenue),
-      statsToday: today,
-      statsDaily: chartDaily,
-      statsTopDishes: chartTopDishes,
-    })
-
-    this.animateCountUp({
-      visitors: today.visitors || 0,
-      orders: today.orders || 0,
-      submitted: today.submitted || 0,
+      daily,
+      todayGmvText: `¥${Number(today.gmv || 0).toFixed(0)}`,
+      todayOrders: today.orders || 0,
+      pendingRefundCount: Number(todos.pendingRefunds || 0),
+      makingCount: Number((data.today && data.today.making) || 0),
+      queueCount: Number((data.today && data.today.pendingPrepare) || 0),
+      totalOrders: Number((data.total && data.total.orders) || daily.reduce((sum, day) => sum + day.orders, 0)),
+      topDishes: (data.topDishes || []).slice(0, 5),
     })
   },
 
-  /* 今日速览数字滚动（约 450ms / 9 帧） */
-  countUpTimer: undefined as ReturnType<typeof setInterval> | undefined,
-
-  animateCountUp(target: { visitors: number; orders: number; submitted: number }) {
-    if (this.countUpTimer) {
-      clearInterval(this.countUpTimer)
-    }
-
-    const steps = 9
-    let step = 0
-
-    this.countUpTimer = setInterval(() => {
-      step += 1
-      const progress = step / steps
-      const ease = 1 - Math.pow(1 - progress, 2)
-      const visitors = Math.round(target.visitors * ease)
-      const orders = Math.round(target.orders * ease)
-      const submitted = Math.round(target.submitted * ease)
-
-      this.setData({
-        statsToday: { visitors, orders, dishes: this.data.statsToday.dishes, submitted },
-      })
-
-      if (step >= steps) {
-        if (this.countUpTimer) {
-          clearInterval(this.countUpTimer)
-        }
-        this.countUpTimer = undefined
-        this.setData({
-          statsToday: { visitors: target.visitors, orders: target.orders, dishes: this.data.statsToday.dishes, submitted: target.submitted },
-        })
-      }
-    }, 50)
-  },
-
-  loadLocalStats() {
-    const orders = getOrders()
-    const revenue = orders.reduce((sum, order) => sum + order.total, 0)
-    const dishSales: Record<string, { dishId: string; name: string; quantity: number; revenue: number }> = {}
-
-    orders.forEach((order) => {
-      order.items.forEach((item) => {
-        if (!dishSales[item.dishId]) {
-          dishSales[item.dishId] = { dishId: item.dishId, name: item.name, quantity: 0, revenue: 0 }
-        }
-        dishSales[item.dishId].quantity += item.quantity
-        dishSales[item.dishId].revenue += item.subtotal
-      })
-    })
-
-    const topDishes = Object.values(dishSales)
-      .sort((left, right) => right.quantity - left.quantity)
-      .slice(0, 10)
-
-    this.applyStats({
-      totalOrders: orders.length,
-      completedCount: orders.filter((order) => order.status === 'completed').length,
-      submittedCount: orders.filter((order) => order.status === 'submitted').length,
-      revenue: Number(revenue.toFixed(2)),
-      today: buildTodayFromOrders(orders),
-      daily: buildDailyFromOrders(orders),
-      topDishes,
-    })
-  },
-
-  async retryCloud() {
-    this.setData({ cloudDegraded: false })
-    await Promise.all([this.loadOrders(1), this.loadStats()])
-  },
-
-  async toggleBusinessStatus() {
-    if (this.data.businessSyncing) {
-      return
-    }
-
-    const nextOpen = !this.data.businessOpen
-    wx.vibrateShort({ type: 'light' })
-    this.setData({ businessSyncing: true })
-
-    try {
-      if (initCloud()) {
-        const result = await setBusinessStatusCloud(nextOpen, getAdminToken())
-        if (!result) {
-          wx.showToast({
-            title: '同步失败',
-            icon: 'none',
-          })
-          return
-        }
-        this.setData({ businessOpen: result.open })
-      } else {
-        this.setData({ businessOpen: nextOpen })
-      }
-
-      wx.showToast({
-        title: nextOpen ? '已开始营业' : '已暂停营业',
-        icon: 'none',
-      })
-    } finally {
-      this.setData({ businessSyncing: false })
+  onShow() {
+    if (this.data.adminReady) {
+      this.refreshDashboard()
     }
   },
 
-  switchCategory(event: WechatMiniprogram.BaseEvent) {
-    const category = event.currentTarget.dataset.category as string
-    this.setData({
-      activeCategory: category,
-      dishes: mapDishCards(category),
-      swipedDishId: '',
-    })
+  onPullDownRefresh() {
+    this.refreshDashboard().then(() => wx.stopPullDownRefresh())
   },
 
-  onDishTouchStart(event: WechatMiniprogram.TouchEvent) {
-    const touch = event.changedTouches[0]
-    this.setData({
-      touchStartX: touch ? touch.clientX : 0,
-      touchStartY: touch ? touch.clientY : 0,
-    })
+  goSpus() { wx.navigateTo({ url: '/pages/admin-spus/index' }) },
+  goOrders(event: WechatMiniprogram.Touch) {
+    const tab = (event.currentTarget.dataset.tab as string) || 'all'
+    wx.navigateTo({ url: `/pages/admin-orders/index?tab=${tab}` })
   },
-
-  onDishTouchEnd(event: WechatMiniprogram.TouchEvent) {
-    const touch = event.changedTouches[0]
-    const endX = touch ? touch.clientX : 0
-    const endY = touch ? touch.clientY : 0
-    const deltaX = endX - this.data.touchStartX
-    const deltaY = endY - this.data.touchStartY
-    const dishId = event.currentTarget.dataset.id as string
-
-    if (Math.abs(deltaY) > Math.abs(deltaX)) {
-      return
-    }
-
-    if (deltaX < -36) {
-      this.setData({
-        swipedDishId: dishId,
-      })
-      return
-    }
-
-    if (deltaX > 20 || this.data.swipedDishId === dishId) {
-      this.setData({
-        swipedDishId: '',
-      })
-    }
-  },
-
-  closeSwipe() {
-    if (!this.data.swipedDishId) {
-      return
-    }
-
-    this.setData({
-      swipedDishId: '',
-    })
-  },
-
-  goCreateDish() {
-    const category = this.data.activeCategory === '全部' ? '' : this.data.activeCategory
-    const query = category ? `?category=${encodeURIComponent(category)}` : ''
-
-    wx.navigateTo({
-      url: `/pages/admin-dish/index${query}`,
-    })
-  },
-
-  previewDishImage(event: WechatMiniprogram.BaseEvent) {
-    const image = event.currentTarget.dataset.image as string
-    if (image) {
-      wx.previewImage({ urls: [image] })
-    }
-  },
-
-  async toggleDishAvailability(event: WechatMiniprogram.CustomEvent) {
-    const dishId = event.currentTarget.dataset.id as string
-    const detail = event.detail as { value?: boolean }
-
-    updateDishAvailability(dishId, !detail.value)
-    await this.refreshPage()
-  },
-
-  removeDish(event: WechatMiniprogram.BaseEvent) {
-    const dishId = event.currentTarget.dataset.id as string
-    this.setData({ swipedDishId: '' })
-    wx.showModal({
-      title: '删除菜品',
-      content: '确定删除当前菜品吗？',
-      success: async (result) => {
-        if (!result.confirm) {
-          return
-        }
-
-        deleteDish(dishId)
-        await this.refreshPage()
-        wx.showToast({
-          title: '已删除',
-          icon: 'success',
-        })
-      },
-    })
-  },
-
-  goUserOrders(event: WechatMiniprogram.BaseEvent) {
-    const memberId = event.currentTarget.dataset.id as string
-    wx.navigateTo({
-      url: `/pages/admin-user/index?id=${memberId}`,
-    })
-  },
-
-  removeMemberRecord(event: WechatMiniprogram.BaseEvent) {
-    const memberId = event.currentTarget.dataset.id as string
-    wx.showModal({
-      title: '删除用户',
-      content: '将清除该用户及其订单记录，是否继续？',
-      success: async (result) => {
-        if (!result.confirm) {
-          return
-        }
-
-        deleteMember(memberId)
-        if (initCloud()) {
-          await deleteMemberCloud(memberId, getAdminToken())
-          await fetchCloudMembers()
-        }
-
-        await this.refreshPage()
-        wx.showToast({
-          title: '已删除',
-          icon: 'success',
-        })
-      },
-    })
-  },
-
-  goSettings() {
-    wx.navigateTo({
-      url: '/pages/admin-settings/index',
-    })
-  },
-
-  logout() {
-    clearCart()
-    clearSession(false)
-    wx.reLaunch({
-      url: '/pages/index/index',
-    })
-  },
+  goQueue() { wx.navigateTo({ url: '/pages/admin-queue/index' }) },
+  goStores() { wx.navigateTo({ url: '/pages/admin-stores/index' }) },
+  goSettings() { wx.navigateTo({ url: '/pages/admin-settings/index' }) },
+  goLegacyUser() { wx.navigateTo({ url: '/pages/admin-user/index' }) },
+  comingSoon() { wx.showToast({ title: 'R6b 开放', icon: 'none' }) },
 })

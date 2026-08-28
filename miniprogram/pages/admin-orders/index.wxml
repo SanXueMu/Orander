@@ -1,0 +1,49 @@
+<navigation-bar title="订单中心" back="{{true}}"></navigation-bar>
+<view class="admin-page">
+  <scroll-view scroll-x class="chip-row" enhanced show-scrollbar="{{false}}">
+    <view wx:for="{{tabs}}" wx:key="key" class="chip {{activeTab === item.key ? 'chip-on' : ''}}" data-key="{{item.key}}" bindtap="switchTab">{{item.name}}</view>
+  </scroll-view>
+
+  <block wx:if="{{activeTab !== 'refund'}}">
+    <view wx:for="{{orders}}" wx:key="id" class="order-card">
+      <view class="order-head">
+        <view class="num order-no">{{item.orderNumber}}</view>
+        <view class="order-status order-{{item.statusCode}}">{{item.statusText}}</view>
+      </view>
+      <view class="order-preview">{{item.previewText}}</view>
+      <view class="order-meta">
+        <text>{{item.bizText}}</text>
+        <text wx:if="{{item.queueNo}}" class="num"> · 排队 {{item.queueNo}} 号</text>
+        <text> · {{item.timeText}}</text>
+      </view>
+      <view class="order-foot">
+        <view class="num order-total">{{item.totalText}}</view>
+        <view class="order-acts">
+          <view wx:if="{{item.statusCode === 'PAID'}}" class="act act-brand" data-id="{{item.id}}" bindtap="startMaking">开始制作</view>
+          <view wx:elif="{{item.statusCode === 'PREPARING'}}" class="act act-brand" data-id="{{item.id}}" bindtap="complete">完成叫号</view>
+          <view class="act" data-id="{{item.id}}" bindtap="goDetail">详情</view>
+        </view>
+      </view>
+    </view>
+    <view wx:if="{{!orders.length && !loading}}" class="empty-panel">暂无订单</view>
+    <view wx:if="{{hasMore}}" class="load-more" bindtap="loadMore">加载更多</view>
+  </block>
+
+  <block wx:else>
+    <view wx:for="{{refunds}}" wx:key="id" class="order-card">
+      <view class="order-head">
+        <view class="num order-no">退款 · {{item.orderNumber}}</view>
+        <view class="order-status order-ref">{{item.statusText}}</view>
+      </view>
+      <view class="order-preview">原因：{{item.reason}}</view>
+      <view class="order-foot">
+        <view class="num order-total">{{item.amountText}}</view>
+        <view wx:if="{{item.status === 'PENDING'}}" class="order-acts">
+          <view class="act act-brand" data-id="{{item.id}}" bindtap="approveRefund">同意退款</view>
+          <view class="act act-danger" data-id="{{item.id}}" bindtap="rejectRefund">驳回</view>
+        </view>
+      </view>
+    </view>
+    <view wx:if="{{!refunds.length && !loading}}" class="empty-panel">无待审退款</view>
+  </block>
+</view>
