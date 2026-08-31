@@ -87,3 +87,50 @@
 .pe-busy {
   opacity: 0.7;
 }
+
+/* ===== R8.2 账户页：登录区 + 退出登录 ===== */
+.pe-role-tabs {
+  display: flex;
+  gap: 16rpx;
+  margin: 28rpx 0 24rpx;
+}
+
+.pe-role-tab {
+  flex: 1;
+  text-align: center;
+  padding: 18rpx 0;
+  border-radius: 999rpx;
+  border: 2rpx solid var(--line, #e5e5e5);
+  font-size: 26rpx;
+  color: var(--muted, #9a9a9a);
+}
+
+.pe-role-tab-active {
+  border-color: #1a1a1a;
+  background: #1a1a1a;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.pe-lock-hint {
+  margin: 16rpx 4rpx 0;
+  font-size: 24rpx;
+  color: #ff4d4f;
+}
+
+.pe-debug {
+  margin-top: 20rpx;
+}
+
+.pe-logout {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 30rpx 28rpx;
+  color: #ff4d4f;
+  font-size: 28rpx;
+}
+
+.pe-logout-arrow {
+  color: #d0d0d0;
+}

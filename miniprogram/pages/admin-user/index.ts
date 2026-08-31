@@ -31,7 +31,7 @@ Page({
   async onLoad(options: Record<string, string>) {
     if (!isAdminSession()) {
       wx.reLaunch({
-        url: '/pages/index/index',
+        url: '/pages/profile-edit/index',
       })
       return
     }

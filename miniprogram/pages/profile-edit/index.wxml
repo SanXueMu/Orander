@@ -3,27 +3,20 @@
 
   <scroll-view class="page-scroll" scroll-y>
     <view class="page-body pe-page-body list-gap">
-      <view wx:if="{{!loggedIn}}" class="surface empty-state">
-        <view class="section-title">还未登录</view>
-        <view class="section-copy">登录后即可维护你的头像与昵称。</view>
-        <view hover-class="press-scale" hover-stay-time="60" class="button-primary pe-login" bindtap="goLogin">去登录</view>
-      </view>
-
-      <block wx:else>
-        <!-- 头像 -->
+      <!-- ===== 已登录：头像/昵称编辑 ===== -->
+      <block wx:if="{{loggedIn}}">
         <view class="surface pe-card">
-          <view class="pe-row-label">头像</view>
+          <view class="pe-row-label">{{role === 'admin' ? '管理员头像' : '头像'}}</view>
           <button class="pe-avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar" hover-class="press-dim" hover-stay-time="60">
             <image wx:if="{{avatarUrl}}" class="pe-avatar-img" src="{{avatarUrl}}" mode="aspectFill" />
-            <view wx:else class="pe-avatar-ph">选头像</view>
+            <view wx:else class="pe-avatar-ph">{{role === 'admin' ? '管' : '选头像'}}</view>
             <view class="pe-avatar-edit">更换</view>
           </button>
-          <view class="section-copy pe-tip">点头像即可从微信头像或相册选取。</view>
+          <view wx:if="{{role !== 'admin'}}" class="section-copy pe-tip">点头像即可从微信头像或相册选取。</view>
         </view>
 
-        <!-- 昵称 -->
         <view class="surface pe-card">
-          <view class="pe-row-label">昵称</view>
+          <view class="pe-row-label">{{role === 'admin' ? '管理员昵称' : '昵称'}}</view>
           <input class="field-input pe-nickname" type="nickname" placeholder="填写昵称" placeholder-class="pe-nickname-ph" value="{{nickname}}" maxlength="16" bindinput="onNicknameInput" />
         </view>
 
@@ -33,6 +26,33 @@
           class="button-primary pe-save {{busy ? 'pe-busy' : ''}} {{dirty ? '' : 'pe-save-idle'}}"
           bindtap="save"
         >{{busy ? '保存中…' : '保存'}}</view>
+
+        <!-- 退出登录（页面最下方） -->
+        <view class="surface pe-logout" hover-class="press-dim" hover-stay-time="60" bindtap="logout">
+          <text>退出登录</text><text class="pe-logout-arrow">›</text>
+        </view>
+      </block>
+
+      <!-- ===== 未登录：登录区（原登录页能力收编） ===== -->
+      <block wx:else>
+        <view class="surface pe-card">
+          <view class="section-title">登录 Orander GO</view>
+          <view class="section-copy">选择身份，登录后可下单、领券与积累成长值。</view>
+
+          <view class="pe-role-tabs">
+            <view class="pe-role-tab {{activeRole === 'visitor' ? 'pe-role-tab-active' : ''}}" data-role="visitor" bindtap="chooseRole">访客登录</view>
+            <view class="pe-role-tab {{activeRole === 'admin' ? 'pe-role-tab-active' : ''}}" data-role="admin" bindtap="chooseRole">管理员登录</view>
+          </view>
+
+          <block wx:if="{{activeRole === 'admin'}}">
+            <input class="field-input pe-nickname" password placeholder="管理员密码" placeholder-class="pe-nickname-ph" value="{{adminPassword}}" bindinput="onPasswordInput" />
+          </block>
+
+          <view wx:if="{{lockHint}}" class="pe-lock-hint">{{lockHint}}</view>
+
+          <view hover-class="press-scale" hover-stay-time="60" class="button-primary pe-save {{busy ? 'pe-busy' : ''}}" bindtap="login">{{busy ? '登录中…' : '登录'}}</view>
+          <view wx:if="{{showDebugLogin}}" hover-class="press-dim" hover-stay-time="60" class="button-ghost pe-debug" bindtap="debugLogin">开发者工具快捷登录</view>
+        </view>
       </block>
     </view>
   </scroll-view>

@@ -1,5 +1,5 @@
 import { getBusinessStatusCloud, getLastCloudError, initCloud, publishLocalDishesToCloud, setBusinessStatusCloud, verifyAdminCloud, changeAdminPasswordCloud } from '../../utils/cloud'
-import { getAdminToken, isAdminSession, updateAdminToken } from '../../utils/orander'
+import { clearSession, getAdminToken, isAdminSession, updateAdminToken } from '../../utils/orander'
 import { pageLookBehavior } from '../../behaviors/page-look'
 
 Page({
@@ -20,7 +20,7 @@ Page({
   async onShow() {
     if (!isAdminSession()) {
       wx.reLaunch({
-        url: '/pages/index/index',
+        url: '/pages/profile-edit/index',
       })
       return
     }
@@ -167,4 +167,20 @@ Page({
       this.setData({ pwdSubmitting: false })
     }
   },
+
+  /* ===== 退出登录（页面最下方） ===== */
+  logout() {
+    wx.showModal({
+      title: '退出登录',
+      content: '退出后将清除管理员登录状态，确认退出？',
+      confirmText: '退出',
+      confirmColor: '#FF4D4F',
+      success: (res) => {
+        if (!res.confirm) return
+        clearSession(true)
+        wx.showToast({ title: '已退出', icon: 'success' })
+        wx.reLaunch({ url: '/pages/profile-edit/index' })
+      },
+    })
+  }
 })

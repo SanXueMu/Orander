@@ -1,6 +1,4 @@
 import {
-  clearCart,
-  clearSession,
   formatMoney,
   getCurrentMember,
   getSession,
@@ -111,26 +109,11 @@ Page({
   },
 
   goLogin() {
-    wx.navigateTo({ url: '/pages/index/index' })
+    wx.navigateTo({ url: '/pages/profile-edit/index' })
   },
 
   goProfileEdit() {
     wx.navigateTo({ url: '/pages/profile-edit/index' })
-  },
-
-  logout() {
-    wx.showModal({
-      title: '退出登录',
-      content: '退出后将返回登录页，确认退出？',
-      confirmText: '退出',
-      confirmColor: '#FF4D4F',
-      success: (res) => {
-        if (!res.confirm) return
-        clearCart()
-        clearSession(true)
-        wx.reLaunch({ url: '/pages/index/index' })
-      },
-    })
   },
 
   goOrders() {

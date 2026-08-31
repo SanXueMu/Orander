@@ -498,7 +498,7 @@ Page({
         confirmText: '去登录',
         success: (res) => {
           if (res.confirm) {
-            wx.navigateTo({ url: '/pages/index/index' })
+            wx.navigateTo({ url: '/pages/profile-edit/index' })
           }
         },
       })

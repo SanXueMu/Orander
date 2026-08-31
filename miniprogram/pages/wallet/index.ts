@@ -23,7 +23,7 @@ Page({
 
   onShow() {
     if (!isVisitorSession()) {
-      wx.navigateTo({ url: '/pages/index/index' })
+      wx.navigateTo({ url: '/pages/profile-edit/index' })
       return
     }
     applyPageLook(this, getCurrentMember())

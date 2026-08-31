@@ -41,7 +41,7 @@ Page({
   loadOrder(orderId: string) {
     if (!isVisitorSession()) {
       wx.reLaunch({
-        url: '/pages/index/index',
+        url: '/pages/profile-edit/index',
       })
       return
     }

@@ -90,11 +90,8 @@
           <view class="menu-row" hover-class="press-dim" hover-stay-time="60" bindtap="goPolicies">
             <text>条款与政策</text><text class="menu-arrow">›</text>
           </view>
-          <view class="menu-row" hover-class="press-dim" hover-stay-time="60" bindtap="goSettings">
+          <view class="menu-row menu-row-last" hover-class="press-dim" hover-stay-time="60" bindtap="goSettings">
             <text>设置</text><text class="menu-arrow">›</text>
-          </view>
-          <view class="menu-row menu-row-danger" hover-class="press-dim" hover-stay-time="60" bindtap="logout">
-            <text>退出登录</text><text class="menu-arrow">›</text>
           </view>
         </view>
       </block>

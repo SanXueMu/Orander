@@ -8,8 +8,7 @@
     <view slot="center" class="nav-title">设置</view>
   </navigation-bar>
 
-  <scroll-view class="page-scroll" scroll-y>
-    <view class="page-body admin-page-body list-gap">
+  <scroll-view class="page-scroll" scroll-y>    <view class="page-body admin-page-body list-gap">
 
       <view class="surface glass admin-settings-card">
         <view class="admin-settings-head">
@@ -64,6 +63,9 @@
         </view>
       </view>
 
+      <view class="surface admin-setting-row admin-logout-row" hover-class="press-dim" hover-stay-time="60" bindtap="logout">
+        <text>退出登录</text><text>›</text>
+      </view>
     </view>
   </scroll-view>
 </view>
