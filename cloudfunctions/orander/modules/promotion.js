@@ -190,6 +190,34 @@ module.exports = {
     return { cardNo: card.cardNo, name: card.name }
   },
 
+  /* ---- 福利管理（R8：手绘横幅/手写标题配图） ---- */
+  async listAllBenefits() {
+    const result = await col('benefits').limit(50).get()
+    return { items: result.data }
+  },
+
+  async saveBenefit(event = {}) {
+    const code = String(event.code || '')
+    if (!code) throw new Error('缺少福利 code')
+    const next = {
+      code,
+      title: String(event.title || ''),
+      subtitle: String(event.subtitle || ''),
+      description: String(event.description || ''),
+      image: String(event.image || ''),
+      heroTitle: String(event.heroTitle || ''),
+      status: String(event.status || 'ACTIVE'),
+      updatedAt: nowIso(),
+    }
+    const existing = await col('benefits').where({ code }).limit(1).get()
+    if (existing.data.length) {
+      await col('benefits').where({ code }).update({ data: next })
+    } else {
+      await col('benefits').add({ data: { ...next, createdAt: nowIso() } })
+    }
+    return next
+  },
+
   /* 周期福利：benefits 集合存规则（code: MONDAY_FREE_FEE / NEWBIE_20 / STUDENT_CARD / GOLD_CARD） */
   async listBenefits() {
     const openId = openIdOf()
@@ -263,6 +291,7 @@ module.exports = {
       total: Number(event.total || 0),
       issued: 0,
       limitPerUser: Number(event.limitPerUser || 1),
+      image: String(event.image || ''),
       status: 'ACTIVE',
       createdAt: nowIso(),
     }

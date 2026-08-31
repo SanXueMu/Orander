@@ -626,12 +626,27 @@ export const adminSetStoreOverrideCloud = (
 ) => callOrander<Record<string, unknown>>('setStoreSpuOverride', { adminToken, storeId, spuId, override })
 
 /* ============ R6b 管理端第二批次 ============ */
+export const getBannersCloud = (place = 'dish') =>
+  callOrander<{ items?: unknown[] }>('getBanners', { place })
+
+export const adminSaveBannerCloud = (adminToken: string, banner: Record<string, unknown>) =>
+  callOrander<Record<string, unknown>>('saveBanner', { adminToken, ...banner })
+
+export const adminDeleteBannerCloud = (adminToken: string, id: string) =>
+  callOrander<Record<string, unknown>>('deleteBanner', { adminToken, id })
+
+export const adminListBenefitsCloud = (adminToken: string) =>
+  callOrander<{ items?: unknown[] }>('listAllBenefits', { adminToken })
+
+export const adminSaveBenefitCloud = (adminToken: string, benefit: Record<string, unknown>) =>
+  callOrander<Record<string, unknown>>('saveBenefit', { adminToken, ...benefit })
+
 export const adminListCouponTemplatesCloud = (adminToken: string) =>
   callOrander<{ items?: unknown[] }>('listCouponTemplates', { adminToken })
 
 export const adminCreateCouponTemplateCloud = (
   adminToken: string,
-  payload: { name: string; type: string; value: number; threshold: number; validDays: number; total: number; limitPerUser: number },
+  payload: { name: string; type: string; value: number; threshold: number; validDays: number; total: number; limitPerUser: number; image?: string },
 ) => callOrander<Record<string, unknown>>('createCouponTemplate', { adminToken, ...payload })
 
 export const adminCreateCodeBatchCloud = (

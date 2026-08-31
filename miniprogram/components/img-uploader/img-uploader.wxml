@@ -1,0 +1,13 @@
+<view class="iu">
+  <view class="iu-box" bind:tap="onPick">
+    <image wx:if="{{value}}" class="iu-img" src="{{value}}" mode="aspectFill" />
+    <view wx:else class="iu-empty">
+      <text class="iu-plus">{{uploading ? '···' : '+'}}</text>
+      <text class="iu-tip">{{tips}}</text>
+    </view>
+  </view>
+  <view wx:if="{{value}}" class="iu-actions">
+    <text class="iu-act" catch:tap="onPick">预览</text>
+    <text class="iu-act iu-del" catch:tap="onClear">移除</text>
+  </view>
+</view>

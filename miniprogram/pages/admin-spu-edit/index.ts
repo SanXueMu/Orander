@@ -23,6 +23,7 @@ Page({
     catIds: [] as string[],
     catIndex: 0,
     groups: [] as GroupDraft[],
+    cover: '',
     saving: false,
   },
 
@@ -54,12 +55,17 @@ Page({
       catIds: cats.map((cat) => cat.id),
       catIndex,
       groups: spu ? toDraft(spu) : [],
+      cover: spu && spu.image ? String(spu.image) : '',
     })
   },
 
   onInput(event: WechatMiniprogram.Input) {
     const field = event.currentTarget.dataset.field as string
     this.setData({ [field]: event.detail.value } as Record<string, never>)
+  },
+
+  onCover(event: WechatMiniprogram.CustomEvent<{ value: string }>) {
+    this.setData({ cover: event.detail.value })
   },
 
   onCatChange(event: WechatMiniprogram.PickerChange) {
@@ -124,6 +130,7 @@ Page({
       name,
       basePrice,
       description: this.data.description.trim(),
+      images: this.data.cover ? [this.data.cover] : [],
       categoryId: this.data.catIds[this.data.catIndex] || '',
       specGroups,
     })

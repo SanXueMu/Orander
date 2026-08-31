@@ -45,6 +45,31 @@ module.exports = {
   },
 
   /* ---- admin ---- */
+  async saveBanner(event = {}) {
+    const id = String(event.id || `bn-${Date.now()}`)
+    const next = {
+      id,
+      place: String(event.place || 'home'),
+      image: String(event.image || ''),
+      link: String(event.link || ''),
+      order: Number(event.order || 0),
+      status: String(event.status || 'ON'),
+      updatedAt: nowIso(),
+    }
+    const existing = await col('banners').where({ id }).limit(1).get()
+    if (existing.data.length) {
+      await col('banners').where({ id }).update({ data: next })
+    } else {
+      await col('banners').add({ data: { ...next, createdAt: nowIso() } })
+    }
+    return next
+  },
+
+  async deleteBanner(event = {}) {
+    await col('banners').where({ id: String(event.id || '') }).remove()
+    return { ok: true }
+  },
+
   async saveActivity(event = {}) {
     const next = {
       id: (event.activity && event.activity.id) || `act-${Date.now()}`,

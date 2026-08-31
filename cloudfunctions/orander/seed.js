@@ -111,7 +111,14 @@ const seedIfEmpty = async (name, docs) => {
   return true
 }
 
+const BANNERS = [
+  { id: 'bn-dish-1', place: 'dish', image: '', link: '', order: 1, status: 'ON', title: '轻乳茶上新' },
+  { id: 'bn-dish-2', place: 'dish', image: '', link: '', order: 2, status: 'ON', title: '多肉杨梅回归' },
+  { id: 'bn-mall-1', place: 'mall', image: '', link: '', order: 1, status: 'ON', title: '茶礼盒专区' },
+]
+
 const runSeed = async () => {
+  await seedIfEmpty('banners', BANNERS)
   await seedIfEmpty('categories', CATEGORIES)
   await seedIfEmpty('spus', SPUS)
   await seedIfEmpty('stores', STORES)

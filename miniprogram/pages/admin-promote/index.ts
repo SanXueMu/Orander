@@ -2,6 +2,7 @@ import { getAdminToken } from '../../utils/orander'
 import {
   adminListCouponTemplatesCloud, adminCreateCouponTemplateCloud, adminCreateCodeBatchCloud,
   adminGrantCouponCloud, adminGetSlotsCloud, adminSetSlotCapacityCloud, adminListReservationsCloud,
+  adminListBenefitsCloud, adminSaveBenefitCloud,
 } from '../../utils/cloud'
 
 type CouponTpl = Record<string, unknown> & { id: string; name: string; type: string; value: number; threshold: number; total: number; issued: number }
@@ -9,7 +10,10 @@ type SlotRow = Record<string, unknown> & { id: string; label?: string; capacity:
 
 Page({
   data: {
-    tab: 'coupon' as 'coupon' | 'code' | 'grant' | 'gm',
+    tab: 'coupon' as 'coupon' | 'code' | 'grant' | 'gm' | 'benefit',
+    tplImage: '',
+    benefits: [] as Array<Record<string, unknown> & { code?: string; title?: string; subtitle?: string; image?: string; heroTitle?: string; status?: string }>,
+    benefitEditing: '' as string,
     loading: true,
     templates: [] as CouponTpl[],
     tplName: '',
@@ -43,7 +47,8 @@ Page({
 
   switchTab(event: WechatMiniprogram.TouchEvent) {
     const tab = String((event.currentTarget.dataset.tab || 'coupon'))
-    this.setData({ tab: tab as 'coupon' | 'code' | 'grant' | 'gm' })
+    this.setData({ tab: tab as 'coupon' | 'code' | 'grant' | 'gm' | 'benefit' })
+    if (tab === 'benefit') void this.loadBenefits()
     if (tab === 'gm') void this.loadGm()
     if (tab === 'grant') this.setData({ grantTplIndex: 0 })
   },
@@ -83,10 +88,54 @@ Page({
       validDays: Number(this.data.tplDays) || 30,
       total: Number(this.data.tplTotal) || 0,
       limitPerUser: Number(this.data.tplLimit) || 1,
+      image: this.data.tplImage,
     })
     wx.showToast({ title: '已创建', icon: 'success' })
-    this.setData({ tplName: '' })
+    this.setData({ tplName: '', tplImage: '' })
     void this.refresh()
+  },
+
+  onTplImage(event: WechatMiniprogram.CustomEvent<{ value: string }>) {
+    this.setData({ tplImage: event.detail.value })
+  },
+
+  /* ---- 福利管理（R8 手绘配图） ---- */
+  async loadBenefits() {
+    const token = getAdminToken()
+    if (!token) return
+    const data = await adminListBenefitsCloud(token).catch(() => null)
+    this.setData({ benefits: ((data && data.items) || []) as typeof this.data.benefits })
+  },
+
+  toggleBenefit(event: WechatMiniprogram.TouchEvent) {
+    const code = String(event.currentTarget.dataset.code || '')
+    this.setData({ benefitEditing: this.data.benefitEditing === code ? '' : code })
+  },
+
+  onBenefitField(event: WechatMiniprogram.Input) {
+    const idx = Number(event.currentTarget.dataset.idx)
+    const key = event.currentTarget.dataset.key as string
+    this.setData({ [`benefits[${idx}].${key}`]: event.detail.value } as unknown as WechatMiniprogram.IAnyObject)
+  },
+
+  onBenefitImage(event: WechatMiniprogram.CustomEvent<{ value: string }>) {
+    const idx = Number(event.currentTarget.dataset.idx)
+    this.setData({ [`benefits[${idx}].image`]: event.detail.value } as unknown as WechatMiniprogram.IAnyObject)
+  },
+
+  onBenefitHero(event: WechatMiniprogram.CustomEvent<{ value: string }>) {
+    const idx = Number(event.currentTarget.dataset.idx)
+    this.setData({ [`benefits[${idx}].heroTitle`]: event.detail.value } as unknown as WechatMiniprogram.IAnyObject)
+  },
+
+  async saveBenefitRow(event: WechatMiniprogram.TouchEvent) {
+    const token = getAdminToken()
+    const idx = Number(event.currentTarget.dataset.idx)
+    const row = this.data.benefits[idx]
+    if (!token || !row || !row.code) return
+    await adminSaveBenefitCloud(token, row)
+    wx.showToast({ title: '已保存', icon: 'success' })
+    this.setData({ benefitEditing: '' })
   },
 
   async createCodes() {

@@ -1,9 +1,9 @@
 <navigation-bar title="营销中心" back="{{true}}" />
 <scroll-view class="viewport" scroll-y>
   <view class="ap-tabs">
-    <view wx:for="{{['coupon','code','grant','gm']}}" wx:key="*this"
+    <view wx:for="{{['coupon','code','grant','gm','benefit']}}" wx:key="*this"
       class="ap-tab {{tab === item ? 'ap-tab-on' : ''}}" data-tab="{{item}}" bindtap="switchTab">
-      {{item === 'coupon' ? '券模板' : item === 'code' ? '兑换码' : item === 'grant' ? '批量发券' : '团餐档期'}}
+      {{item === 'coupon' ? '券模板' : item === 'code' ? '兑换码' : item === 'grant' ? '批量发券' : item === 'gm' ? '团餐档期' : '福利'}}
     </view>
   </view>
 
@@ -64,6 +64,25 @@
     <view class="ap-card" wx:if="{{reservations.length}}">
       <view class="ap-tpl-head"><text class="ap-tpl-name">当日预约</text></view>
       <view class="ap-tpl-meta" wx:for="{{reservations}}" wx:for-item="res" wx:key="id">{{res.timeLabel || res.slotId}} · {{res.contact || res.openId}} · {{res.headcount}}人</view>
+    </view>
+  </block>
+  <block wx:if="{{tab === 'benefit'}}">
+    <view class="ap-card" wx:for="{{benefits}}" wx:key="code">
+      <view class="ap-row-head" data-code="{{item.code}}" bindtap="toggleBenefit">
+        <text class="ap-name">{{item.title || item.code}}</text>
+        <text class="ap-tag">{{item.status === 'OFF' ? '已下架' : '生效中'}}</text>
+      </view>
+      <view wx:if="{{benefitEditing === item.code}}">
+        <view class="ap-form-row"><text>标题</text><input value="{{item.title}}" data-idx="{{index}}" data-key="title" bindinput="onBenefitField" /></view>
+        <view class="ap-form-row"><text>副标题</text><input value="{{item.subtitle}}" data-idx="{{index}}" data-key="subtitle" bindinput="onBenefitField" /></view>
+        <view class="ap-form-row"><text>手绘横幅</text>
+          <img-uploader value="{{item.image}}" tips="750x420" folder="benefits" data-idx="{{index}}" bind:change="onBenefitImage" />
+        </view>
+        <view class="ap-form-row"><text>手写标题</text>
+          <img-uploader value="{{item.heroTitle}}" tips="透明底" folder="benefits" data-idx="{{index}}" bind:change="onBenefitHero" />
+        </view>
+        <view class="ap-btn-row"><button class="ap-primary" data-idx="{{index}}" bindtap="saveBenefitRow">保存</button></view>
+      </view>
     </view>
   </block>
 </scroll-view>

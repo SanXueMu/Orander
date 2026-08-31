@@ -83,6 +83,8 @@ const actions = {
 
   /* promotion */
   listAssets: promotion.listAssets,
+  listAllBenefits: promotion.listAllBenefits,
+  saveBenefit: promotion.saveBenefit,
   listCouponTemplates: promotion.listCouponTemplates,
   receiveCoupon: promotion.receiveCoupon,
   listMyCoupons: promotion.listAssets,
@@ -133,6 +135,8 @@ const actions = {
   getHomeActivities: content.getHomeActivities,
   getActivity: content.getActivity,
   getBanners: content.getBanners,
+  saveBanner: content.saveBanner,
+  deleteBanner: content.deleteBanner,
   getPolicies: content.getPolicies,
   getPolicy: content.getPolicy,
   saveActivity: content.saveActivity,
@@ -172,6 +176,7 @@ const ADMIN_ONLY = new Set([
   'listSessions', 'takeoverSession', 'adminReply',
   'listApplies', 'issueInvoice',
   'saveActivity', 'deleteActivity', 'savePolicy',
+  'saveBanner', 'deleteBanner', 'saveBenefit', 'listAllBenefits',
   'setSlotCapacity', 'listReservations',
   'setBusinessStatus',
   'getDashboard',

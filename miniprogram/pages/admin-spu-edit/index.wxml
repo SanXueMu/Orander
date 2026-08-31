@@ -19,6 +19,10 @@
       <view class="field-label">卖点描述</view>
       <input class="field-input" value="{{description}}" bindinput="onInput" data-field="description" placeholder="一句话卖点" />
     </view>
+    <view class="field">
+      <view class="field-label">封面图</view>
+      <img-uploader value="{{cover}}" tips="750x750" folder="spus" bind:change="onCover" />
+    </view>
   </view>
 
   <view class="form-card">
