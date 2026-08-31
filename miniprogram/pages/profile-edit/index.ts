@@ -119,7 +119,7 @@ Page({
       title: '退出登录',
       content: '退出后将清除当前登录状态，确认退出？',
       confirmText: '退出',
-      confirmColor: '#FF4D4F',
+      confirmColor: '#B23A2E',
       success: (res) => {
         if (!res.confirm) return
         clearCart()

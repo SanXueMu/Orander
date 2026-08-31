@@ -4,5 +4,5 @@
 .iu-plus { font-size: 44rpx; color: #b6bcc4; line-height: 1; }
 .iu-tip { font-size: 20rpx; color: #b6bcc4; }
 .iu-actions { display: flex; gap: 16rpx; margin-top: 8rpx; }
-.iu-act { font-size: 22rpx; color: #2dcc70; }
-.iu-del { color: #ff4d4f; }
+.iu-act { font-size: 22rpx; color: #618137; }
+.iu-del { color: #b23a2e; }

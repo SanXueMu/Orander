@@ -238,7 +238,7 @@ Page({
   refreshPage() {
     const session = getSession()
     applyPageLook(this, getCurrentMember())
-    this.setData({ navColor: '#ffffff', navBackground: '#2b2b2b' })
+    this.setData({ navColor: '#ffffff', navBackground: '#333333' })
     const flow = decorateSpus()
     const categories = ['全部', ...flow.groups.map((group) => group.name)]
     this.setData({
