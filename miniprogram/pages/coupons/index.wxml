@@ -22,6 +22,7 @@
       <!-- 券列表 -->
       <block wx:if="{{!loading && coupons.length}}">
         <view wx:for="{{coupons}}" wx:key="id" class="surface coupon-card {{item.usable ? '' : 'coupon-card-disabled'}}">
+          <view wx:if="{{item.usable}}" class="coupon-stamp">券</view>
           <view class="coupon-left">
             <view class="num coupon-value">{{item.valueText}}</view>
             <view class="coupon-threshold">{{item.thresholdText}}</view>

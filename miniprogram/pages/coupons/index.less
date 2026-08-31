@@ -70,6 +70,7 @@
 
 /* 券卡：左值右说明，中间打孔线 */
 .coupon-card {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 24rpx;
@@ -98,15 +99,48 @@
 }
 
 .coupon-divider {
-  width: 2rpx;
+  position: relative;
+  width: 0;
   align-self: stretch;
-  background: repeating-linear-gradient(
-    to bottom,
-    var(--line) 0,
-    var(--line) 12rpx,
-    transparent 12rpx,
-    transparent 22rpx
-  );
+  border-left: 3rpx dashed var(--line, #e5e5e5);
+}
+
+/* 票券半圆缺口：骑在卡片上下边缘 */
+.coupon-divider::before,
+.coupon-divider::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 26rpx;
+  height: 26rpx;
+  border-radius: 50%;
+  background: var(--bg, #f6f7f9);
+}
+
+.coupon-divider::before {
+  top: -43rpx;
+}
+
+.coupon-divider::after {
+  bottom: -43rpx;
+}
+
+/* 旋转印章 */
+.coupon-stamp {
+  position: absolute;
+  right: 20rpx;
+  top: 16rpx;
+  width: 56rpx;
+  height: 56rpx;
+  border: 3rpx solid rgba(255, 77, 79, 0.55);
+  border-radius: 50%;
+  color: rgba(255, 77, 79, 0.75);
+  font-size: 26rpx;
+  font-weight: 700;
+  line-height: 50rpx;
+  text-align: center;
+  transform: rotate(12deg);
 }
 
 .coupon-body {

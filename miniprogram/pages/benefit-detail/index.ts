@@ -8,6 +8,7 @@ Page({
 
   data: {
     meta: benefitMetaOf('') as BenefitMeta,
+    cloud: { image: '', heroTitle: '', title: '', subtitle: '' },
     claimed: false,
     claiming: false,
     cloudOk: true,
@@ -23,8 +24,18 @@ Page({
   async checkClaimed() {
     try {
       const result = await listBenefitsCloud()
-      const claimed = (result && result.claimed ? result.claimed : []).some((row) => row.code === this.data.meta.code)
-      this.setData({ claimed, cloudOk: true })
+      const rows = (result && result.items) || []
+      const row = rows.find((item) => item.code === this.data.meta.code)
+      const cloud = row
+        ? {
+            image: row.image || '',
+            heroTitle: row.heroTitle || '',
+            title: row.title || '',
+            subtitle: row.subtitle || '',
+          }
+        : this.data.cloud
+      const claimed = (result && result.claimed ? result.claimed : []).some((claim) => claim.code === this.data.meta.code)
+      this.setData({ claimed, cloud, cloudOk: true })
     } catch (error) {
       console.warn('[benefit-detail] check skipped', error)
       this.setData({ cloudOk: false })

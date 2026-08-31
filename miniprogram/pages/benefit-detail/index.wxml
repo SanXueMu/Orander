@@ -3,11 +3,14 @@
 
   <scroll-view class="page-scroll" scroll-y>
     <view class="page-body bd-page-body list-gap">
-      <!-- 主视觉横幅 -->
-      <view class="bd-hero bd-hero-{{meta.tone}}">
-        <view class="bd-hero-kicker">MEMBER BENEFIT</view>
-        <view class="bd-hero-name">{{meta.name}}</view>
-        <view class="bd-hero-tagline">{{meta.tagline}}</view>
+      <!-- 主视觉横幅：手绘配图优先，tone 渐变兜底 -->
+      <view class="bd-hero bd-hero-{{meta.tone}} {{cloud.image ? 'bd-hero-photo' : ''}}">
+        <image wx:if="{{cloud.image}}" class="bd-hero-img" src="{{cloud.image}}" mode="aspectFill" />
+        <view wx:if="{{cloud.image}}" class="bd-hero-veil"></view>
+        <image wx:if="{{cloud.heroTitle}}" class="bd-hero-hand" src="{{cloud.heroTitle}}" mode="aspectFit" />
+        <view wx:if="{{!cloud.heroTitle}}" class="bd-hero-kicker">MEMBER BENEFIT</view>
+        <view class="bd-hero-name {{cloud.heroTitle ? 'bd-hero-name-dim' : ''}}">{{cloud.title || meta.name}}</view>
+        <view class="bd-hero-tagline">{{cloud.subtitle || meta.tagline}}</view>
       </view>
 
       <!-- 权益说明 -->

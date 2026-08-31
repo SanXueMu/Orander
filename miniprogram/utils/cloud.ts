@@ -470,6 +470,10 @@ export interface BenefitItem {
   name: string
   description?: string
   status?: string
+  title?: string
+  subtitle?: string
+  image?: string
+  heroTitle?: string
 }
 
 export const listBenefitsCloud = () =>

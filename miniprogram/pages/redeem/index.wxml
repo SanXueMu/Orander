@@ -29,13 +29,21 @@
       </view>
 
       <!-- 金喜卡 -->
-      <view wx:else class="surface redeem-panel">
-        <view class="section-title">金喜卡激活</view>
+      <view wx:else class="list-gap">
+        <view class="gold-card-face">
+          <view class="gcf-shine"></view>
+          <view class="gcf-brand">ORANDER GO</view>
+          <view class="gcf-name">金喜卡</view>
+          <view class="gcf-sub">GOLDEN JOY CARD · 下单享 8.8 折</view>
+        </view>
+        <view class="surface redeem-panel">
+          <view class="section-title">金喜卡激活</view>
         <view class="section-copy">购买实体卡后，输入卡面卡号与激活码完成绑定。</view>
         <input class="field-input redeem-input" placeholder="卡号（如 GOLD-2025-000001）" value="{{cardNoInput}}" maxlength="30" bindinput="onCardNoInput" />
         <input class="field-input redeem-input" placeholder="激活码（卡背涂层内）" value="{{activeCodeInput}}" maxlength="20" bindinput="onActiveCodeInput" />
         <view hover-class="press-scale" hover-stay-time="60" class="button-primary redeem-submit redeem-gold {{busy ? 'redeem-busy' : ''}}" bindtap="submitCard">{{busy ? '处理中…' : '立即激活'}}</view>
-        <view class="section-copy redeem-note">已有电子金喜卡的用户下单时自动享 8.8 折，无需重复激活。</view>
+          <view class="section-copy redeem-note">已有电子金喜卡的用户下单时自动享 8.8 折，无需重复激活。</view>
+        </view>
       </view>
     </view>
   </scroll-view>

@@ -90,3 +90,55 @@
 .bd-note {
   text-align: center;
 }
+
+/* ============ R8 手绘横幅：配图 + 手写标题字叠放 ============ */
+.bd-hero {
+  position: relative;
+  overflow: hidden;
+}
+
+.bd-hero-photo {
+  min-height: 420rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.bd-hero-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.bd-hero-veil {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 30%, rgba(0, 0, 0, 0.55) 100%);
+}
+
+.bd-hero-hand {
+  position: absolute;
+  right: 24rpx;
+  top: 20rpx;
+  width: 220rpx;
+  height: 140rpx;
+  z-index: 2;
+}
+
+.bd-hero-photo .bd-hero-kicker,
+.bd-hero-photo .bd-hero-name,
+.bd-hero-photo .bd-hero-tagline {
+  position: relative;
+  z-index: 1;
+}
+
+.bd-hero-photo .bd-hero-name,
+.bd-hero-photo .bd-hero-tagline {
+  color: #ffffff;
+}
+
+.bd-hero-name-dim {
+  font-size: 40rpx;
+  letter-spacing: 3rpx;
+}
