@@ -7,6 +7,9 @@ Page({
 
   data: {
     activities: [] as import('../../utils/cloud').HomeActivity[],
+    posters: [] as Array<{ key: string; title: string; subtitle?: string; kicker?: string; ctaText?: string; badge?: string; heroImage?: string; tone: number }>,
+    posterCur: 0,
+    posterProgress: 100,
     profile: null as ReturnType<typeof getCurrentMember>,
     greetingText: '',
     dateText: '',
@@ -52,12 +55,37 @@ Page({
     })
   },
 
+  onPosterChange(event: WechatMiniprogram.SwiperChange) {
+    const total = this.data.posters.length || 1
+    this.setData({
+      posterCur: event.detail.current,
+      posterProgress: Math.round(((event.detail.current + 1) / total) * 100),
+    })
+  },
+
   async loadActivities() {
     try {
       const data = await getHomeActivitiesCloud()
-      this.setData({ activities: (data && data.activities) || [] })
+      const activities = (data && data.activities) || []
+      const KICKER: Record<string, string> = { NEW_PRODUCT: '新品首发', ANNIVERSARY: '周年庆', INVITE_MEMBER: '邀请有礼', SELLING_POINT: '单品卖点' }
+      const CTA: Record<string, string> = { NEW_PRODUCT: '去尝鲜', ANNIVERSARY: '立即下单', SELLING_POINT: '去点单' }
+      const TONE: Record<string, number> = { NEW_PRODUCT: 0, ANNIVERSARY: 1, INVITE_MEMBER: 2, SELLING_POINT: 3 }
+      const posters = activities.map((item) => ({
+        key: item.id,
+        title: item.title || '',
+        subtitle: item.subtitle || '',
+        kicker: KICKER[String(item.template)] || '',
+        ctaText: CTA[String(item.template)] || '',
+        badge: String(item.template) === 'NEW_PRODUCT' ? 'NEW' : '',
+        heroImage: ((item as unknown as Record<string, unknown>).heroImage as string) || '',
+        tone: TONE[String(item.template)] ?? 4,
+      }))
+      if (!posters.length) {
+        posters.push({ key: 'empty', title: '一杯灵感之茶', subtitle: '此刻为你现制', kicker: 'ORANDER GO', ctaText: '去点单', badge: '', heroImage: '', tone: 0 })
+      }
+      this.setData({ activities, posters, posterCur: 0, posterProgress: Math.round((1 / posters.length) * 100) })
     } catch (error) {
-      this.setData({ activities: [] })
+      this.setData({ activities: [], posters: [{ key: 'empty', title: '一杯灵感之茶', subtitle: '此刻为你现制', kicker: 'ORANDER GO', ctaText: '去点单', badge: '', heroImage: '', tone: 0 }] })
     }
   },
 

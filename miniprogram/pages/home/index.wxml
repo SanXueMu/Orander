@@ -4,16 +4,9 @@
   <scroll-view class="page-scroll" scroll-y>
     <view class="page-body home-page-body with-tabbar">
 
-      <view class="home-hero fade-in-up">
-        <view class="home-hero-date">{{dateText}}</view>
-        <view class="home-hero-title">{{greetingText}}</view>
-        <view class="home-hero-copy">一杯灵感之茶，此刻为你现制。</view>
-        <view class="home-hero-cup" aria-hidden="true">
-          <view class="home-hero-cup-lid"></view>
-          <view class="home-hero-cup-body">
-            <view class="home-hero-cup-leaf"></view>
-          </view>
-        </view>
+      <view class="home-topline fade-in-up">
+        <text class="home-topline-date">{{dateText}}</text>
+        <text class="home-topline-greet">{{greetingText}}</text>
       </view>
 
       <view class="home-entry-row fade-in-up-late">
@@ -30,39 +23,36 @@
       </view>
 
 
-      <!-- CMS 活动流（content 域排期驱动，R4） -->
-      <view wx:for="{{activities}}" wx:key="id" class="act-card fade-in-up" data-template="{{item.template}}">
-        <view wx:if="{{item.template === 'NEW_PRODUCT'}}" class="act-hero act-hero-green">
-          <view class="act-kicker">新品首发</view>
-          <view class="act-title">{{item.title}}</view>
-          <view class="act-sub">{{item.subtitle}}</view>
-          <view class="act-cta act-cta-light" hover-class="press-scale" hover-stay-time="60" catchtap="goPickup">去尝鲜</view>
-        </view>
-
-        <view wx:elif="{{item.template === 'ANNIVERSARY'}}" class="act-hero act-hero-gold">
-          <view class="act-kicker">周年庆</view>
-          <view class="act-title">{{item.title}}</view>
-          <view class="act-sub">{{item.subtitle}}</view>
-          <view class="act-cta act-cta-dark" hover-class="press-scale" hover-stay-time="60" catchtap="goPickup">立即下单</view>
-        </view>
-
-        <view wx:elif="{{item.template === 'INVITE_MEMBER'}}" class="act-ticket">
-          <view class="act-ticket-left">
-            <view class="act-kicker">邀请有礼</view>
-            <view class="act-title">{{item.title}}</view>
-            <view class="act-sub">{{item.subtitle}}</view>
+      <!-- 海报轮播（CMS 活动排期驱动，R8 海报化）：白底画布 / 主视觉大图 / 细线进度指示器 -->
+      <view class="poster-stage fade-in-up">
+        <swiper class="poster-swiper" current="{{posterCur}}" circular autoplay interval="5000" bindchange="onPosterChange">
+          <block wx:for="{{posters}}" wx:key="key">
+            <swiper-item>
+              <view class="poster-card {{item.heroImage ? 'poster-photo' : 'poster-tone-' + item.tone}}">
+                <image wx:if="{{item.heroImage}}" class="poster-img" src="{{item.heroImage}}" mode="aspectFill" />
+                <view wx:if="{{item.heroImage}}" class="poster-img-veil"></view>
+                <view wx:else class="poster-doodle" aria-hidden="true">
+                  <view class="poster-doodle-ring"></view>
+                  <view class="poster-doodle-dot poster-doodle-dot-a"></view>
+                  <view class="poster-doodle-dot poster-doodle-dot-b"></view>
+                </view>
+                <view class="poster-body">
+                  <view wx:if="{{item.kicker}}" class="poster-kicker">{{item.kicker}}</view>
+                  <view class="poster-title">{{item.title}}</view>
+                  <view wx:if="{{item.subtitle}}" class="poster-sub">{{item.subtitle}}</view>
+                  <view wx:if="{{item.ctaText}}" class="poster-cta" hover-class="press-scale" hover-stay-time="60" catchtap="goPickup">{{item.ctaText}}</view>
+                </view>
+                <view wx:if="{{item.badge}}" class="poster-badge">{{item.badge}}</view>
+              </view>
+            </swiper-item>
+          </block>
+        </swiper>
+        <view wx:if="{{posters.length > 1}}" class="poster-progress">
+          <view class="poster-progress-track">
+            <view class="poster-progress-bar" style="width: {{posterProgress}}%"></view>
           </view>
-          <view class="act-ticket-right">
-            <text class="num ticket-num">¥20</text>
-            <text class="ticket-unit">两张券</text>
-            <view class="act-invite-btn" hover-class="press-scale" hover-stay-time="60" bindtap="comingSoonInvite">去邀请</view>
-          </view>
         </view>
-
-        <view wx:else class="act-hero act-hero-warm">
-          <view class="act-title">{{item.title}}</view>
-          <view class="act-sub">{{item.subtitle}}</view>
-        </view>
+        <view class="poster-chevron" aria-hidden="true"></view>
       </view>
 
       <view class="home-slogan fade-in-up-late">new style tea, by inspiration</view>
