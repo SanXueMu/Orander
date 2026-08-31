@@ -14,7 +14,7 @@
 
       <!-- 已登录：身份卡 -->
       <block wx:else>
-        <view class="surface member-card">
+        <view class="surface member-card" hover-class="press-dim" hover-stay-time="60" bindtap="goProfileEdit">
           <view class="member-card-top">
             <image wx:if="{{showAvatarImage}}" class="member-avatar-img" src="{{avatarUrl}}" mode="aspectFill"></image>
             <view wx:else class="member-avatar">{{avatarLabel}}</view>
@@ -90,7 +90,7 @@
           <view class="menu-row" hover-class="press-dim" hover-stay-time="60" bindtap="goPolicies">
             <text>条款与政策</text><text class="menu-arrow">›</text>
           </view>
-          <view class="menu-row menu-row-last" hover-class="press-dim" hover-stay-time="60" bindtap="goSettings">
+          <view class="menu-row" hover-class="press-dim" hover-stay-time="60" bindtap="goSettings">
             <text>设置</text><text class="menu-arrow">›</text>
           </view>
         </view>

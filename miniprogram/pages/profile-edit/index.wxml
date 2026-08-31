@@ -1,0 +1,39 @@
+<view class="orander-page {{themeClass}} {{fontClass}}">
+  <navigation-bar title="个人信息" color="{{navColor}}" background="{{navBackground}}"></navigation-bar>
+
+  <scroll-view class="page-scroll" scroll-y>
+    <view class="page-body pe-page-body list-gap">
+      <view wx:if="{{!loggedIn}}" class="surface empty-state">
+        <view class="section-title">还未登录</view>
+        <view class="section-copy">登录后即可维护你的头像与昵称。</view>
+        <view hover-class="press-scale" hover-stay-time="60" class="button-primary pe-login" bindtap="goLogin">去登录</view>
+      </view>
+
+      <block wx:else>
+        <!-- 头像 -->
+        <view class="surface pe-card">
+          <view class="pe-row-label">头像</view>
+          <button class="pe-avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar" hover-class="press-dim" hover-stay-time="60">
+            <image wx:if="{{avatarUrl}}" class="pe-avatar-img" src="{{avatarUrl}}" mode="aspectFill" />
+            <view wx:else class="pe-avatar-ph">选头像</view>
+            <view class="pe-avatar-edit">更换</view>
+          </button>
+          <view class="section-copy pe-tip">点头像即可从微信头像或相册选取。</view>
+        </view>
+
+        <!-- 昵称 -->
+        <view class="surface pe-card">
+          <view class="pe-row-label">昵称</view>
+          <input class="field-input pe-nickname" type="nickname" placeholder="填写昵称" placeholder-class="pe-nickname-ph" value="{{nickname}}" maxlength="16" bindinput="onNicknameInput" />
+        </view>
+
+        <view
+          hover-class="press-scale"
+          hover-stay-time="60"
+          class="button-primary pe-save {{busy ? 'pe-busy' : ''}} {{dirty ? '' : 'pe-save-idle'}}"
+          bindtap="save"
+        >{{busy ? '保存中…' : '保存'}}</view>
+      </block>
+    </view>
+  </scroll-view>
+</view>

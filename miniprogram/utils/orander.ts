@@ -683,6 +683,17 @@ export const loginAdmin = (profile?: Partial<WechatMiniprogram.UserInfo>, loginC
   })
 }
 
+export const updateCurrentMember = (patch: { nickname: string; avatarUrl: string }) => {
+  const currentMember = getCurrentMember()
+  if (!currentMember) return null
+  const nextMember = saveCurrentMember({ ...currentMember, ...patch })
+  const session = getSession()
+  if (session) {
+    saveSession({ ...session, nickname: nextMember.nickname, avatarUrl: nextMember.avatarUrl })
+  }
+  return nextMember
+}
+
 export const saveLastOrderId = (orderId: string) => {
   writeStorage(STORAGE_KEYS.lastOrderId, orderId)
 }
