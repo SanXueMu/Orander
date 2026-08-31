@@ -15,10 +15,10 @@
 
 .menu-banner {
   flex: none;
-  background: var(--brand);
-  color: #ffffff;
-  padding: 22rpx 32rpx 26rpx;
-  border-radius: 0 0 36rpx 36rpx;
+  background: #ffffff;
+  color: var(--ink);
+  padding: 20rpx 32rpx 24rpx;
+  border-bottom: 2rpx solid rgba(0, 0, 0, 0.05);
 }
 
 .menu-banner-top {
@@ -41,7 +41,7 @@
 .menu-banner-date {
   margin-top: 6rpx;
   font-size: 22rpx;
-  color: rgba(255, 255, 255, 0.78);
+  color: #9a9a9a;
 }
 
 .menu-banner-badge {
@@ -51,24 +51,26 @@
   gap: 10rpx;
   padding: 10rpx 20rpx;
   border-radius: 999rpx;
-  background: rgba(255, 255, 255, 0.18);
+  background: var(--brand-soft);
+  color: var(--brand-deep);
   font-size: 22rpx;
   font-weight: 600;
 }
 
 .menu-banner-badge-closed {
-  background: rgba(0, 0, 0, 0.24);
+  background: #f4f4f4;
+  color: #9a9a9a;
 }
 
 .menu-banner-badge-dot {
   width: 12rpx;
   height: 12rpx;
   border-radius: 50%;
-  background: #a8e6c5;
+  background: var(--brand-deep);
 }
 
 .menu-banner-badge-closed .menu-banner-badge-dot {
-  background: rgba(255, 255, 255, 0.6);
+  background: #c9c9c9;
 }
 
 /* banner 内嵌搜索条：近实色白底 */
@@ -331,7 +333,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(245, 241, 230, 0.78);
+  background: #f4f4f4;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -500,8 +502,9 @@
   justify-content: space-between;
   padding: 0 12rpx 0 34rpx;
   border-radius: 999rpx;
-  background: var(--brand);
-  box-shadow: 0 12rpx 36rpx rgba(31, 91, 67, 0.32);
+  background: #f4f3f3;
+  border: 2rpx solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 12rpx 36rpx rgba(0, 0, 0, 0.10);
   z-index: 29;
   transition: transform 0.15s ease;
 }
@@ -514,13 +517,13 @@
 
 .settle-total-label {
   font-size: 22rpx;
-  color: rgba(255, 255, 255, 0.75);
+  color: #9a9a9a;
 }
 
 .settle-total-amount {
   font-size: 38rpx;
   font-weight: 800;
-  color: #f7e3ac;
+  color: var(--appetite);
 }
 
 .settle-cta {
@@ -531,8 +534,8 @@
   align-items: center;
   justify-content: center;
   gap: 12rpx;
-  background: #ffffff;
-  color: var(--brand-deep);
+  background: #1a1a1a;
+  color: #ffffff;
   border-radius: 999rpx;
   font-size: 28rpx;
   font-weight: 700;
@@ -558,7 +561,7 @@
 /* ============ R2 店铺地址栏（到店取 | 喜外送） ============ */
 
 .store-bar {
-  padding: 20rpx 32rpx 24rpx;
+  padding: 14rpx 32rpx 18rpx;
   background: #333333;
 }
 
@@ -678,8 +681,8 @@
 }
 
 .dc-card {
-  width: 620rpx;
-  height: 349rpx;
+  width: 660rpx;
+  height: 200rpx;
   border-radius: 10rpx;
   overflow: hidden;
   flex-shrink: 0;
@@ -703,28 +706,18 @@
 
 .dc-tone-0 { background: linear-gradient(135deg, #e8ddd2 0%, #d6c4b4 100%); }
 .dc-tone-1 { background: linear-gradient(135deg, #f7f7f7 0%, #e8e8e8 100%); }
-.dc-tone-2 { background: linear-gradient(135deg, #ffe9c8 0%, #ffd166 100%); }
+.dc-tone-2 { background: linear-gradient(135deg, #f3f3ec 0%, #e2dcc9 100%); }
 
 .dc-fallback-title {
-  font-size: 40rpx;
+  font-size: 34rpx;
   font-weight: 800;
-  color: #ffffff;
-  letter-spacing: 2rpx;
-}
-
-.dc-tone-1 .dc-fallback-title,
-.dc-tone-2 .dc-fallback-title {
   color: #1a1a1a;
+  letter-spacing: 2rpx;
 }
 
 .dc-fallback-sub {
   font-size: 18rpx;
   letter-spacing: 3rpx;
-  color: rgba(255, 255, 255, 0.85);
-}
-
-.dc-tone-1 .dc-fallback-sub,
-.dc-tone-2 .dc-fallback-sub {
   color: #8a8a8a;
 }
 

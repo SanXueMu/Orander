@@ -104,6 +104,12 @@ const decorateSpus = (): { groups: MenuFlowGroupView[]; total: number } => {
 
 const WEEKDAYS = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
 
+const DISH_BANNER_FALLBACK = [
+  { id: 'fb-0', title: '灵感上新', sub: 'NEW ARRIVAL' },
+  { id: 'fb-1', title: '当季限定', sub: 'SEASONAL LIMITED' },
+  { id: 'fb-2', title: '会员日双倍成长值', sub: 'MEMBERS DAY' },
+]
+
 Page({
   behaviors: [pageLookBehavior],
 
@@ -166,7 +172,8 @@ Page({
       this.setData({ menuLoading: true })
       getBannersCloud('dish').then((result) => {
         const items = ((result && result.items) || []) as typeof this.data.banners
-        this.setData({ banners: items.filter((item) => item.image || item.title) })
+        const live = items.filter((item) => item.image || item.title)
+        this.setData({ banners: live.length ? live : DISH_BANNER_FALLBACK })
       }).catch(() => null)
       const catalog = await fetchCatalogCloud()
       if (catalog && catalog.spus && catalog.spus.length > 0) {

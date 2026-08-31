@@ -54,7 +54,7 @@
   </view>
 
   <!-- 顶部轮播：新品/活动手绘卡（banners place=dish） -->
-  <scroll-view wx:if="{{banners.length}}" class="dish-carousel" scroll-x enhanced show-scrollbar="{{false}}">
+  <scroll-view class="dish-carousel" scroll-x enhanced show-scrollbar="{{false}}">
     <view class="dc-track">
       <view
         wx:for="{{banners}}"
