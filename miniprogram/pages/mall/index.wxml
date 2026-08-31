@@ -12,13 +12,30 @@
     <view wx:if="{{!sections.length && !loading}}" class="mall-tab">百货即将上新</view>
   </view>
 
+  <!-- 顶部轮播：近方形策展大图（banners place=mall） -->
+  <view wx:if="{{banners.length}}" class="mall-carousel">
+    <swiper class="mc-swiper" current="{{bannerCur}}" circular autoplay interval="4500" bindchange="onBannerChange">
+      <swiper-item wx:for="{{banners}}" wx:key="id" data-link="{{item.link}}" bindtap="onBannerTap">
+        <view class="mc-card">
+          <image wx:if="{{item.image}}" class="mc-img" src="{{item.image}}" mode="aspectFill" />
+          <view wx:else class="mc-fallback mc-tone-{{index % 3}}">
+            <text class="mc-fallback-title">{{item.title}}</text>
+            <text class="mc-fallback-sub">CURATED GOODS · ORANDER</text>
+          </view>
+        </view>
+      </swiper-item>
+    </swiper>
+    <view wx:if="{{banners.length > 1}}" class="mc-arrow mc-arrow-l" hover-class="press-dim" hover-stay-time="60" data-step="-1" bindtap="bannerStep">‹</view>
+    <view wx:if="{{banners.length > 1}}" class="mc-arrow mc-arrow-r" hover-class="press-dim" hover-stay-time="60" data-step="1" bindtap="bannerStep">›</view>
+  </view>
+
   <scroll-view class="page-scroll mall-scroll" scroll-y scroll-into-view="{{scrollInto}}" scroll-with-animation>
     <view class="page-body mall-page-body with-tabbar">
       <block wx:for="{{sections}}" wx:key="key" wx:for-item="section">
         <view id="floor-{{section.key}}" class="mall-floor fade-in-up">
           <view class="mall-floor-head">
             <view class="mall-floor-title">{{section.title}}</view>
-            <view class="mall-floor-more" data-floor="{{section.key}}" data-title="{{section.title}}" bindtap="goMore">查看更多 ›</view>
+            <view class="mall-floor-sub">{{section.key}}</view>
           </view>
           <view class="mall-floor-grid">
             <view
@@ -39,6 +56,7 @@
               </view>
             </view>
           </view>
+          <view class="mall-floor-more" data-floor="{{section.key}}" data-title="{{section.title}}" bindtap="goMore">查看更多 ›</view>
         </view>
       </block>
     </view>

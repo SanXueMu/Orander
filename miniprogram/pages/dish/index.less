@@ -144,7 +144,7 @@
   flex: none;
   width: 176rpx;
   height: 100%;
-  background: var(--panel-soft);
+  background: #ffffff;
   border-radius: 28rpx 0 0 0;
 }
 
@@ -152,9 +152,9 @@
   position: relative;
   display: flex;
   align-items: center;
-  padding: 30rpx 16rpx 30rpx 30rpx;
+  padding: 26rpx 16rpx 26rpx 30rpx;
   font-size: 24rpx;
-  color: var(--muted);
+  color: #9a9a9a;
   transition: color 0.15s ease;
 }
 
@@ -165,26 +165,10 @@
   text-overflow: ellipsis;
 }
 
-.rail-item-bar {
-  position: absolute;
-  left: 12rpx;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 6rpx;
-  height: 0;
-  border-radius: 6rpx;
-  background: var(--gold);
-  transition: height 0.18s ease;
-}
-
 .rail-item-active {
-  background: var(--glass);
-  color: var(--brand);
+  color: #1a1a1a;
   font-weight: 700;
-}
-
-.rail-item-active .rail-item-bar {
-  height: 32rpx;
+  font-size: 28rpx;
 }
 
 /* 右菜品流：单列横卡 */
@@ -574,33 +558,174 @@
 /* ============ R2 店铺地址栏（到店取 | 喜外送） ============ */
 
 .store-bar {
-  display: flex;
-  align-items: center;
-  gap: 20rpx;
-  padding: 16rpx 24rpx;
-  background: #ffffff;
+  padding: 20rpx 32rpx 24rpx;
+  background: #2b2b2b;
 }
 
 .store-seg {
   display: flex;
-  padding: 4rpx;
-  border-radius: 999rpx;
-  background: var(--panel-soft);
-  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
 }
 
 .seg-item {
-  padding: 12rpx 26rpx;
-  font-size: 24rpx;
-  color: var(--muted);
-  border-radius: 999rpx;
-  transition: all 180ms ease;
+  position: relative;
+  padding: 8rpx 30rpx 20rpx;
+  font-size: 26rpx;
+  color: #a8a8a8;
+  transition: color 180ms ease;
+}
+
+.seg-item::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 6rpx;
+  transform: translateX(-50%);
+  width: 0;
+  height: 6rpx;
+  border-radius: 6rpx;
+  background: #ffffff;
+  transition: width 180ms ease;
 }
 
 .seg-active {
-  background: var(--accent);
   color: #ffffff;
-  font-weight: 600;
+  font-weight: 700;
+}
+
+.seg-active::after {
+  width: 40rpx;
+}
+
+.seg-divider {
+  width: 2rpx;
+  height: 22rpx;
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.store-row {
+  margin-top: 14rpx;
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.store-name {
+  color: #ffffff;
+}
+
+.store-address {
+  color: #a8a8a8;
+}
+
+.store-arrow {
+  border-color: #a8a8a8;
+}
+
+.brand-line {
+  margin-top: 18rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand-slogan {
+  font-size: 20rpx;
+  letter-spacing: 1rpx;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.brand-cheers {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.brand-cup {
+  width: 18rpx;
+  height: 22rpx;
+  border: 2rpx solid rgba(255, 255, 255, 0.7);
+  border-radius: 4rpx 4rpx 8rpx 8rpx;
+}
+
+.brand-cup-l {
+  transform: rotate(-14deg);
+}
+
+.brand-cup-r {
+  transform: rotate(14deg);
+  margin-left: -10rpx;
+}
+
+.brand-cheers-text {
+  margin-left: 6rpx;
+  font-size: 20rpx;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* 顶部轮播：16:9 白底手绘卡，卡缝露邻卡 */
+.dish-carousel {
+  margin-top: 20rpx;
+  width: 100%;
+  white-space: nowrap;
+}
+
+.dc-track {
+  display: inline-flex;
+  padding: 0 32rpx;
+  gap: 14rpx;
+}
+
+.dc-card {
+  width: 620rpx;
+  height: 349rpx;
+  border-radius: 10rpx;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: #ffffff;
+}
+
+.dc-img {
+  width: 100%;
+  height: 100%;
+}
+
+.dc-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+}
+
+.dc-tone-0 { background: linear-gradient(135deg, #2dcc70 0%, #a8e6c4 100%); }
+.dc-tone-1 { background: linear-gradient(135deg, #f7f7f7 0%, #e8e8e8 100%); }
+.dc-tone-2 { background: linear-gradient(135deg, #ffe9c8 0%, #ffd166 100%); }
+
+.dc-fallback-title {
+  font-size: 40rpx;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 2rpx;
+}
+
+.dc-tone-1 .dc-fallback-title,
+.dc-tone-2 .dc-fallback-title {
+  color: #1a1a1a;
+}
+
+.dc-fallback-sub {
+  font-size: 18rpx;
+  letter-spacing: 3rpx;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.dc-tone-1 .dc-fallback-sub,
+.dc-tone-2 .dc-fallback-sub {
+  color: #8a8a8a;
 }
 
 .store-row {
@@ -661,9 +786,18 @@
 .menu-tag-chip {
   padding: 4rpx 12rpx;
   border-radius: 8rpx;
-  background: var(--appetite-soft);
-  color: var(--appetite);
   font-size: 18rpx;
+}
+
+.menu-tag-solid {
+  background: var(--brand);
+  color: #ffffff;
+}
+
+.menu-tag-outline {
+  border: 2rpx solid #c8c8c8;
+  color: #9a9a9a;
+  background: transparent;
 }
 
 .menu-dish-meta {

@@ -1,4 +1,4 @@
-import { fetchCatalogCloud, fetchStoresCloud, getBusinessStatusCloud, initCloud } from '../../utils/cloud'
+import { fetchCatalogCloud, fetchStoresCloud, getBusinessStatusCloud, initCloud, getBannersCloud } from '../../utils/cloud'
 import {
   applyPageLook,
   pageLookBehavior,
@@ -123,6 +123,7 @@ Page({
     dateText: '',
     businessOpen: true,
     businessLoaded: false,
+    banners: [] as Array<{ id: string; title?: string; image?: string; link?: string }>,
     /* 地址栏 */
     fulfillMode: 'PICKUP' as FulfillMode,
     store: null as StoreInfo | null,
@@ -163,6 +164,10 @@ Page({
 
     if (initCloud()) {
       this.setData({ menuLoading: true })
+      getBannersCloud('dish').then((result) => {
+        const items = ((result && result.items) || []) as typeof this.data.banners
+        this.setData({ banners: items.filter((item) => item.image || item.title) })
+      }).catch(() => null)
       const catalog = await fetchCatalogCloud()
       if (catalog && catalog.spus && catalog.spus.length > 0) {
         saveCatalog(catalog)
@@ -233,6 +238,7 @@ Page({
   refreshPage() {
     const session = getSession()
     applyPageLook(this, getCurrentMember())
+    this.setData({ navColor: '#ffffff', navBackground: '#2b2b2b' })
     const flow = decorateSpus()
     const categories = ['全部', ...flow.groups.map((group) => group.name)]
     this.setData({
@@ -362,6 +368,13 @@ Page({
     setFulfillMode(mode)
     this.setData({ fulfillMode: mode })
     wx.vibrateShort({ type: 'light' })
+  },
+
+  onBannerTap(event: WechatMiniprogram.TouchEvent) {
+    const link = String(event.currentTarget.dataset.link || '')
+    if (link && link.startsWith('/pages/')) {
+      wx.navigateTo({ url: link })
+    }
   },
 
   openStoreSheet() {

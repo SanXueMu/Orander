@@ -128,3 +128,107 @@
   color: var(--muted);
   text-decoration: line-through;
 }
+
+/* ============ R8 杂志式复刻：居中大字楼层 + 策展轮播 ============ */
+.mall-floor-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16rpx 8rpx 22rpx;
+}
+
+.mall-floor-title {
+  font-size: 40rpx;
+  font-weight: 800;
+  letter-spacing: 6rpx;
+  color: #1a1a1a;
+}
+
+.mall-floor-sub {
+  margin-top: 6rpx;
+  font-size: 18rpx;
+  letter-spacing: 4rpx;
+  text-transform: uppercase;
+  color: #b0b0b0;
+}
+
+.mall-floor-more {
+  display: flex;
+  justify-content: center;
+  margin-top: 22rpx;
+  font-size: 24rpx;
+  color: #6f6f6f;
+}
+
+.mall-carousel {
+  position: relative;
+}
+
+.mc-swiper {
+  width: 100%;
+  height: 620rpx;
+}
+
+.mc-card {
+  width: 100%;
+  height: 100%;
+  border-radius: 4rpx;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.mc-img {
+  width: 100%;
+  height: 100%;
+}
+
+.mc-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+}
+
+.mc-tone-0 { background: linear-gradient(160deg, #efefef 0%, #d8d8d8 100%); }
+.mc-tone-1 { background: linear-gradient(160deg, #e8f5ee 0%, #c9e8d8 100%); }
+.mc-tone-2 { background: linear-gradient(160deg, #f6ecdd 0%, #e8d3b5 100%); }
+
+.mc-fallback-title {
+  font-size: 44rpx;
+  font-weight: 800;
+  letter-spacing: 4rpx;
+  color: #1a1a1a;
+}
+
+.mc-fallback-sub {
+  font-size: 18rpx;
+  letter-spacing: 3rpx;
+  color: #8a8a8a;
+}
+
+.mc-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  border: 2rpx solid #1a1a1a;
+  color: #1a1a1a;
+  font-size: 36rpx;
+  line-height: 60rpx;
+  text-align: center;
+  z-index: 5;
+}
+
+.mc-arrow-l {
+  left: 24rpx;
+}
+
+.mc-arrow-r {
+  right: 24rpx;
+}

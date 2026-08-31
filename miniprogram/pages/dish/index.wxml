@@ -10,10 +10,11 @@
     </view>
   </navigation-bar>
 
-  <!-- 店铺地址栏：到店取 | 喜外送 -->
+  <!-- 深炭灰沉浸头部：取餐方式 / 门店 / 品牌行 -->
   <view class="store-bar">
     <view class="store-seg">
       <view class="seg-item {{fulfillMode === 'PICKUP' ? 'seg-active' : ''}}" hover-class="press-dim" hover-stay-time="60" data-mode="PICKUP" bindtap="switchMode">到店取</view>
+      <view class="seg-divider"></view>
       <view class="seg-item {{fulfillMode === 'DELIVERY' ? 'seg-active' : ''}}" hover-class="press-dim" hover-stay-time="60" data-mode="DELIVERY" bindtap="switchMode">喜外送</view>
     </view>
     <view class="store-row" hover-class="press-dim" hover-stay-time="60" bindtap="openStoreSheet">
@@ -22,6 +23,14 @@
         <view wx:if="{{store && store.address}}" class="store-address">{{store.address}}</view>
       </view>
       <view class="store-arrow"></view>
+    </view>
+    <view class="brand-line">
+      <text class="brand-slogan">new style tea, by inspiration ></text>
+      <view class="brand-cheers" hover-class="press-dim" hover-stay-time="60" bindtap="goOrders">
+        <view class="brand-cup brand-cup-l"></view>
+        <view class="brand-cup brand-cup-r"></view>
+        <text class="brand-cheers-text">一起喝</text>
+      </view>
     </view>
   </view>
 
@@ -44,6 +53,27 @@
     </view>
   </view>
 
+  <!-- 顶部轮播：新品/活动手绘卡（banners place=dish） -->
+  <scroll-view wx:if="{{banners.length}}" class="dish-carousel" scroll-x enhanced show-scrollbar="{{false}}">
+    <view class="dc-track">
+      <view
+        wx:for="{{banners}}"
+        wx:key="id"
+        class="dc-card"
+        hover-class="press-dim"
+        hover-stay-time="60"
+        data-link="{{item.link}}"
+        bindtap="onBannerTap"
+      >
+        <image wx:if="{{item.image}}" class="dc-img" src="{{item.image}}" mode="aspectFill" />
+        <view wx:else class="dc-fallback dc-tone-{{index % 3}}">
+          <text class="dc-fallback-title">{{item.title}}</text>
+          <text class="dc-fallback-sub">NEW ARRIVAL · ORANDER GO</text>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+
   <view wx:if="{{businessLoaded && !businessOpen}}" class="business-banner menu-business-banner">
     <view class="business-badge-dot"></view>
     <view>今日暂停营业，暂时无法下单，欢迎明天再来。</view>
@@ -60,7 +90,6 @@
         data-category="{{item}}"
         bindtap="tapRailCategory"
       >
-        <view class="rail-item-bar"></view>
         <view class="rail-item-text">{{item}}</view>
       </view>
     </scroll-view>
@@ -124,7 +153,7 @@
               <view class="menu-dish-name">{{item.name}}</view>
               <view wx:if="{{item.description}}" class="menu-dish-description">{{item.description}}</view>
               <view class="menu-dish-meta">
-                <view wx:if="{{item.tags.length > 0}}" class="menu-tag-chip">{{item.tags[0]}}</view>
+                <view wx:for="{{item.tags}}" wx:for-item="tag" wx:key="*this" wx:if="{{index < 2}}" class="menu-tag-chip {{tag === '上新' ? 'menu-tag-solid' : 'menu-tag-outline'}}">{{tag}}</view>
                 <view wx:if="{{item.soldCount > 0}}" class="menu-sold-badge">已售 {{item.soldCount}}</view>
               </view>
               <view class="flow-line-bottom">

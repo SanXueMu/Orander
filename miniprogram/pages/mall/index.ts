@@ -1,6 +1,6 @@
 import { getCurrentMember } from '../../utils/orander'
 import { applyPageLook, pageLookBehavior } from '../../behaviors/page-look'
-import { getMallFloorsCloud, type MallProduct } from '../../utils/cloud'
+import { getMallFloorsCloud, getBannersCloud, type MallProduct } from '../../utils/cloud'
 
 const FLOOR_FALLBACK: Record<string, string> = {
   new: '灵感上新',
@@ -23,9 +23,33 @@ Page({
     activeFloor: '',
     scrollInto: '',
     loading: true,
+    banners: [] as Array<{ id: string; title?: string; image?: string; link?: string }>,
+    bannerCur: 0,
+  },
+
+  onBannerChange(event: WechatMiniprogram.SwiperChange) {
+    this.setData({ bannerCur: event.detail.current })
+  },
+
+  bannerStep(event: WechatMiniprogram.TouchEvent) {
+    const step = Number(event.currentTarget.dataset.step) || 1
+    const total = this.data.banners.length
+    if (!total) return
+    this.setData({ bannerCur: (this.data.bannerCur + step + total) % total })
+  },
+
+  onBannerTap(event: WechatMiniprogram.TouchEvent) {
+    const link = String(event.currentTarget.dataset.link || '')
+    if (link && link.startsWith('/pages/')) {
+      wx.navigateTo({ url: link })
+    }
   },
 
   onShow() {
+    getBannersCloud('mall').then((result) => {
+      const items = ((result && result.items) || []) as typeof this.data.banners
+      this.setData({ banners: items.filter((item) => item.image || item.title) })
+    }).catch(() => null)
     applyPageLook(this, getCurrentMember())
     this.load()
   },
