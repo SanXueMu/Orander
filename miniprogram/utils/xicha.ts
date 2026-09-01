@@ -299,6 +299,28 @@ export const clearCartV2 = () => {
   emitCartChanged()
 }
 
+/* 团餐档期标记：groupmeal-order 写入，cart 提单时带上并清除（V1-U5） */
+export interface GmSlotMark {
+  slotId: string
+  date: string
+  time: string
+}
+
+const GM_SLOT_KEY = 'orander-gm-slot'
+
+export const setGmSlotMark = (mark: GmSlotMark) => {
+  wx.setStorageSync(GM_SLOT_KEY, mark)
+}
+
+export const getGmSlotMark = (): GmSlotMark | null => {
+  const mark = wx.getStorageSync(GM_SLOT_KEY)
+  return mark && mark.slotId ? (mark as GmSlotMark) : null
+}
+
+export const clearGmSlotMark = () => {
+  wx.removeStorageSync(GM_SLOT_KEY)
+}
+
 export const getCartStatsV2 = () => {
   const lines = getCartLinesV2()
   const count = lines.reduce((sum, line) => sum + line.quantity, 0)

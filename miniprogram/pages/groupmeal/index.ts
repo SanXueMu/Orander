@@ -39,7 +39,7 @@ Page({
       const mine = mineRes || { items: [] }
       const slots = (slotData.slots || []).map((slot) => ({
         id: slot.id,
-        label: slot.label || `${slot.startTime || ''}-${slot.endTime || ''}`,
+        label: slot.time,
         remaining: slot.remaining,
         capacity: slot.capacity,
         full: slot.remaining <= 0,
@@ -97,7 +97,20 @@ Page({
         phone: this.data.phone.trim(),
         note: this.data.note.trim(),
       })
-      wx.showToast({ title: '预约成功', icon: 'success' })
+      const picked = this.data.slots.find((s) => s.id === this.data.selectedSlot)
+      wx.showModal({
+        title: '预约成功',
+        content: `已预约 ${this.data.date} ${picked ? picked.label : ''}，现在去挑选团餐菜品？`,
+        confirmText: '去点单',
+        cancelText: '稍后',
+        success: (res) => {
+          if (res.confirm && picked) {
+            wx.navigateTo({
+              url: `/pages/groupmeal-order/index?slotId=${picked.id}&date=${this.data.date}&time=${encodeURIComponent(picked.label)}&remaining=${picked.remaining}`,
+            })
+          }
+        },
+      })
       await this.refresh()
     } catch (error) {
       wx.showToast({ title: (error as Error).message || '预约失败', icon: 'none' })

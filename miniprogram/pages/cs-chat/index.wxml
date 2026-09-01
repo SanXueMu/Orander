@@ -3,14 +3,26 @@
   <view class="cs-body">
     <scroll-view class="cs-scroll" scroll-y scroll-into-view="{{scrollInto}}" scroll-with-animation>
       <view class="cs-list">
-        <view wx:for="{{messages}}" wx:key="id" id="msg-{{index}}" class="cs-row {{item.mine ? 'cs-mine' : ''}}">
+        <view wx:for="{{messages}}" wx:key="id" id="chat-{{index}}" class="cs-row {{item.mine ? 'cs-mine' : ''}}">
           <view class="cs-avatar {{item.mine ? 'cs-avatar-mine' : ''}}">{{item.mine ? '我' : '客'}}</view>
-          <view class="cs-bubble {{item.mine ? 'cs-bubble-mine' : ''}}">{{item.text || '[图片]'}}</view>
+          <view class="cs-bubble {{item.mine ? 'cs-bubble-mine' : ''}} {{item.isImage ? 'cs-bubble-img' : ''}}">
+            <image
+              wx:if="{{item.isImage}}"
+              class="cs-img"
+              src="{{item.image}}"
+              mode="aspectFill"
+              data-src="{{item.image}}"
+              bindtap="previewImage"
+            ></image>
+            <block wx:else>{{item.text}}</block>
+          </view>
         </view>
       </view>
     </scroll-view>
     <view class="surface cs-input-bar">
+      <view class="cs-plus" hover-class="press-dim" hover-stay-time="60" bindtap="sendImage">+</view>
       <input class="cs-input" value="{{input}}" placeholder="描述您的问题…" confirm-type="send" bindinput="onInput" bindconfirm="send" />
+      <view class="cs-voice" hover-class="press-dim" hover-stay-time="60" bindtap="holdVoice">按住说话</view>
       <view class="cta-button cs-send {{sending || !input ? 'busy' : ''}}" hover-class="press-scale" hover-stay-time="60" bindtap="send">发送</view>
     </view>
   </view>

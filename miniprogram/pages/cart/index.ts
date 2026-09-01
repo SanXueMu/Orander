@@ -8,9 +8,11 @@ import {
 } from '../../utils/orander'
 import {
   clearCartV2,
+  clearGmSlotMark,
   getCartLinesV2,
   getCartStatsV2,
   getFulfillMode,
+  getGmSlotMark,
   getSelectedStore,
   priceUnit,
   removeCartLineV2,
@@ -188,11 +190,13 @@ Page({
 
     this.setData({ submitting: true })
     try {
+      const gmMark = getGmSlotMark()
       const order = await createOrderV2Cloud({
         storeId: store ? store.id : '',
         mode: getFulfillMode(),
         biz: getCartLinesV2().some((line) => line.spuId.startsWith('m:')) ? 'MALL' : 'TEA',
-        note: this.data.note.trim(),
+        note: gmMark ? `【团餐 ${gmMark.date} ${gmMark.time}】${this.data.note.trim()}` : this.data.note.trim(),
+        groupmeal: gmMark ? { slotId: gmMark.slotId, date: gmMark.date, time: gmMark.time } : undefined,
         items: getCartLinesV2().map((line) => ({
           spuId: line.spuId.startsWith('legacy:') ? line.spuId.slice('legacy:'.length) : line.spuId,
           qty: line.quantity,
@@ -203,6 +207,7 @@ Page({
       if (!order || !order.id) {
         throw new Error('no order')
       }
+      clearGmSlotMark()
 
       cacheOrder(order as unknown as Parameters<typeof cacheOrder>[0])
       this.setData({

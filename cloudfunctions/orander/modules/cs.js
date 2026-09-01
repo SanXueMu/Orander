@@ -89,13 +89,20 @@ module.exports = {
     }
     const session = result.data[0]
 
-    const userMessage = { role: 'user', content: String(event.content || '').slice(0, 500), at: nowIso() }
-    const aiAnswer = await aiReply(userMessage.content)
-    const botMessage = {
-      role: 'assistant',
-      content: aiAnswer || matchFaq(userMessage.content),
+    const isImage = event.type === 'image' && !!event.imageFileId
+    const userMessage = {
+      role: 'user',
+      content: isImage ? '[图片]' : String(event.content || '').slice(0, 500),
       at: nowIso(),
+      ...(isImage ? { type: 'image', imageFileId: String(event.imageFileId).slice(0, 200) } : {}),
     }
+    const botMessage = isImage
+      ? { role: 'assistant', content: '图片已收到，人工客服会尽快查看，请补充文字描述问题～', at: nowIso() }
+      : {
+          role: 'assistant',
+          content: await aiReply(userMessage.content).then((answer) => answer || matchFaq(userMessage.content)),
+          at: nowIso(),
+        }
     await col('cs_sessions').where({ id: session.id }).update({
       data: { messages: [...(session.messages || []), userMessage, botMessage] },
     })

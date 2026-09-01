@@ -384,6 +384,7 @@ export interface CreateOrderV2Payload {
   mode: FulfillMode
   note?: string
   couponInstanceId?: string
+  groupmeal?: { slotId: string; date: string; time: string }
   items: PreviewPayload['items']
 }
 
@@ -534,8 +535,8 @@ export const csListMySessionsCloud = () =>
   callOrander<{ items: Array<{ id: string; status: string }> }>('listMySessions', {})
 export const csGetMessagesCloud = (sessionId: string) =>
   callOrander<{ messages: CsMessage[] }>('getMessages', { sessionId })
-export const csSendMessageCloud = (payload: { sessionId: string; text?: string; image?: string }) =>
-  callOrander<{ message: CsMessage }>('sendMessage', payload)
+export const csSendMessageCloud = (payload: { sessionId: string; text?: string; type?: 'text' | 'image'; imageFileId?: string }) =>
+  callOrander<Record<string, unknown>>('sendMessage', payload)
 export interface CsMessage {
   id: string
   from: 'USER' | 'SYSTEM' | 'ADMIN'
@@ -546,7 +547,7 @@ export interface CsMessage {
 }
 
 export const gmGetSlotsCloud = (date: string) =>
-  callOrander<{ date: string; slots: Array<{ id: string; label?: string; startTime?: string; endTime?: string; capacity: number; reserved: number; remaining: number }> }>('getSlots', { date })
+  callOrander<{ date: string; slots: Array<{ id: string; time: string; date: string; capacity: number; reserved: number; remaining: number }> }>('getSlots', { date })
 export const gmReserveSlotCloud = (payload: { slotId: string; date: string; headcount: number; contactName?: string; phone?: string; note?: string }) =>
   callOrander<Record<string, unknown>>('reserveSlot', payload)
 export const gmMyReservationsCloud = () => callOrander<{ items: unknown[] }>('myReservations', {})

@@ -1,0 +1,74 @@
+<view class="orander-page {{themeClass}} {{fontClass}}">
+  <navigation-bar title="团餐点单" color="{{navColor}}" background="{{navBackground}}"></navigation-bar>
+
+  <!-- 档期信息头（复用点单深灰头，改显档期与余量，无轮播无搜索） -->
+  <view class="go-head">
+    <view class="go-head-row">
+      <text class="go-head-title">团餐档期</text>
+      <text class="go-head-badge num">剩余 {{remaining}} 桌</text>
+    </view>
+    <view class="go-head-sub num">{{date}} · {{timeLabel}}</view>
+  </view>
+
+  <view class="menu-layout">
+    <scroll-view class="menu-rail" scroll-y enhanced show-scrollbar="{{false}}">
+      <view
+        wx:for="{{categories}}"
+        wx:for-item="cat"
+        wx:key="name"
+        class="rail-item {{railActive === cat.name ? 'rail-item-active' : ''}}"
+        hover-class="press-dim"
+        hover-stay-time="60"
+        data-category="{{cat.name}}"
+        bindtap="tapRailCategory"
+      >
+        <view class="rail-item-text">{{cat.name}}</view>
+      </view>
+    </scroll-view>
+
+    <scroll-view class="menu-flow" scroll-y enhanced show-scrollbar="{{false}}" scroll-into-view="{{flowInto}}">
+      <view wx:for="{{flowGroups}}" wx:key="key" wx:for-item="group" wx:for-index="groupIndex">
+        <view id="flow-{{group.key}}" class="flow-cat-title">{{group.name}}</view>
+        <view
+          wx:for="{{group.items}}"
+          wx:key="id"
+          class="gm-dish {{soldout ? 'gm-dish-off' : ''}}"
+        >
+          <view class="gm-thumb {{soldout ? 'gm-thumb-off' : ''}}"></view>
+          <view class="gm-main">
+            <view class="gm-name">
+              {{item.name}}
+              <text wx:if="{{!soldout}}" class="gm-remain num">剩 {{remaining}}</text>
+              <text wx:else class="gm-soldout">已订满</text>
+            </view>
+            <view wx:if="{{item.desc}}" class="gm-desc">{{item.desc}}</view>
+            <view class="gm-bottom">
+              <view class="gm-price num">¥{{item.priceValue}}{{item.hasSpecs ? ' 起' : ''}}</view>
+              <view
+                wx:if="{{!soldout}}"
+                class="gm-add"
+                hover-class="press-dim"
+                hover-stay-time="60"
+                data-id="{{item.id}}"
+                bindtap="{{item.hasSpecs ? 'openSpecPicker' : 'addPlain'}}"
+              >{{item.hasSpecs ? '选规格' : '加入'}}</view>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="go-tail"></view>
+    </scroll-view>
+  </view>
+
+  <view class="go-settle" wx:if="{{count > 0}}">
+    <view class="go-settle-info num">已选 {{count}} 件 · 约 ¥{{estimate}}</view>
+    <view class="go-settle-btn" hover-class="press-scale" hover-stay-time="60" bindtap="goSettle">去结算</view>
+  </view>
+
+  <spec-picker
+    visible="{{pickerVisible}}"
+    spu="{{pickerSpu}}"
+    bind:close="onPickerClose"
+    bind:add="onPickerAdd"
+  ></spec-picker>
+</view>

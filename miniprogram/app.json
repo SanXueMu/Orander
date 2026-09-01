@@ -42,7 +42,8 @@
     "pages/more/index",
     "pages/qrcode/index",
     "pages/member-card/index",
-    "pages/reviews-mine/index"
+    "pages/reviews-mine/index",
+    "pages/groupmeal-order/index"
   ],
   "window": {
     "navigationBarTextStyle": "black",

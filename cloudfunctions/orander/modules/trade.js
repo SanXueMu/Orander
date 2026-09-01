@@ -22,6 +22,7 @@ const mapOrder = (doc = {}) => ({
   payAmount: Number(doc.payAmount || doc.total || 0),
   couponInstanceId: doc.couponInstanceId || '',
   note: doc.note || '',
+  groupmeal: doc.groupmeal || null,
   status: doc.status || 'submitted',
   queueNo: doc.queueNo || 0,
   createdAt: doc.createdAt,
@@ -59,6 +60,19 @@ module.exports = {
     }
     const priced = await product.priceItems(event.items || [])
     const deliveryFee = event.mode === 'DELIVERY' ? 6 : 0
+    /* 团餐订单：校验档期余量并落档期标记（V1-U5） */
+    let groupmeal = null
+    if (event.groupmeal && event.groupmeal.slotId) {
+      const gmResult = await col('gm_slots').where({ id: event.groupmeal.slotId }).limit(1).get()
+      if (gmResult.data.length === 0) {
+        throw new Error('团餐档期不存在')
+      }
+      const slot = gmResult.data[0]
+      if (Number(slot.reserved || 0) >= Number(slot.capacity || 0)) {
+        throw new Error('该时段余量不足，请更换时段')
+      }
+      groupmeal = { slotId: slot.id, date: slot.date, time: slot.time }
+    }
     const order = {
       id: generateId('order'),
       orderNumber: generateOrderNumber(),
@@ -73,6 +87,7 @@ module.exports = {
       payAmount: Number((priced.total + deliveryFee).toFixed(2)),
       couponInstanceId: '',
       note: event.note || '',
+      groupmeal,
       status: 'PENDING_PAY',
       queueNo: 0,
       items: priced.items,
