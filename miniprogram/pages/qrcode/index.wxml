@@ -1,0 +1,19 @@
+<view class="orander-page {{themeClass}} {{fontClass}}">
+  <navigation-bar title="会员二维码" color="{{navColor}}" background="{{navBackground}}"></navigation-bar>
+  <scroll-view class="page-scroll" scroll-y>
+    <view class="page-body list-gap qr-body">
+      <view class="surface qr-card">
+        <view class="qr-head">
+          <view class="qr-nickname">{{nickname}}</view>
+          <view class="qr-level">{{levelName || '会员'}}</view>
+        </view>
+        <view class="qr-holder">
+          <canvas type="2d" id="qr" class="qr-canvas"></canvas>
+        </view>
+        <view class="qr-hint">出示给店员扫描 · 消费累计成长值</view>
+      </view>
+
+      <view class="cta-primary qr-save" hover-class="press-scale" hover-stay-time="60" bindtap="savePic">保存图片</view>
+    </view>
+  </scroll-view>
+</view>

@@ -20,10 +20,10 @@
             <view wx:else class="member-avatar">{{avatarLabel}}</view>
             <view class="member-id-copy">
               <view class="member-nickname">{{nickname}}</view>
-              <view class="member-level-pill">{{levelName || '会员'}}</view>
+              <view class="member-level-pill" hover-class="press-dim" hover-stay-time="60" catchtap="goMemberCard">{{levelName || '会员'}} ›</view>
             </view>
             <!-- 会员码占位（R7 接真实码） -->
-            <view class="member-qr" aria-label="会员码">
+            <view class="member-qr" aria-label="会员码" hover-class="press-dim" hover-stay-time="60" catchtap="goQrcode">
               <view class="member-qr-grid">
                 <view class="qr-cell qr-on"></view><view class="qr-cell"></view><view class="qr-cell qr-on"></view>
                 <view class="qr-cell"></view><view class="qr-cell qr-on"></view><view class="qr-cell"></view>
@@ -75,6 +75,9 @@
           <view class="menu-row" hover-class="press-dim" hover-stay-time="60" bindtap="goRedeem">
             <text>兑换中心</text><text class="menu-arrow">›</text>
           </view>
+          <view class="menu-row" hover-class="press-dim" hover-stay-time="60" bindtap="goReviewsMine">
+            <text>我的评价</text><text class="menu-arrow">›</text>
+          </view>
           <view class="menu-row" hover-class="press-dim" hover-stay-time="60" bindtap="goNotifications">
             <view class="menu-row-left"><text>消息通知</text><text wx:if="{{unread > 0}}" class="menu-badge num">{{unread}}</text></view><text class="menu-arrow">›</text>
           </view>
@@ -87,8 +90,8 @@
           <view class="menu-row" hover-class="press-dim" hover-stay-time="60" bindtap="goInvoice">
             <text>发票助手</text><text class="menu-arrow">›</text>
           </view>
-          <view class="menu-row" hover-class="press-dim" hover-stay-time="60" bindtap="goPolicies">
-            <text>条款与政策</text><text class="menu-arrow">›</text>
+          <view class="menu-row" hover-class="press-dim" hover-stay-time="60" bindtap="goMore">
+            <text>更多</text><text class="menu-arrow">›</text>
           </view>
           <view class="menu-row menu-row-last" hover-class="press-dim" hover-stay-time="60" bindtap="goSettings">
             <text>设置</text><text class="menu-arrow">›</text>

@@ -38,7 +38,11 @@
     "pages/admin-content/index",
     "pages/admin-reviews/index",
     "pages/admin-cs/index",
-    "pages/admin-invoices/index"
+    "pages/admin-invoices/index",
+    "pages/more/index",
+    "pages/qrcode/index",
+    "pages/member-card/index",
+    "pages/reviews-mine/index"
   ],
   "window": {
     "navigationBarTextStyle": "black",

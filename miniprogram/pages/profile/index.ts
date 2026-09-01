@@ -141,6 +141,10 @@ Page({
   goGroupmeal() { wx.navigateTo({ url: '/pages/groupmeal/index' }) },
   goInvoice() { wx.navigateTo({ url: '/pages/invoice/index' }) },
   goPolicies() { wx.navigateTo({ url: '/pages/policies/index' }) },
+  goMore() { wx.navigateTo({ url: '/pages/more/index' }) },
+  goReviewsMine() { wx.navigateTo({ url: '/pages/reviews-mine/index' }) },
+  goQrcode() { wx.navigateTo({ url: '/pages/qrcode/index' }) },
+  goMemberCard() { wx.navigateTo({ url: '/pages/member-card/index' }) },
 
   goSettings() {
     wx.navigateTo({ url: '/pages/settings/index' })

@@ -1,0 +1,21 @@
+<view class="orander-page {{themeClass}} {{fontClass}}">
+  <navigation-bar title="我的评价" color="{{navColor}}" background="{{navBackground}}"></navigation-bar>
+  <scroll-view class="page-scroll" scroll-y>
+    <view class="page-body list-gap rm-body">
+      <view wx:if="{{!loading && !items.length}}" class="surface empty-panel">暂无评价 · 去喝一杯试试</view>
+
+      <view wx:for="{{items}}" wx:key="id" class="surface rm-card">
+        <view class="rm-head">
+          <text class="rm-order num">订单 {{item.orderTail}}</text>
+          <text class="rm-status rm-status-{{item.statusKey}}">{{item.statusText}}</text>
+        </view>
+        <view class="rm-stars num">{{item.stars}}</view>
+        <view class="rm-content">{{item.content}}</view>
+        <view wx:if="{{item.reply}}" class="rm-reply">
+          <text>商家回复：{{item.reply}}</text>
+        </view>
+        <view class="rm-date num">{{item.date}}</view>
+      </view>
+    </view>
+  </scroll-view>
+</view>

@@ -1,0 +1,45 @@
+<view class="orander-page {{themeClass}} {{fontClass}}">
+  <navigation-bar title="身份卡片" color="{{navColor}}" background="{{navBackground}}"></navigation-bar>
+  <scroll-view class="page-scroll" scroll-y>
+    <view class="page-body list-gap mc-body">
+      <view class="mc-head">
+        <text class="mc-growth num">我的成长值 {{growthValue}}</text>
+        <text class="mc-rules" bindtap="toggleRules">等级规则 ›</text>
+      </view>
+
+      <swiper class="mc-swiper" current="{{current}}" previous-margin="40rpx" next-margin="40rpx" bindchange="onSwiper">
+        <swiper-item wx:for="{{cards}}" wx:key="code">
+          <view class="mc-card {{item.black ? 'mc-card-black' : ''}} {{current === index ? '' : 'mc-card-dim'}}">
+            <view class="mc-card-top">
+              <view class="mc-code num">{{item.code}}</view>
+              <view wx:if="{{item.isCurrent}}" class="mc-now"><view class="mc-now-dot"></view>当前等级</view>
+              <view wx:elif="{{item.reached}}" class="mc-passed">已达成</view>
+              <view wx:else class="mc-lock">未达成</view>
+            </view>
+            <view class="mc-name">{{item.name}}</view>
+            <view class="mc-range num">成长值 {{item.range}}</view>
+            <view class="mc-divider"></view>
+            <view class="mc-perk-label">等级权益</view>
+            <view class="mc-perk">{{item.perk}}</view>
+            <view class="mc-next num" wx:if="{{!item.isCurrent && !item.reached && item.gap !== ''}}">还差 {{item.gap}} 成长值解锁</view>
+          </view>
+        </swiper-item>
+      </swiper>
+
+      <view class="mc-nav">
+        <view class="mc-nav-btn {{current === 0 ? 'mc-nav-off' : ''}}" hover-class="press-dim" hover-stay-time="60" bindtap="prev">‹</view>
+        <text class="mc-nav-pos num">{{current + 1}} / {{cards.length}}</text>
+        <view class="mc-nav-btn {{current === cards.length - 1 ? 'mc-nav-off' : ''}}" hover-class="press-dim" hover-stay-time="60" bindtap="next">›</view>
+      </view>
+
+      <view wx:if="{{rulesOpen}}" class="surface mc-rules-panel">
+        <view class="mc-rules-title">等级规则</view>
+        <view class="mc-rules-row" wx:for="{{cards}}" wx:key="code">
+          <text>{{item.code}} · {{item.name}}</text>
+          <text class="num">成长值 ≥ {{item.threshold}}</text>
+        </view>
+        <view class="mc-rules-tip">成长值随完成订单、参与活动累计，等级只升不降。</view>
+      </view>
+    </view>
+  </scroll-view>
+</view>
