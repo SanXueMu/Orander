@@ -74,7 +74,9 @@ const COUPON_TEMPLATES = [
 const BENEFITS = [
   { code: 'MONDAY_FREE_FEE', name: '周一免配送费', description: '每周一 V1 及以上会员下单免配送费', couponTemplateId: 'tpl-free-fee', status: 'ACTIVE' },
   { code: 'NEWBIE_20', name: '新人礼 · 满 20 减 5', description: '注册即领的首单福利', couponTemplateId: 'tpl-25-4', status: 'ACTIVE' },
-  { code: 'GOLD_CARD', name: '金喜卡 8.8 折', description: '付费卡：199 元购卡，全单 8.8 折', couponTemplateId: '', status: 'ACTIVE' },
+  { code: 'GOLD_CARD', name: '金喜卡 8.8 折', description: '付费卡：开卡享 90 天金喜权益，全单 8.8 折', couponTemplateId: '', status: 'ACTIVE' },
+  { code: 'WARM_TEA', name: '暖心为你', description: '每月可领指定热饮 8.8 折券，女生专享', couponTemplateId: '', status: 'ACTIVE' },
+  { code: 'STUDENT_CARD', name: '学子卡', description: '学生认证免费开通，周末第二杯半价', couponTemplateId: '', status: 'ACTIVE' },
 ]
 
 const PAID_CARDS = []

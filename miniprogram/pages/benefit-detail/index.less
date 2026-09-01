@@ -142,3 +142,459 @@
   font-size: 40rpx;
   letter-spacing: 3rpx;
 }
+
+/* ============ V1-U3 结构化布局 ============ */
+.bd-rule-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 16rpx;
+  font-size: 26rpx;
+  line-height: 1.7;
+  color: var(--ink);
+}
+
+.bd-tail-space {
+  height: 160rpx;
+}
+
+/* 手写风标题（NEWBIE / WARM） */
+.bd-hand-title {
+  text-align: center;
+  padding: 44rpx 32rpx;
+}
+
+.bd-hand-line {
+  font-size: 52rpx;
+  font-weight: 800;
+  letter-spacing: 6rpx;
+  color: var(--ink);
+  font-family: 'STKaiti', 'Kaiti SC', serif;
+}
+
+.bd-hand-line-big {
+  font-size: 68rpx;
+}
+
+.bd-sub {
+  margin-top: 14rpx;
+  font-size: 24rpx;
+  color: var(--muted);
+}
+
+/* NEWBIE 三张卡券 */
+.bd-coupon-row {
+  display: flex;
+  gap: 16rpx;
+}
+
+.bd-coupon {
+  flex: 1;
+  background: #f5f5f2;
+  border-radius: 12rpx;
+  padding: 28rpx 0 22rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.bd-coupon-amount {
+  font-size: 44rpx;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.bd-coupon-unit {
+  font-size: 24rpx;
+}
+
+.bd-coupon-rule {
+  font-size: 20rpx;
+  color: var(--muted);
+}
+
+/* MONDAY 骑手线描 + 票券 */
+.bd-ride {
+  padding: 40rpx 32rpx;
+  background: linear-gradient(180deg, #ffffff 0%, #f6f5f0 100%);
+}
+
+.bd-road {
+  height: 120rpx;
+  border-bottom: 3rpx dashed var(--line-strong);
+  position: relative;
+}
+
+.bd-scooter {
+  position: absolute;
+  right: 60rpx;
+  bottom: 12rpx;
+  width: 140rpx;
+  height: 80rpx;
+}
+
+.bd-scooter-body {
+  position: absolute;
+  left: 20rpx;
+  top: 26rpx;
+  width: 90rpx;
+  height: 26rpx;
+  border: 4rpx solid var(--ink);
+  border-radius: 14rpx 18rpx 4rpx 4rpx;
+}
+
+.bd-scooter-box {
+  position: absolute;
+  left: 12rpx;
+  top: 2rpx;
+  width: 40rpx;
+  height: 28rpx;
+  border: 4rpx solid var(--ink);
+  border-radius: 8rpx 8rpx 0 0;
+}
+
+.bd-scooter-wheel {
+  position: absolute;
+  bottom: -6rpx;
+  width: 28rpx;
+  height: 28rpx;
+  border: 4rpx solid var(--ink);
+  border-radius: 50%;
+  background: #ffffff;
+}
+
+.bd-scooter-wheel-a { left: 6rpx; }
+.bd-scooter-wheel-b { right: 6rpx; }
+
+.bd-ticket {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 36rpx 48rpx;
+  background: #f5f5f2;
+  border: 2rpx solid var(--ink);
+  border-radius: 8rpx;
+}
+
+.bd-ticket-notch {
+  position: absolute;
+  top: 50%;
+  width: 28rpx;
+  height: 28rpx;
+  border-radius: 50%;
+  background: var(--page-bg, #ffffff);
+  border: 2rpx solid var(--ink);
+}
+
+.bd-ticket-notch-l { left: -16rpx; margin-top: -15rpx; }
+.bd-ticket-notch-r { right: -16rpx; margin-top: -15rpx; }
+
+.bd-ticket-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.bd-ticket-value {
+  font-size: 52rpx;
+  font-weight: 800;
+  color: var(--ink);
+  font-family: 'STKaiti', 'Kaiti SC', serif;
+}
+
+.bd-warm-value {
+  display: flex;
+  align-items: baseline;
+}
+
+.bd-warm-fold {
+  font-size: 30rpx;
+  margin-left: 6rpx;
+}
+
+.bd-ticket-rule {
+  margin-top: 8rpx;
+  font-size: 22rpx;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.bd-ticket-seal {
+  flex: none;
+  margin-left: 24rpx;
+  width: 108rpx;
+  height: 108rpx;
+  border: 3rpx solid var(--gold-deep);
+  border-radius: 50%;
+  color: var(--gold-deep);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 22rpx;
+  line-height: 1.3;
+  transform: rotate(-12deg);
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.bd-ticket-seal-off {
+  border-color: var(--muted);
+  color: var(--muted);
+}
+
+.bd-warm-seal {
+  border-color: #8a5a4e;
+  color: #8a5a4e;
+}
+
+/* GOLDEN */
+.bd-golden-face {
+  border-radius: 16rpx;
+  padding: 56rpx 44rpx;
+  background: linear-gradient(150deg, #f6f5ee 0%, #e9e5d6 60%, #d8d2bd 100%);
+  color: #3f3834;
+  box-shadow: 0 12rpx 32rpx rgba(63, 56, 52, 0.16);
+}
+
+.bd-golden-name {
+  font-size: 56rpx;
+  font-weight: 800;
+  letter-spacing: 8rpx;
+}
+
+.bd-golden-sub {
+  margin-top: 12rpx;
+  font-size: 22rpx;
+  letter-spacing: 3rpx;
+  opacity: 0.7;
+}
+
+.bd-block-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 20rpx;
+}
+
+.bd-block-gap {
+  margin-top: 28rpx;
+}
+
+.bd-grid3 {
+  display: flex;
+  gap: 16rpx;
+}
+
+.bd-grid3-cell {
+  flex: 1;
+  background: #ffffff;
+  border: 1rpx solid var(--line);
+  border-radius: 12rpx;
+  padding: 24rpx 0 18rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6rpx;
+}
+
+.bd-grid3-v {
+  font-size: 34rpx;
+  font-weight: 800;
+  color: #d96a1e;
+}
+
+.bd-grid3-t {
+  font-size: 20rpx;
+  color: var(--muted);
+}
+
+.bd-grid4 {
+  display: flex;
+  gap: 14rpx;
+}
+
+.bd-grid4-cell {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.bd-grid4-img {
+  width: 100%;
+  height: 120rpx;
+  border-radius: 8rpx;
+  background: linear-gradient(160deg, #f3f3ec, #e2dcc9);
+}
+
+.bd-grid4-name {
+  font-size: 20rpx;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.bd-grid4-price {
+  font-size: 22rpx;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.bd-agree {
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+  padding: 8rpx 12rpx;
+  font-size: 24rpx;
+  color: var(--ink);
+}
+
+.bd-check {
+  width: 32rpx;
+  height: 32rpx;
+  border: 2rpx solid var(--line-strong);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22rpx;
+  color: #ffffff;
+}
+
+.bd-check-on {
+  background: var(--ink);
+  border-color: var(--ink);
+}
+
+/* 椭圆双描边 CTA（WARM / STUDENT） */
+.bd-oval-btn {
+  margin: 8rpx auto 0;
+  width: 360rpx;
+  height: 88rpx;
+  border: 3rpx solid var(--ink);
+  outline: 1rpx solid var(--ink);
+  outline-offset: 5rpx;
+  border-radius: 999rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--ink);
+  background: #ffffff;
+  box-sizing: border-box;
+}
+
+.bd-student-more {
+  margin-top: 28rpx;
+  width: 280rpx;
+  height: 76rpx;
+  font-size: 24rpx;
+}
+
+.bd-share-row {
+  text-align: center;
+  font-size: 24rpx;
+  color: var(--muted);
+  padding: 10rpx 0;
+}
+
+.bd-tips-title {
+  text-align: center;
+  font-size: 26rpx;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 18rpx;
+}
+
+.bd-tip {
+  font-size: 24rpx;
+  line-height: 1.8;
+  color: var(--muted);
+}
+
+/* STUDENT */
+.bd-student-face {
+  border-radius: 16rpx;
+  padding: 48rpx 44rpx;
+  background: #f5f2e8;
+}
+
+.bd-student-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20rpx;
+}
+
+.bd-student-name {
+  font-size: 52rpx;
+  font-weight: 800;
+  letter-spacing: 4rpx;
+  color: var(--ink);
+}
+
+.bd-student-sub {
+  margin-top: 10rpx;
+  font-size: 22rpx;
+  color: var(--muted);
+}
+
+.bd-student-tag {
+  flex: none;
+  font-size: 20rpx;
+  padding: 6rpx 16rpx;
+  border-radius: 999rpx;
+  background: rgba(0, 0, 0, 0.06);
+  color: var(--muted);
+}
+
+.bd-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 16rpx;
+  font-size: 24rpx;
+  line-height: 1.7;
+  color: var(--ink);
+  padding: 8rpx 0;
+}
+
+.bd-step-no {
+  flex: none;
+  width: 36rpx;
+  height: 36rpx;
+  border: 2rpx solid var(--ink);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20rpx;
+}
+
+.bd-link {
+  text-align: center;
+  font-size: 22rpx;
+  color: var(--muted);
+  padding: 8rpx 0;
+}
+
+/* 底部固定 CTA */
+.bd-footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 16rpx 32rpx calc(16rpx + env(safe-area-inset-bottom));
+  background: #ffffff;
+  border-top: 1rpx solid var(--line);
+}
+
+.bd-footer-btn {
+  width: 100%;
+}
+
+.bd-footer-off {
+  opacity: 0.5;
+}

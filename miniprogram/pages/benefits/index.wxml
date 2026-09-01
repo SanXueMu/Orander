@@ -3,6 +3,12 @@
 
   <scroll-view class="page-scroll" scroll-y>
     <view class="page-body benefits-page-body list-gap">
+      <!-- 提醒设置区 -->
+      <view class="surface remind-bar">
+        <text class="remind-text">开启会员福利提醒</text>
+        <view class="remind-btn {{remindOn ? 'remind-btn-on' : ''}}" hover-class="press-dim" hover-stay-time="60" bindtap="toggleRemind">{{remindOn ? '已开启' : '提醒我'}}</view>
+      </view>
+
       <view class="surface benefits-hero">
         <view class="section-kicker">MEMBER PERKS</view>
         <view class="section-title">成长值越高，惊喜越多</view>

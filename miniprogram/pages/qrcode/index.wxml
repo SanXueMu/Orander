@@ -13,7 +13,7 @@
         <view class="qr-hint">出示给店员扫描 · 消费累计成长值</view>
       </view>
 
-      <view class="cta-primary qr-save" hover-class="press-scale" hover-stay-time="60" bindtap="savePic">保存图片</view>
+      <view class="button-primary qr-save" hover-class="press-scale" hover-stay-time="60" bindtap="savePic">保存图片</view>
     </view>
   </scroll-view>
 </view>

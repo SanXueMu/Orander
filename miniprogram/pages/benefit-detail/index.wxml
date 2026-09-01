@@ -1,9 +1,9 @@
 <view class="orander-page {{themeClass}} {{fontClass}}">
-  <navigation-bar title="福利详情" color="{{navColor}}" background="{{navBackground}}"></navigation-bar>
+  <navigation-bar title="{{meta.layout === 'GOLDEN' ? '金喜卡' : '福利详情'}}" color="{{navColor}}" background="{{navBackground}}"></navigation-bar>
 
   <scroll-view class="page-scroll" scroll-y>
     <view class="page-body bd-page-body list-gap">
-      <!-- 主视觉横幅：手绘配图优先，tone 渐变兜底 -->
+      <!-- 主视觉横幅：手绘配图优先，素色兜底 -->
       <view class="bd-hero bd-hero-{{meta.tone}} {{cloud.image ? 'bd-hero-photo' : ''}}">
         <image wx:if="{{cloud.image}}" class="bd-hero-img" src="{{cloud.image}}" mode="aspectFill" />
         <view wx:if="{{cloud.image}}" class="bd-hero-veil"></view>
@@ -13,29 +13,162 @@
         <view class="bd-hero-tagline">{{cloud.subtitle || meta.tagline}}</view>
       </view>
 
-      <!-- 权益说明 -->
-      <view class="surface bd-panel">
-        <view class="section-kicker">详情</view>
-        <view class="bd-desc">{{meta.description}}</view>
-        <view wx:if="{{meta.perks.length}}" class="list-gap bd-perks">
-          <view wx:for="{{meta.perks}}" wx:key="*this" class="bd-perk-row">
-            <view class="bd-perk-dot"></view>
-            <text>{{item}}</text>
+      <!-- ============ NEWBIE：送你 20 元新人礼 ============ -->
+      <block wx:if="{{meta.layout === 'NEWBIE'}}">
+        <view class="surface bd-panel bd-hand-title">
+          <view class="bd-hand-line">送你 20 元</view>
+          <view class="bd-hand-line bd-hand-line-big">新人礼</view>
+          <view class="bd-sub">即领即用 · 下单自动抵扣</view>
+        </view>
+        <view class="bd-coupon-row">
+          <view class="bd-coupon" wx:for="{{newbieCoupons}}" wx:key="*this">
+            <view class="bd-coupon-amount num"><text class="bd-coupon-unit">¥</text>{{item}}</view>
+            <view class="bd-coupon-rule">满 {{item * 4}} 可用</view>
           </view>
         </view>
-      </view>
+      </block>
 
-      <!-- 领取 -->
-      <view
-        hover-class="press-scale"
-        hover-stay-time="60"
-        class="{{claimed ? 'button-ghost' : 'button-primary'}} bd-claim {{claiming ? 'bd-busy' : ''}}"
-        bindtap="claim"
-      >
-        {{claimed ? '已领取' : claiming ? '领取中…' : '立即领取'}}
-      </view>
+      <!-- ============ MONDAY：周一免配送费 ============ -->
+      <block wx:if="{{meta.layout === 'MONDAY'}}">
+        <view class="surface bd-panel bd-ride">
+          <view class="bd-road">
+            <view class="bd-scooter">
+              <view class="bd-scooter-body"></view>
+              <view class="bd-scooter-wheel bd-scooter-wheel-a"></view>
+              <view class="bd-scooter-wheel bd-scooter-wheel-b"></view>
+              <view class="bd-scooter-box"></view>
+            </view>
+          </view>
+        </view>
+        <view class="surface bd-ticket">
+          <view class="bd-ticket-notch bd-ticket-notch-l"></view>
+          <view class="bd-ticket-main">
+            <view class="bd-ticket-value">免配送费</view>
+            <view class="bd-ticket-rule">喜外送订单 · 自动抵扣</view>
+          </view>
+          <view class="bd-ticket-seal {{mondayLive ? '' : 'bd-ticket-seal-off'}}">{{mondayLive ? '本周可享' : '本周已结束'}}</view>
+          <view class="bd-ticket-notch bd-ticket-notch-r"></view>
+        </view>
+        <view class="surface bd-panel">
+          <view class="section-kicker">活动规则</view>
+          <view class="list-gap">
+            <view wx:for="{{meta.perks}}" wx:key="*this" class="bd-rule-row"><view class="bd-perk-dot"></view><text>{{item}}</text></view>
+          </view>
+        </view>
+      </block>
+
+      <!-- ============ GOLDEN：金喜卡 ============ -->
+      <block wx:if="{{meta.layout === 'GOLDEN'}}">
+        <view class="bd-golden-face">
+          <view class="bd-golden-name">金喜卡</view>
+          <view class="bd-golden-sub">享 90 天金喜权益 · heytea style</view>
+        </view>
+        <view class="surface bd-panel">
+          <view class="bd-block-title">金喜券</view>
+          <view class="bd-grid3">
+            <view class="bd-grid3-cell" wx:for="{{goldenPerks}}" wx:key="title">
+              <view class="bd-grid3-v num">{{item.v}}</view>
+              <view class="bd-grid3-t">{{item.t}}</view>
+            </view>
+          </view>
+        </view>
+        <view class="surface bd-panel">
+          <view class="bd-block-title">金喜价</view>
+          <view class="bd-grid4">
+            <view class="bd-grid4-cell" wx:for="{{goldenDrinks}}" wx:key="name">
+              <view class="bd-grid4-img"></view>
+              <view class="bd-grid4-name">{{item.name}}</view>
+              <view class="bd-grid4-price num">¥{{item.price}}</view>
+            </view>
+          </view>
+        </view>
+        <view class="bd-agree" bindtap="toggleAgree">
+          <view class="bd-check {{agreed ? 'bd-check-on' : ''}}">{{agreed ? '✓' : ''}}</view>
+          <text>阅读并同意《金喜卡开通须知》</text>
+        </view>
+      </block>
+
+      <!-- ============ WARM：暖心为你 ============ -->
+      <block wx:if="{{meta.layout === 'WARM'}}">
+        <view class="surface bd-panel bd-hand-title">
+          <view class="bd-hand-line bd-hand-line-big">暖心为你</view>
+          <view class="bd-sub">{{warmPeriod}}</view>
+        </view>
+        <view class="surface bd-ticket bd-warm-ticket">
+          <view class="bd-ticket-notch bd-ticket-notch-l"></view>
+          <view class="bd-ticket-main">
+            <view class="bd-ticket-value bd-warm-value">8.8<text class="bd-warm-fold">折</text></view>
+            <view class="bd-ticket-rule">热烤黑糖波波牛乳（首创）<br/>领取后 30 天内有效</view>
+          </view>
+          <view class="bd-ticket-seal bd-warm-seal">女生专享</view>
+          <view class="bd-ticket-notch bd-ticket-notch-r"></view>
+        </view>
+        <view class="bd-oval-btn" hover-class="press-dim" hover-stay-time="60" bindtap="claim">{{claimed ? '已领取' : '立即领券'}}</view>
+        <view class="bd-share-row" bindtap="invite">邀好友领券 ›</view>
+        <view class="surface bd-panel">
+          <view class="bd-tips-title">— 特殊时期饮茶小贴士 —</view>
+          <view class="bd-tip" wx:for="{{warmTips}}" wx:key="*this">{{index + 1}}. {{item}}</view>
+        </view>
+      </block>
+
+      <!-- ============ STUDENT：学子卡 ============ -->
+      <block wx:if="{{meta.layout === 'STUDENT'}}">
+        <view class="bd-student-face">
+          <view class="bd-student-head">
+            <view>
+              <view class="bd-student-name">Orander 学子卡</view>
+              <view class="bd-student-sub">尊享 3 大学子权益 · 大学生可认证</view>
+            </view>
+            <view class="bd-student-tag">{{claimed ? '已开通' : '未开通'}}</view>
+          </view>
+          <view class="bd-oval-btn bd-student-more" hover-class="press-dim" hover-stay-time="60" bindtap="toggleRules">{{rulesOpen ? '收起' : '了解更多'}}</view>
+        </view>
+        <view wx:if="{{rulesOpen}}" class="surface bd-panel">
+          <view class="bd-block-title">01 · 如何开通</view>
+          <view class="bd-step" wx:for="{{studentSteps}}" wx:key="*this"><text class="bd-step-no num">{{index + 1}}</text><text>{{item}}</text></view>
+          <view class="bd-block-title bd-block-gap">02 · 专属权益</view>
+          <view class="bd-rule-row" wx:for="{{meta.perks}}" wx:key="*this"><view class="bd-perk-dot"></view><text>{{item}}</text></view>
+        </view>
+        <view class="surface bd-panel">
+          <view class="bd-rule-row"><view class="bd-perk-dot"></view><text>开通有礼：新人券包 20 元</text></view>
+          <view class="bd-rule-row"><view class="bd-perk-dot"></view><text>每周权益：周五至周日第二杯半价</text></view>
+          <view class="bd-rule-row"><view class="bd-perk-dot"></view><text>超值券包：学期专属 6.8 折券</text></view>
+        </view>
+        <view class="bd-link" bindtap="middleSchool">还是中学生？到店可获得专属优惠 ›</view>
+      </block>
+
+      <!-- ============ GENERIC：通用详情 ============ -->
+      <block wx:if="{{meta.layout === 'GENERIC'}}">
+        <view class="surface bd-panel">
+          <view class="section-kicker">详情</view>
+          <view class="bd-desc">{{meta.description}}</view>
+          <view wx:if="{{meta.perks.length}}" class="list-gap">
+            <view wx:for="{{meta.perks}}" wx:key="*this" class="bd-rule-row"><view class="bd-perk-dot"></view><text>{{item}}</text></view>
+          </view>
+        </view>
+      </block>
 
       <view wx:if="{{!cloudOk}}" class="section-copy bd-note">提示：云端暂不可用，领取需云函数 R1+ 已部署。</view>
+      <view class="bd-tail-space"></view>
     </view>
   </scroll-view>
+
+  <!-- 底部 CTA：NEWBIE / GOLDEN / STUDENT 固定底栏；MONDAY 无；WARM 内联 -->
+  <view wx:if="{{meta.layout === 'NEWBIE' || meta.layout === 'GOLDEN' || meta.layout === 'STUDENT'}}" class="bd-footer">
+    <view
+      wx:if="{{meta.layout === 'NEWBIE'}}"
+      class="button-primary bd-footer-btn {{claimed || claiming ? 'bd-footer-off' : ''}}"
+      hover-class="press-scale" hover-stay-time="60" bindtap="claim"
+    >{{claimed ? '已领取' : claiming ? '领取中…' : '一键领取'}}</view>
+    <view
+      wx:if="{{meta.layout === 'GOLDEN'}}"
+      class="button-primary bd-footer-btn {{claimed || claiming ? 'bd-footer-off' : ''}}"
+      hover-class="press-scale" hover-stay-time="60" bindtap="buyGolden"
+    >{{claimed ? '已开卡' : claiming ? '开卡中…' : '¥8.8 立即开卡'}}</view>
+    <view
+      wx:if="{{meta.layout === 'STUDENT'}}"
+      class="button-primary bd-footer-btn {{claimed || claiming ? 'bd-footer-off' : ''}}"
+      hover-class="press-scale" hover-stay-time="60" bindtap="claim"
+    >{{claimed ? '已开通' : claiming ? '开通中…' : '免费开通学子卡'}}</view>
+  </view>
 </view>
