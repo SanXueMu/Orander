@@ -71,63 +71,47 @@
       </view>
     </view>
 
-    <view class="grid">
-      <view class="grid-item" bindtap="goSpus">
-        <view class="grid-icon">茶</view>
-        <view class="grid-name">商品管理</view>
+    <view class="surface admin-menu">
+      <view class="admin-menu-row" hover-class="press-dim" hover-stay-time="60" bindtap="goSpus">
+        <text>商品管理</text><text class="admin-menu-arrow">›</text>
       </view>
-      <view class="grid-item" bindtap="goOrders" data-tab="all">
-        <view class="grid-icon">单</view>
-        <view class="grid-name">订单中心</view>
+      <view class="admin-menu-row" hover-class="press-dim" hover-stay-time="60" bindtap="goOrders" data-tab="all">
+        <text>订单中心</text><text class="admin-menu-arrow">›</text>
       </view>
-      <view class="grid-item" bindtap="goQueue">
-        <view class="grid-icon">制</view>
-        <view class="grid-name">制作队列</view>
+      <view class="admin-menu-row" hover-class="press-dim" hover-stay-time="60" bindtap="goQueue">
+        <text>制作队列</text><text class="admin-menu-arrow">›</text>
       </view>
-      <view class="grid-item" bindtap="goStores">
-        <view class="grid-icon">店</view>
-        <view class="grid-name">门店管理</view>
+      <view class="admin-menu-row" hover-class="press-dim" hover-stay-time="60" bindtap="goStores">
+        <text>门店管理</text><text class="admin-menu-arrow">›</text>
       </view>
-    </view>
-
-    <view class="grid" style="margin-top: 20rpx;">
-      <view class="grid-item" bindtap="goMembers">
-        <view class="grid-icon">会</view>
-        <view class="grid-name">会员列表</view>
-      </view>
-      <view class="grid-item" bindtap="goPromote">
-        <view class="grid-icon">营</view>
-        <view class="grid-name">营销中心</view>
-      </view>
-      <view class="grid-item" bindtap="goContent">
-        <view class="grid-icon">容</view>
-        <view class="grid-name">内容管理</view>
-      </view>
-      <view class="grid-item" bindtap="goReviews">
-        <view class="grid-icon">评</view>
-        <view class="grid-name">评价审核</view>
-      </view>
-      <view class="grid-item" bindtap="goCs">
-        <view class="grid-icon">服</view>
-        <view class="grid-name">客服工作台</view>
-      </view>
-      <view class="grid-item" bindtap="goInvoices">
-        <view class="grid-icon">票</view>
-        <view class="grid-name">开票处理</view>
+      <view class="admin-menu-row admin-menu-row-last" hover-class="press-dim" hover-stay-time="60" bindtap="goPromote">
+        <text>营销中心</text><text class="admin-menu-arrow">›</text>
       </view>
     </view>
 
-    <view class="link-rows">
-      <view class="todo-row" bindtap="goLegacyUser">
-        <view class="todo-label">花名册（旧）</view>
-        <view class="todo-val">查看</view>
-        <view class="todo-arrow">›</view>
+    <view class="surface admin-menu">
+      <view class="admin-menu-row" hover-class="press-dim" hover-stay-time="60" bindtap="goMembers">
+        <text>会员列表</text><text class="admin-menu-arrow">›</text>
       </view>
-      <view class="todo-row" bindtap="goSettings">
-        <view class="todo-label">系统设置</view>
-        <view class="todo-val">署名 / 密码</view>
-        <view class="todo-arrow">›</view>
+      <view class="admin-menu-row" hover-class="press-dim" hover-stay-time="60" bindtap="goContent">
+        <text>内容管理</text><text class="admin-menu-arrow">›</text>
+      </view>
+      <view class="admin-menu-row" hover-class="press-dim" hover-stay-time="60" bindtap="goReviews">
+        <text>评价审核</text><text class="admin-menu-arrow">›</text>
+      </view>
+      <view class="admin-menu-row" hover-class="press-dim" hover-stay-time="60" bindtap="goCs">
+        <text>客服工作台</text><text class="admin-menu-arrow">›</text>
+      </view>
+      <view class="admin-menu-row" hover-class="press-dim" hover-stay-time="60" bindtap="goInvoices">
+        <text>开票处理</text><text class="admin-menu-arrow">›</text>
+      </view>
+      <view class="admin-menu-row" hover-class="press-dim" hover-stay-time="60" bindtap="goLegacyUser">
+        <text>花名册（旧）</text><text class="admin-menu-arrow">›</text>
+      </view>
+      <view class="admin-menu-row admin-menu-row-last" hover-class="press-dim" hover-stay-time="60" bindtap="goSettings">
+        <text>系统设置</text><text class="admin-menu-arrow">›</text>
       </view>
     </view>
+
   </block>
 </view>
