@@ -67,8 +67,9 @@
       >
         <image wx:if="{{item.image}}" class="dc-img" src="{{item.image}}" mode="aspectFill" />
         <view wx:else class="dc-fallback dc-tone-{{index % 3}}">
+          <view wx:if="{{item.kicker}}" class="dc-fallback-kicker">{{item.kicker}}</view>
           <text class="dc-fallback-title">{{item.title}}</text>
-          <text class="dc-fallback-sub">NEW ARRIVAL · ORANDER GO</text>
+          <text class="dc-fallback-sub">{{item.sub}}</text>
         </view>
       </view>
     </view>
@@ -83,14 +84,16 @@
     <scroll-view class="menu-rail" scroll-y enhanced show-scrollbar="{{false}}">
       <view
         wx:for="{{categories}}"
-        wx:key="*this"
-        class="rail-item {{railActive === item ? 'rail-item-active' : ''}}"
+        wx:for-item="cat"
+        wx:key="name"
+        class="rail-item {{railActive === cat.name ? 'rail-item-active' : ''}}"
         hover-class="press-dim"
         hover-stay-time="60"
-        data-category="{{item}}"
+        data-category="{{cat.name}}"
         bindtap="tapRailCategory"
       >
-        <view class="rail-item-text">{{item}}</view>
+        <view wx:if="{{cat.hasNew}}" class="rail-item-new">上新</view>
+        <view class="rail-item-text">{{cat.name}}</view>
       </view>
     </scroll-view>
 

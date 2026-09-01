@@ -7,11 +7,18 @@ Page({
 
   data: {
     items: [] as Array<{ id: string; title: string; version?: string }>,
+    version: '1.0.0',
     loading: true,
   },
 
   onShow() {
     applyPageLook(this, getCurrentMember())
+    try {
+      const v = wx.getAccountInfoSync().miniProgram.version
+      if (v) this.setData({ version: v })
+    } catch (_e) {
+      /* devtools 无版本号，保持默认 */
+    }
     void this.load()
   },
 

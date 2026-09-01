@@ -105,9 +105,9 @@ const decorateSpus = (): { groups: MenuFlowGroupView[]; total: number } => {
 const WEEKDAYS = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
 
 const DISH_BANNER_FALLBACK = [
-  { id: 'fb-0', title: '灵感上新', sub: 'NEW ARRIVAL' },
-  { id: 'fb-1', title: '当季限定', sub: 'SEASONAL LIMITED' },
-  { id: 'fb-2', title: '会员日双倍成长值', sub: 'MEMBERS DAY' },
+  { id: 'fb-0', kicker: '首创', title: '灵感上新', sub: 'NEW ARRIVAL · ORANDER GO' },
+  { id: 'fb-1', kicker: '当季', title: '当季限定', sub: 'SEASONAL LIMITED · ORANDER GO' },
+  { id: 'fb-2', kicker: '会员', title: '会员日双倍成长值', sub: 'MEMBERS DAY · ORANDER GO' },
 ]
 
 Page({
@@ -136,7 +136,7 @@ Page({
     storeSheetVisible: false,
     stores: [] as StoreInfo[],
     /* 菜单 */
-    categories: ['全部'] as string[],
+    categories: [{ name: '全部', hasNew: false }] as Array<{ name: string; hasNew: boolean }>,
     railActive: '全部',
     searchKeyword: '',
     flowGroups: [] as MenuFlowGroupView[],
@@ -247,11 +247,15 @@ Page({
     applyPageLook(this, getCurrentMember())
     this.setData({ navColor: '#ffffff', navBackground: '#333333' })
     const flow = decorateSpus()
-    const categories = ['全部', ...flow.groups.map((group) => group.name)]
+    const hasNewIn = (items: Array<{ tags?: string[] }>) => (items || []).some((it) => (it.tags || []).includes('上新'))
+    const categories = [
+      { name: '全部', hasNew: false },
+      ...flow.groups.map((group) => ({ name: group.name, hasNew: hasNewIn(group.items) })),
+    ]
     this.setData({
       nickname: session ? session.nickname : '访客',
       categories,
-      railActive: categories.includes(this.data.railActive) ? this.data.railActive : '全部',
+      railActive: categories.some((c) => c.name === this.data.railActive) ? this.data.railActive : '全部',
       flowGroups: flow.groups,
       flowTotal: flow.total,
       cartCount: getCartStatsV2().count,
