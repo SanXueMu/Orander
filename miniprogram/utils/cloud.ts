@@ -555,13 +555,19 @@ export interface TitleRecord {
   id: string
   name: string
   taxNo?: string
+  titleType?: 'COMPANY' | 'PERSONAL'
+  address?: string
+  phone?: string
+  bank?: string
+  bankAccount?: string
+  isDefault?: boolean
 }
 export const invListTitlesCloud = () => callOrander<{ items: TitleRecord[] }>('listTitles', {})
-export const invSaveTitleCloud = (payload: { id?: string; name: string; taxNo?: string }) =>
-  callOrander<TitleRecord>('saveTitle', payload)
-export const invDeleteTitleCloud = (id: string) => callOrander<Record<string, unknown>>('deleteTitle', { id })
+export const invSaveTitleCloud = (payload: Partial<TitleRecord> & { name: string }) =>
+  callOrander<TitleRecord>('saveTitle', { title: payload })
+export const invDeleteTitleCloud = (id: string) => callOrander<Record<string, unknown>>('deleteTitle', { titleId: id })
 export const invListOrdersCloud = () =>
-  callOrander<{ items: Array<{ id: string; orderNumber: string; payAmount: number; createdAt?: string }> }>('listInvoicableOrders', {})
+  callOrander<{ items: Array<{ id: string; orderNumber: string; biz?: string; amount?: number; payAmount?: number; createdAt?: string }> }>('listInvoicableOrders', {})
 export const invApplyCloud = (payload: Record<string, unknown>) => callOrander<Record<string, unknown>>('applyInvoice', payload)
 export const invListRecordsCloud = () => callOrander<{ items: unknown[] }>('listInvoiceRecords', {})
 

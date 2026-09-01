@@ -83,12 +83,18 @@ module.exports = {
     if (!openId) {
       throw new Error('请先登录')
     }
+    const src = event.title || {}
     const title = {
-      id: (event.title && event.title.id) || generateId('ttl'),
+      id: src.id || generateId('ttl'),
       openId,
-      name: (event.title && event.title.name) || '个人',
-      taxNo: (event.title && event.title.taxNo) || '',
-      isDefault: !!(event.title && event.title.isDefault),
+      name: src.name || '个人',
+      taxNo: src.taxNo || '',
+      titleType: ['COMPANY', 'PERSONAL'].includes(src.titleType) ? src.titleType : 'PERSONAL',
+      address: String(src.address || '').slice(0, 120),
+      phone: String(src.phone || '').slice(0, 40),
+      bank: String(src.bank || '').slice(0, 120),
+      bankAccount: String(src.bankAccount || '').slice(0, 60),
+      isDefault: !!src.isDefault,
       updatedAt: nowIso(),
     }
     const existing = await col('invoice_titles').where({ id: title.id }).limit(1).get()

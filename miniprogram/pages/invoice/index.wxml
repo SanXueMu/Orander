@@ -1,70 +1,174 @@
 <view class="orander-page {{themeClass}} {{fontClass}}">
   <navigation-bar title="发票助手" color="{{navColor}}" background="{{navBackground}}"></navigation-bar>
-  <view class="seg-tabs">
-    <view wx:for="{{tabs}}" wx:key="key" class="seg-tab {{tab === item.key ? 'seg-tab-active' : ''}}" data-key="{{item.key}}" bindtap="switchTab">{{item.label}}</view>
+
+  <!-- 子视图返回条 -->
+  <view wx:if="{{view !== 'home'}}" class="inv-subnav" bindtap="backHome">
+    <text class="inv-subnav-back">‹</text>
+    <text class="inv-subnav-title">{{view === 'orders' ? bizName : viewTitle}}</text>
   </view>
+
   <scroll-view class="page-scroll" scroll-y>
-    <view class="page-body list-gap">
+    <view class="page-body list-gap inv-body">
 
-      <!-- 开票 -->
-      <block wx:if="{{tab === 'apply'}}">
-        <view wx:if="{{!orders.length}}" class="surface empty-panel">暂无可开票订单（已完成订单才可开票）</view>
-        <view wx:else class="surface inv-panel">
-          <view class="section-title">1 · 选择订单</view>
-          <view wx:for="{{orders}}" wx:key="id" class="inv-order-row" data-id="{{item.id}}" bindtap="pickOrder">
-            <view>
-              <view class="inv-order-no">{{item.orderNumber}}</view>
-              <view class="num inv-order-amount">¥{{item.payAmount}}</view>
+      <!-- ============ 主页：10 项枢纽 ============ -->
+      <block wx:if="{{view === 'home'}}">
+        <view class="surface inv-menu">
+          <view
+            wx:for="{{homeRows}}"
+            wx:key="key"
+            class="inv-menu-row {{index === homeRows.length - 1 ? 'inv-menu-last' : ''}}"
+            hover-class="press-dim" hover-stay-time="60"
+            data-key="{{item.key}}" bindtap="tapHomeRow"
+          >
+            <view class="inv-menu-left">
+              <text>{{item.name}}</text>
+              <text wx:if="{{item.sub}}" class="inv-menu-sub">{{item.sub}}</text>
             </view>
-            <view class="inv-check {{item.picked ? 'inv-checked' : ''}}">✓</view>
+            <text class="inv-arrow">›</text>
           </view>
-        </view>
-        <view class="surface inv-panel">
-          <view class="section-title">2 · 选择抬头</view>
-          <view wx:for="{{titles}}" wx:key="id" class="inv-title-row" data-id="{{item.id}}" bindtap="pickTitle">
-            <view>
-              <view>{{item.name}}</view>
-              <view wx:if="{{item.taxNo}}" class="inv-taxno">{{item.taxNo}}</view>
-            </view>
-            <view class="inv-radio {{activeTitleId === item.id ? 'inv-radio-on' : ''}}"></view>
-          </view>
-        </view>
-        <view class="surface inv-panel">
-          <view class="section-title">3 · 业务线</view>
-          <view class="inv-lines">
-            <view wx:for="{{bizLines}}" wx:key="*this" class="inv-line {{activeBiz === item ? 'inv-line-active' : ''}}" data-line="{{item}}" bindtap="pickBiz">{{item}}</view>
-          </view>
-          <view class="cta-button inv-submit {{submitting ? 'busy' : ''}}" hover-class="press-scale" hover-stay-time="60" bindtap="apply">{{submitting ? '提交中…' : '提交开票申请'}}</view>
         </view>
       </block>
 
-      <!-- 抬头 -->
-      <block wx:elif="{{tab === 'title'}}">
-        <view class="surface inv-panel">
-          <view wx:for="{{titles}}" wx:key="id" class="inv-title-row">
-            <view>
-              <view>{{item.name}}</view>
-              <view wx:if="{{item.taxNo}}" class="inv-taxno">{{item.taxNo}}</view>
-            </view>
-            <view class="inv-del" data-id="{{item.id}}" catchtap="removeTitle">删除</view>
+      <!-- ============ 订单列表（7 业务线复用） ============ -->
+      <block wx:if="{{view === 'orders'}}">
+        <view class="inv-filter">
+          <view class="inv-filter-left">可开票订单 <text class="inv-caret">⌄</text></view>
+          <view class="inv-scan-btn" hover-class="press-dim" hover-stay-time="60" bindtap="openScan">
+            <view class="inv-scan-icon"></view>扫码开票
           </view>
         </view>
-        <view class="surface inv-panel">
-          <view class="section-title">新增抬头</view>
-          <input class="gm-input" placeholder="抬头名称（个人或单位）" value="{{newTitleName}}" bindinput="onTitleName" />
-          <input class="gm-input" placeholder="单位税号（选填）" value="{{newTitleTaxNo}}" bindinput="onTitleTaxNo" />
-          <view class="cta-outline-btn inv-add" hover-class="press-scale" hover-stay-time="60" bindtap="addTitle">保存抬头</view>
+
+        <view wx:if="{{loadingOrders}}" class="surface empty-panel">加载中…</view>
+        <view wx:elif="{{!orders.length}}" class="surface empty-panel">暂无相关订单</view>
+        <block wx:else>
+          <view
+            wx:for="{{orders}}"
+            wx:key="id"
+            class="surface inv-order-card"
+            hover-class="press-dim" hover-stay-time="60"
+            data-id="{{item.id}}" bindtap="pickOrder"
+          >
+            <view class="inv-order-check {{item.picked ? 'inv-order-check-on' : ''}}">{{item.picked ? '✓' : ''}}</view>
+            <view class="inv-order-info">
+              <view class="inv-order-no num">{{item.orderNumber}}</view>
+              <view class="inv-order-date num">{{item.createdAt}}</view>
+            </view>
+            <view class="inv-order-amount num">¥{{item.amount}}</view>
+          </view>
+          <view class="inv-list-tail"></view>
+        </block>
+      </block>
+
+      <!-- ============ 开票记录 ============ -->
+      <block wx:if="{{view === 'record'}}">
+        <view wx:if="{{!records.length}}" class="surface empty-panel">暂无开票记录</view>
+        <view wx:for="{{records}}" wx:key="id" class="surface inv-record-card">
+          <view class="inv-record-head">
+            <text class="num">¥{{item.amount}}</text>
+            <text class="inv-record-status inv-record-{{item.statusText === '已开具' ? 'ok' : 'pending'}}">{{item.statusText}}</text>
+          </view>
+          <view class="inv-record-orders num">{{item.orderNumbers.length}} 笔订单 · {{item.date}}</view>
+          <view wx:if="{{item.invoiceNo}}" class="inv-record-no num">票号 {{item.invoiceNo}}</view>
         </view>
       </block>
 
-      <!-- 记录 -->
-      <block wx:else>
-        <view wx:if="{{!records.length}}" class="surface empty-panel">还没有开票记录</view>
-        <view wx:for="{{records}}" wx:key="index" class="surface inv-panel inv-record-row">
-          <text>开票申请 {{index + 1}}</text><text class="inv-status">{{item.status || 'PENDING'}}</text>
+      <!-- ============ 开票帮助 ============ -->
+      <block wx:if="{{view === 'help'}}">
+        <view class="surface inv-help-panel">
+          <view wx:for="{{helpSections}}" wx:key="t" class="inv-help-section">
+            <view class="inv-help-title">{{item.t}}</view>
+            <view class="inv-help-copy">{{item.c}}</view>
+          </view>
+        </view>
+      </block>
+
+      <!-- ============ 常用抬头 ============ -->
+      <block wx:if="{{view === 'titles'}}">
+        <view wx:if="{{!titles.length}}" class="surface empty-panel">暂无相关抬头</view>
+        <view wx:for="{{titles}}" wx:key="id" class="surface inv-title-card">
+          <view class="inv-title-main" data-id="{{item.id}}" bindtap="editTitle">
+            <view class="inv-title-name">
+              {{item.name}}
+              <text wx:if="{{item.isDefault}}" class="inv-title-default">默认</text>
+              <text class="inv-title-type">{{item.titleType === 'COMPANY' ? '企业' : '个人'}}</text>
+            </view>
+            <view wx:if="{{item.taxNo}}" class="inv-taxno num">{{item.taxNo}}</view>
+          </view>
+          <view class="inv-title-del" data-id="{{item.id}}" catchtap="removeTitle">删除</view>
+        </view>
+        <view class="inv-title-actions">
+          <view class="button-primary inv-title-add" hover-class="press-scale" hover-stay-time="60" bindtap="newTitle">添加常用抬头</view>
+          <view class="inv-import" hover-class="press-dim" hover-stay-time="60" bindtap="wechatImport">微信导入</view>
+        </view>
+      </block>
+
+      <!-- ============ 抬头表单 ============ -->
+      <block wx:if="{{view === 'titleForm'}}">
+        <view class="surface inv-form-panel">
+          <view class="inv-type-row">
+            <view class="inv-type {{form.titleType === 'COMPANY' ? 'inv-type-on' : ''}}" data-type="COMPANY" bindtap="setType">
+              <view class="inv-type-dot {{form.titleType === 'COMPANY' ? 'inv-type-dot-on' : ''}}"></view>企业单位
+            </view>
+            <view class="inv-type {{form.titleType === 'PERSONAL' ? 'inv-type-on' : ''}}" data-type="PERSONAL" bindtap="setType">
+              <view class="inv-type-dot {{form.titleType === 'PERSONAL' ? 'inv-type-dot-on' : ''}}"></view>个人非企业
+            </view>
+          </view>
+          <input class="gm-input" placeholder="抬头名称" value="{{form.name}}" data-field="name" bindinput="onField" />
+          <input class="gm-input" placeholder="{{form.titleType === 'COMPANY' ? '公司税号' : '税号（个人选填）'}}" value="{{form.taxNo}}" data-field="taxNo" bindinput="onField" />
+          <input class="gm-input" placeholder="注册地址（选填）" value="{{form.address}}" data-field="address" bindinput="onField" />
+          <input class="gm-input" placeholder="电话（选填）" value="{{form.phone}}" data-field="phone" bindinput="onField" />
+          <input class="gm-input" placeholder="开户银行（选填）" value="{{form.bank}}" data-field="bank" bindinput="onField" />
+          <input class="gm-input" placeholder="银行账号（选填）" value="{{form.bankAccount}}" data-field="bankAccount" bindinput="onField" />
+          <view class="inv-switch-row" bindtap="toggleDefault">
+            <text>设为企业默认抬头</text>
+            <view class="inv-switch {{form.isDefault ? 'inv-switch-on' : ''}}"><view class="inv-switch-knob"></view></view>
+          </view>
+          <view class="button-primary inv-form-save" hover-class="press-scale" hover-stay-time="60" bindtap="saveForm">保存</view>
         </view>
       </block>
 
     </view>
   </scroll-view>
+
+  <!-- ============ 订单列表底部栏 ============ -->
+  <view wx:if="{{view === 'orders' && orders.length}}" class="inv-footer">
+    <view class="inv-footer-left">
+      <view class="num">已选 {{pickedCount}} 个订单 共¥{{pickedAmount}}</view>
+      <view class="inv-footer-note">开票金额以实际发票为准</view>
+    </view>
+    <view class="inv-footer-pickall" bindtap="toggleAll">
+      <view class="inv-order-check inv-check-mini {{allPicked ? 'inv-order-check-on' : ''}}">{{allPicked ? '✓' : ''}}</view>
+      本页全选
+    </view>
+    <view class="inv-footer-next {{pickedCount ? '' : 'inv-footer-next-off'}}" hover-class="press-scale" hover-stay-time="60" bindtap="nextStep">下一步</view>
+  </view>
+
+  <!-- ============ 扫码开票 Modal ============ -->
+  <view wx:if="{{scanOpen}}" class="inv-mask" bindtap="closeScan">
+    <view class="inv-modal" catchtap="noop">
+      <view class="inv-modal-close" bindtap="closeScan">×</view>
+      <view class="inv-modal-title">什么是扫码开票？</view>
+      <view class="inv-modal-copy">您可扫描门店消费小票，开具电子发票。（其他平台的外卖订单请前往对应 App 的订单详情页自助开票）</view>
+      <view class="button-primary inv-modal-btn" hover-class="press-scale" hover-stay-time="60" bindtap="doScan">立即扫码开票</view>
+    </view>
+  </view>
+
+  <!-- ============ 抬头选择抽屉 ============ -->
+  <view wx:if="{{titleSheet}}" class="inv-mask" bindtap="closeTitleSheet">
+    <view class="inv-sheet" catchtap="noop">
+      <view class="inv-sheet-title">选择发票抬头</view>
+      <view class="inv-sheet-scroll">
+        <view wx:for="{{titles}}" wx:key="id" class="inv-sheet-row" data-id="{{item.id}}" bindtap="pickTitle">
+          <view class="inv-title-name">
+            {{item.name}}
+            <text wx:if="{{item.isDefault}}" class="inv-title-default">默认</text>
+          </view>
+          <view wx:if="{{item.taxNo}}" class="inv-taxno num">{{item.taxNo}}</view>
+          <view class="inv-radio {{activeTitleId === item.id ? 'inv-radio-on' : ''}}"></view>
+        </view>
+      </view>
+      <view class="inv-sheet-new" bindtap="newTitle">+ 新增抬头</view>
+      <view class="button-primary inv-sheet-btn {{submitting ? 'inv-footer-next-off' : ''}}" hover-class="press-scale" hover-stay-time="60" bindtap="submitApply">{{submitting ? '提交中…' : '提交开票申请'}}</view>
+    </view>
+  </view>
 </view>
