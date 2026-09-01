@@ -22,7 +22,7 @@
               <view class="member-nickname">{{nickname}}</view>
               <view class="member-level-pill" hover-class="press-dim" hover-stay-time="60" catchtap="goMemberCard">{{levelName || '会员'}} ›</view>
             </view>
-            <!-- 会员码占位（R7 接真实码） -->
+            <!-- 会员码 → pages/qrcode（U2） -->
             <view class="member-qr" aria-label="会员码" hover-class="press-dim" hover-stay-time="60" catchtap="goQrcode">
               <view class="member-qr-grid">
                 <view class="qr-cell qr-on"></view><view class="qr-cell"></view><view class="qr-cell qr-on"></view>

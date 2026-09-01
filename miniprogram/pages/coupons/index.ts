@@ -89,7 +89,7 @@ Page({
 
   useCoupon() {
     /* 下单时服务端自动匹配最优券；此处引导去点单 */
-    wx.switchTab({ url: '/pages/dish/index' })
+    wx.navigateTo({ url: '/pages/dish/index' })
   },
 
   async receive(event: WechatMiniprogram.BaseEvent) {
@@ -105,6 +105,6 @@ Page({
   },
 
   goDish() {
-    wx.switchTab({ url: '/pages/dish/index' })
+    wx.navigateTo({ url: '/pages/dish/index' })
   },
 })
