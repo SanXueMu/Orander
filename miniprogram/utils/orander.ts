@@ -86,6 +86,7 @@ export interface ThemeOption {
   description: string
   navColor: string
   navBackground: string
+  pageBg: string
   swatch: string[]
 }
 
@@ -100,6 +101,8 @@ export interface PageLook {
   fontClass: string
   navColor: string
   navBackground: string
+  pageBg: string
+  bgTextStyle: 'dark' | 'light'
 }
 
 export interface SessionUser {
@@ -149,6 +152,7 @@ export const THEME_OPTIONS: ThemeOption[] = [
     description: '纯白底配橄榄绿点缀，砖红价格，干净直接。',
     navColor: '#FFFFFF',
     navBackground: '#618137',
+    pageBg: '#ffffff',
     swatch: ['#FFFFFF', '#618137', '#B23A2E'],
   },
   {
@@ -157,6 +161,7 @@ export const THEME_OPTIONS: ThemeOption[] = [
     description: '米橄榄底与米金点缀，杂志质感。',
     navColor: '#FFFFFF',
     navBackground: '#618137',
+    pageBg: '#f4f4e8',
     swatch: ['#FFFFFF', '#618137', '#A08A56'],
   },
   {
@@ -165,6 +170,7 @@ export const THEME_OPTIONS: ThemeOption[] = [
     description: '夜色黑底，橄榄绿点缀。',
     navColor: '#F0F0F0',
     navBackground: '#141414',
+    pageBg: '#141414',
     swatch: ['#141414', '#618137', '#A08A56'],
   },
 ]
@@ -562,6 +568,8 @@ export const buildPageLook = (member: Member | null): PageLook => {
     fontClass: `font-${fontId}`,
     navColor: matchedTheme.navColor,
     navBackground: matchedTheme.navBackground,
+    pageBg: matchedTheme.pageBg,
+    bgTextStyle: matchedTheme.id === 'ink' ? 'light' : 'dark',
   }
 }
 
